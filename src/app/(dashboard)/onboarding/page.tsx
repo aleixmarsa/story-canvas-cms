@@ -4,15 +4,15 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
 import { z } from "zod";
 
 const projectSchema = z.object({
   name: z.string().min(3, "Name is required"),
   slug: z.string().min(3, "Slug is required"),
   author: z.string().optional(),
-  theme: z.any().optional(),
-  components: z.any().optional(),
-  assetsConfig: z.any().optional(),
+  description: z.string().optional(),
 });
 
 type Project = z.infer<typeof projectSchema>;
@@ -25,16 +25,18 @@ export default function OnboardingPage() {
     name: "",
     slug: "",
     author: "",
-    theme: "",
-    components: "",
-    assetsConfig: "",
+    description: "",
   });
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const res = await fetch("/api/projects");
-      const data = await res.json();
-      setProjects(data);
+      try {
+        const res = await fetch("/api/projects");
+        const data = await res.json();
+        setProjects(data);
+      } catch (err) {
+        console.error(err);
+      }
     };
     fetchProjects();
   }, [loading]);
@@ -61,12 +63,7 @@ export default function OnboardingPage() {
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          theme: { primaryColor: "#fff" },
-          components: ["text", "image"],
-          assetsConfig: { storage: "local" },
-        }),
+        body: JSON.stringify(parse.data),
       });
 
       const result = await res.json();
@@ -80,7 +77,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto py-10">
+    <div className="max-w-xl mx-auto py-10 r">
       <h1 className="text-2xl font-bold mb-6">Create a new Project</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -94,7 +91,7 @@ export default function OnboardingPage() {
         </div>
 
         <div>
-          <Label>Slug (url)</Label>
+          <Label>Slug (URL)</Label>
           <Input
             name="slug"
             value={formData.slug}
@@ -112,10 +109,20 @@ export default function OnboardingPage() {
           />
         </div>
 
+        <div>
+          <Label>Description</Label>
+          <Textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+          />
+        </div>
+
         <Button type="submit" disabled={loading}>
           {loading ? "Creating..." : "Create Project"}
         </Button>
       </form>
+
       <h2 className="text-xl font-semibold mt-10">Created Projects:</h2>
       <ul className="mt-4 space-y-2">
         {projects.map((project) => (
