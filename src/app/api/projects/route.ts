@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 // Return all projects
 export async function GET() {
@@ -11,18 +9,14 @@ export async function GET() {
 
 // Create a new project
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
+  const data = await req.json();
   const project = await prisma.project.create({
     data: {
-      name: body.name,
-      slug: body.slug,
-      author: body.author,
-      theme: body.theme || {},
-      components: body.components || {},
-      assetsConfig: body.assetsConfig || {},
+      name: data.name,
+      slug: data.slug,
+      author: data.author,
+      description: data.description,
     },
   });
-
   return NextResponse.json(project);
 }
