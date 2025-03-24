@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useCmsStore } from "@/stores/cms-store";
 
 import { z } from "zod";
 
@@ -17,13 +18,13 @@ const projectSchema = z.object({
 
 const CreateProjectForm = () => {
   const [loading, setLoading] = useState(false);
-
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
     author: "",
     description: "",
   });
+  const { addProject } = useCmsStore();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -50,8 +51,11 @@ const CreateProjectForm = () => {
         body: JSON.stringify(parse.data),
       });
 
-      const result = await res.json();
-      console.log("Project Created:", result);
+      if (!res.ok) {
+        throw new Error("Failed to create project");
+      }
+      const newProject = await res.json();
+      addProject(newProject);
     } catch (err) {
       console.error(err);
       alert("Failed to create project");

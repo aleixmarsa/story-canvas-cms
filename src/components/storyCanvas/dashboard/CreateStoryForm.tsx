@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
+import { useCmsStore } from "@/stores/cms-store";
 
 const storySchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -17,13 +18,9 @@ type StoryFormData = z.infer<typeof storySchema>;
 
 interface CreateStoryFormProps {
   projectId: number;
-  onStoryCreated: () => void;
 }
 
-const CreateStoryForm = ({
-  projectId,
-  onStoryCreated,
-}: CreateStoryFormProps) => {
+const CreateStoryForm = ({ projectId }: CreateStoryFormProps) => {
   const [formData, setFormData] = useState<StoryFormData>({
     title: "",
     slug: "",
@@ -31,6 +28,7 @@ const CreateStoryForm = ({
     coverImage: "",
   });
   const [loading, setLoading] = useState(false);
+  const { addStory } = useCmsStore();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -51,7 +49,7 @@ const CreateStoryForm = ({
     }
 
     try {
-      await fetch("/api/stories", {
+      const res = await fetch("/api/stories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -61,8 +59,12 @@ const CreateStoryForm = ({
           components: [],
         }),
       });
-      onStoryCreated();
+      if (!res.ok) {
+        throw new Error("Failed to create story");
+      }
+      const newStory = await res.json();
       setFormData({ title: "", slug: "", description: "", coverImage: "" });
+      addStory(newStory);
     } catch (err) {
       console.error(err);
       alert("Failed to create story");

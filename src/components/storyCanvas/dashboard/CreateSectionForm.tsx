@@ -5,30 +5,27 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { sectionTypes } from "@/lib/types/sectionTypes";
-import { Section } from "@prisma/client";
 import { z } from "zod";
+import { useCmsStore } from "@/stores/cms-store";
 
 const sectionSchema = z.object({
   type: z.string(),
-  content: z.string().min(1),
+  content: z.string().min(1, "Content is required"),
   order: z.number().min(0),
 });
 
-type EditSectionFormProps = {
-  section: Section;
-  onSectionUpdated: () => void;
-};
+interface CreateSectionFormProps {
+  storyId: number;
+}
 
-export default function EditSectionForm({
-  section,
-  onSectionUpdated,
-}: EditSectionFormProps) {
+export default function CreateSectionForm({ storyId }: CreateSectionFormProps) {
   const [formData, setFormData] = useState({
-    type: section.type,
-    content: section.content?.text || "",
-    order: section.order,
+    type: "",
+    content: "",
+    order: 0,
   });
   const [loading, setLoading] = useState(false);
+  const { addSection } = useCmsStore();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -44,33 +41,33 @@ export default function EditSectionForm({
       ...formData,
       order: Number(formData.order),
     });
-    console.log("🚀 ~ handleSubmit ~ parse:", parse);
 
     if (!parse.success) {
       alert("Please fill in all required fields");
       setLoading(false);
       return;
     }
-
     try {
-      const res = await fetch(`/api/sections/${section.id}`, {
-        method: "PUT",
+      const res = await fetch("/api/sections", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          storyId,
           type: parse.data.type,
           content: { text: parse.data.content },
           order: parse.data.order,
         }),
       });
+
       if (!res.ok) {
-        throw new Error("Failed to update section");
+        throw new Error("Failed to create section");
       }
-      onSectionUpdated();
+      const newSection = await res.json();
+      setFormData({ type: "", content: "", order: 0 });
+      addSection(newSection);
     } catch (err) {
       console.error(err);
-      alert("Failed to update section");
-      setLoading(false);
-      return;
+      alert("Failed to create section");
     } finally {
       setLoading(false);
     }
@@ -118,7 +115,7 @@ export default function EditSectionForm({
       </div>
 
       <Button type="submit" disabled={loading}>
-        {loading ? "Saving..." : "Save Changes"}
+        {loading ? "Creating..." : "Create Section"}
       </Button>
     </form>
   );
