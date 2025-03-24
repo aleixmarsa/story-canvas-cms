@@ -5,27 +5,28 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { sectionTypes } from "@/lib/types/sectionTypes";
+import { Section } from "@prisma/client";
 import { z } from "zod";
 
 const sectionSchema = z.object({
   type: z.string(),
-  content: z.string().min(1, "Content is required"),
+  content: z.string().min(1),
   order: z.number().min(0),
 });
 
-interface CreateSectionFormProps {
-  storyId: number;
-  onSectionCreated: () => void;
-}
+type EditSectionFormProps = {
+  section: Section;
+  onSectionUpdated: () => void;
+};
 
-export default function CreateSectionForm({
-  storyId,
-  onSectionCreated,
-}: CreateSectionFormProps) {
+export default function EditSectionForm({
+  section,
+  onSectionUpdated,
+}: EditSectionFormProps) {
   const [formData, setFormData] = useState({
-    type: "",
-    content: "",
-    order: 0,
+    type: section.type,
+    content: section.content?.text || "",
+    order: section.order,
   });
   const [loading, setLoading] = useState(false);
 
@@ -43,6 +44,7 @@ export default function CreateSectionForm({
       ...formData,
       order: Number(formData.order),
     });
+    console.log("🚀 ~ handleSubmit ~ parse:", parse);
 
     if (!parse.success) {
       alert("Please fill in all required fields");
@@ -50,20 +52,28 @@ export default function CreateSectionForm({
       return;
     }
 
-    await fetch("/api/sections", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        storyId,
-        type: parse.data.type,
-        content: { text: parse.data.content },
-        order: parse.data.order,
-      }),
-    });
-
-    onSectionCreated();
-    setFormData({ type: "", content: "", order: 0 });
-    setLoading(false);
+    try {
+      const res = await fetch(`/api/sections/${section.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: parse.data.type,
+          content: { text: parse.data.content },
+          order: parse.data.order,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to update section");
+      }
+      onSectionUpdated();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update section");
+      setLoading(false);
+      return;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -108,7 +118,7 @@ export default function CreateSectionForm({
       </div>
 
       <Button type="submit" disabled={loading}>
-        {loading ? "Creating..." : "Create Section"}
+        {loading ? "Saving..." : "Save Changes"}
       </Button>
     </form>
   );
