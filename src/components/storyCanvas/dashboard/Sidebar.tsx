@@ -1,35 +1,63 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Project, Story, Section } from "@prisma/client";
+import { useCmsStore } from "@/stores/cms-store";
 
-interface SidebarProps {
-  projects: Project[];
-  stories: Story[];
-  sections: Section[];
-  selectedProject: Project | null;
-  selectedStory: Story | null;
-  selectedSection: Section | null;
-  onProjectSelect: (project: Project) => void;
-  onStorySelect: (story: Story) => void;
-  onSectionSelect: (section: Section) => void;
-  resetSelection: () => void;
-  resetStoryAndSection: () => void;
-}
+export default function Sidebar() {
+  const {
+    projects,
+    stories,
+    sections,
+    selectedProject,
+    selectedStory,
+    selectedSection,
+    setProjects,
+    setStories,
+    setSections,
+    selectProject,
+    selectStory,
+    selectSection,
+    resetSelection,
+    resetStoryAndSection,
+  } = useCmsStore();
 
-export default function Sidebar({
-  projects,
-  stories,
-  sections,
-  selectedProject,
-  selectedStory,
-  selectedSection,
-  onProjectSelect,
-  onStorySelect,
-  onSectionSelect,
-  resetSelection,
-  resetStoryAndSection,
-}: SidebarProps) {
+  // Loads project once
+  useEffect(() => {
+    if (projects.length === 0) {
+      const fetchProjects = async () => {
+        const res = await fetch("/api/projects");
+        const data = await res.json();
+        setProjects(data);
+      };
+      fetchProjects();
+    }
+  }, [projects.length, setProjects]);
+
+  // Fetches only if selected project is different to avoid unnecessary fetches
+  const handleProjectSelect = async (projectId: number) => {
+    if (selectedProject?.id === projectId) return;
+    const project = projects.find((p) => p.id === projectId);
+    if (!project) return;
+    selectProject(project);
+
+    const res = await fetch(`/api/stories?projectId=${project.id}`);
+    const data = await res.json();
+    setStories(data);
+  };
+
+  // Fetches only if selected story is different to avoid unnecessary fetches
+  const handleStorySelect = async (storyId: number) => {
+    if (selectedStory?.id === storyId) return;
+    const story = stories.find((s) => s.id === storyId);
+    if (!story) return;
+    selectStory(story);
+
+    const res = await fetch(`/api/sections?storyId=${story.id}`);
+    const data = await res.json();
+    setSections(data);
+  };
+
   return (
     <aside className="w-64 border-r px-4 py-8 space-y-4">
       <p className="text-md font-semibold">
@@ -39,7 +67,6 @@ export default function Sidebar({
         >
           Projects
         </button>
-
         {selectedProject && (
           <>
             {" "}
@@ -52,7 +79,6 @@ export default function Sidebar({
             </button>
           </>
         )}
-
         {selectedStory && (
           <>
             {" "}
@@ -69,7 +95,7 @@ export default function Sidebar({
                 selectedProject?.id === project.id ? "default" : "outline"
               }
               className="w-full justify-start cursor-pointer"
-              onClick={() => onProjectSelect(project)}
+              onClick={() => handleProjectSelect(project.id)}
             >
               {project.name}
             </Button>
@@ -83,7 +109,7 @@ export default function Sidebar({
                         selectedStory?.id === story.id ? "default" : "outline"
                       }
                       className="w-full justify-start cursor-pointer"
-                      onClick={() => onStorySelect(story)}
+                      onClick={() => handleStorySelect(story.id)}
                     >
                       {story.title}
                     </Button>
@@ -99,7 +125,7 @@ export default function Sidebar({
                                   : "outline"
                               }
                               className="w-full justify-start cursor-pointer"
-                              onClick={() => onSectionSelect(section)}
+                              onClick={() => selectSection(section)}
                             >
                               {section.type}
                             </Button>

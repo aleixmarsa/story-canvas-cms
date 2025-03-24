@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { sectionTypes } from "@/lib/types/sectionTypes";
 import { z } from "zod";
+import { useCmsStore } from "@/stores/cms-store";
 
 const sectionSchema = z.object({
   type: z.string(),
@@ -15,19 +16,16 @@ const sectionSchema = z.object({
 
 interface CreateSectionFormProps {
   storyId: number;
-  onSectionCreated: () => void;
 }
 
-export default function CreateSectionForm({
-  storyId,
-  onSectionCreated,
-}: CreateSectionFormProps) {
+export default function CreateSectionForm({ storyId }: CreateSectionFormProps) {
   const [formData, setFormData] = useState({
     type: "",
     content: "",
     order: 0,
   });
   const [loading, setLoading] = useState(false);
+  const { addSection } = useCmsStore();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -49,21 +47,30 @@ export default function CreateSectionForm({
       setLoading(false);
       return;
     }
+    try {
+      const res = await fetch("/api/sections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          storyId,
+          type: parse.data.type,
+          content: { text: parse.data.content },
+          order: parse.data.order,
+        }),
+      });
 
-    await fetch("/api/sections", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        storyId,
-        type: parse.data.type,
-        content: { text: parse.data.content },
-        order: parse.data.order,
-      }),
-    });
-
-    onSectionCreated();
-    setFormData({ type: "", content: "", order: 0 });
-    setLoading(false);
+      if (!res.ok) {
+        throw new Error("Failed to create section");
+      }
+      const newSection = await res.json();
+      setFormData({ type: "", content: "", order: 0 });
+      addSection(newSection);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create section");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

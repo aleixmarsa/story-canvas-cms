@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { sectionTypes } from "@/lib/types/sectionTypes";
 import { Section } from "@prisma/client";
 import { z } from "zod";
+import { useCmsStore } from "@/stores/cms-store";
 
 const sectionSchema = z.object({
   type: z.string(),
@@ -16,19 +17,25 @@ const sectionSchema = z.object({
 
 type EditSectionFormProps = {
   section: Section;
-  onSectionUpdated: () => void;
 };
 
-export default function EditSectionForm({
-  section,
-  onSectionUpdated,
-}: EditSectionFormProps) {
+export default function EditSectionForm({ section }: EditSectionFormProps) {
   const [formData, setFormData] = useState({
     type: section.type,
     content: section.content?.text || "",
     order: section.order,
   });
+
+  useEffect(() => {
+    setFormData({
+      type: section.type,
+      content: section.content?.text || "",
+      order: section.order,
+    });
+  }, [section]);
+
   const [loading, setLoading] = useState(false);
+  const { updateSection } = useCmsStore();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -44,7 +51,6 @@ export default function EditSectionForm({
       ...formData,
       order: Number(formData.order),
     });
-    console.log("🚀 ~ handleSubmit ~ parse:", parse);
 
     if (!parse.success) {
       alert("Please fill in all required fields");
@@ -65,7 +71,13 @@ export default function EditSectionForm({
       if (!res.ok) {
         throw new Error("Failed to update section");
       }
-      onSectionUpdated();
+      const updatedSection = await res.json();
+      setFormData({
+        type: updatedSection.type,
+        content: updatedSection.content.text,
+        order: updatedSection.order,
+      });
+      updateSection(updatedSection);
     } catch (err) {
       console.error(err);
       alert("Failed to update section");
