@@ -6,6 +6,7 @@ import { Project, Story, Section } from "@prisma/client";
 import CreateStoryForm from "@/components/CreateStoryForm";
 import CreateProjectForm from "@/components/CreateProjectForm";
 import CreateSectionForm from "@/components/CreateSectionForm";
+import EditSectionForm from "@/components/EditSectionForm";
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -140,13 +141,6 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="flex-1 p-8">
-        {selectedSection && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">
-              Edit Section: {selectedSection.type}
-            </h2>
-          </div>
-        )}
         {!selectedProject && (
           <div>
             <h2 className="text-xl font-bold mb-4">New project</h2>
@@ -172,6 +166,17 @@ export default function DashboardPage() {
             <CreateSectionForm
               storyId={selectedStory.id}
               onSectionCreated={() => handleStorySelect(selectedStory)} // Refresca sections
+            />
+          </div>
+        )}
+        {selectedSection && (
+          <div>
+            <h2 className="text-xl font-bold mb-4">
+              Edit Section: {selectedSection.type}
+            </h2>
+            <EditSectionForm
+              section={selectedSection}
+              onSectionUpdated={() => handleStorySelect(selectedStory!)}
             />
           </div>
         )}
