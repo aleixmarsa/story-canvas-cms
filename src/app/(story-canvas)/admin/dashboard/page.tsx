@@ -3,39 +3,28 @@
 import { useEffect } from "react";
 import { useCmsStore } from "@/stores/cms-store";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/CreateStoryForm";
-import CreateProjectForm from "@/components/storyCanvas/dashboard/CreateProjectForm";
 import CreateSectionForm from "@/components/storyCanvas/dashboard/CreateSectionForm";
 import EditSectionForm from "@/components/storyCanvas/dashboard/EditSectionForm";
 
 export default function DashboardPage() {
-  const { selectedProject, selectedStory, selectedSection, setProjects } =
-    useCmsStore();
+  const { setStories, selectedStory, selectedSection } = useCmsStore();
 
   // Fetch projects once
   useEffect(() => {
-    const fetchProjects = async () => {
-      const res = await fetch("/api/projects");
+    const fetchStories = async () => {
+      const res = await fetch("/api/stories");
       const data = await res.json();
-      setProjects(data);
+      setStories(data);
     };
-    fetchProjects();
-  }, [setProjects]);
+    fetchStories();
+  }, [setStories]);
 
   return (
     <main className="flex-1 p-8">
-      {!selectedProject && (
+      {!selectedStory && !selectedSection && (
         <div>
-          <h2 className="text-xl font-bold mb-4">New project</h2>
-          <CreateProjectForm />
-        </div>
-      )}
-
-      {selectedProject && !selectedStory && (
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            New story for {selectedProject.name}
-          </h2>
-          <CreateStoryForm projectId={selectedProject.id} />
+          <h2 className="text-xl font-bold mb-4">New story</h2>
+          <CreateStoryForm />
         </div>
       )}
 
