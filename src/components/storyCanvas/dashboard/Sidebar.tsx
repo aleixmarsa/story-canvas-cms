@@ -6,16 +6,12 @@ import { useCmsStore } from "@/stores/cms-store";
 
 export default function Sidebar() {
   const {
-    projects,
     stories,
     sections,
-    selectedProject,
     selectedStory,
     selectedSection,
-    setProjects,
     setStories,
     setSections,
-    selectProject,
     selectStory,
     selectSection,
     resetSelection,
@@ -24,27 +20,15 @@ export default function Sidebar() {
 
   // Loads project once
   useEffect(() => {
-    if (projects.length === 0) {
-      const fetchProjects = async () => {
-        const res = await fetch("/api/projects");
+    if (stories.length === 0) {
+      const fetchStories = async () => {
+        const res = await fetch("/api/stories");
         const data = await res.json();
-        setProjects(data);
+        setStories(data);
       };
-      fetchProjects();
+      fetchStories();
     }
-  }, [projects.length, setProjects]);
-
-  // Fetches only if selected project is different to avoid unnecessary fetches
-  const handleProjectSelect = async (projectId: number) => {
-    if (selectedProject?.id === projectId) return;
-    const project = projects.find((p) => p.id === projectId);
-    if (!project) return;
-    selectProject(project);
-
-    const res = await fetch(`/api/stories?projectId=${project.id}`);
-    const data = await res.json();
-    setStories(data);
-  };
+  }, [stories.length, setStories]);
 
   // Fetches only if selected story is different to avoid unnecessary fetches
   const handleStorySelect = async (storyId: number) => {
@@ -60,79 +44,32 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 border-r px-4 py-8 space-y-4">
-      <p className="text-md font-semibold">
-        <button
-          onClick={resetSelection}
-          className="hover:underline cursor-pointer"
-        >
-          Projects
-        </button>
-        {selectedProject && (
-          <>
-            {" "}
-            ›{" "}
-            <button
-              onClick={resetStoryAndSection}
-              className="hover:underline cursor-pointer"
-            >
-              {selectedProject.name}
-            </button>
-          </>
-        )}
-        {selectedStory && (
-          <>
-            {" "}
-            › <span className="font-bold">{selectedStory.title}</span>
-          </>
-        )}
-      </p>
-
-      <ul className="space-y-2">
-        {projects.map((project) => (
-          <li key={project.id}>
+      <ul className="ml-4 mt-2 space-y-2">
+        {stories.map((story) => (
+          <li key={story.id}>
             <Button
-              variant={
-                selectedProject?.id === project.id ? "default" : "outline"
-              }
+              variant={selectedStory?.id === story.id ? "default" : "outline"}
               className="w-full justify-start cursor-pointer"
-              onClick={() => handleProjectSelect(project.id)}
+              onClick={() => handleStorySelect(story.id)}
             >
-              {project.name}
+              {story.title}
             </Button>
 
-            {selectedProject?.id === project.id && (
+            {selectedStory?.id === story.id && (
               <ul className="ml-4 mt-2 space-y-2">
-                {stories.map((story) => (
-                  <li key={story.id}>
+                {sections.map((section) => (
+                  <li key={section.id}>
                     <Button
                       variant={
-                        selectedStory?.id === story.id ? "default" : "outline"
+                        selectedSection?.id === section.id
+                          ? "default"
+                          : "outline"
                       }
                       className="w-full justify-start cursor-pointer"
-                      onClick={() => handleStorySelect(story.id)}
+                      onClick={() => selectSection(section)}
                     >
-                      {story.title}
+                      {section.type}
                     </Button>
-
-                    {selectedStory?.id === story.id && (
-                      <ul className="ml-4 mt-2 space-y-2">
-                        {sections.map((section) => (
-                          <li key={section.id}>
-                            <Button
-                              variant={
-                                selectedSection?.id === section.id
-                                  ? "default"
-                                  : "outline"
-                              }
-                              className="w-full justify-start cursor-pointer"
-                              onClick={() => selectSection(section)}
-                            >
-                              {section.type}
-                            </Button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
                   </li>
                 ))}
               </ul>

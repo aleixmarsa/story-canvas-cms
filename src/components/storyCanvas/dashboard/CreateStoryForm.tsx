@@ -16,11 +16,7 @@ const storySchema = z.object({
 
 type StoryFormData = z.infer<typeof storySchema>;
 
-interface CreateStoryFormProps {
-  projectId: number;
-}
-
-const CreateStoryForm = ({ projectId }: CreateStoryFormProps) => {
+const CreateStoryForm = () => {
   const [formData, setFormData] = useState<StoryFormData>({
     title: "",
     slug: "",
@@ -54,7 +50,6 @@ const CreateStoryForm = ({ projectId }: CreateStoryFormProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...parse.data,
-          projectId,
           theme: {},
           components: [],
         }),

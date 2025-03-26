@@ -7,28 +7,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Project {
-  id          Int      @id @default(autoincrement())
-  name        String
-  slug        String   @unique
-  author      String?
-  description String?
-  createdAt   DateTime @default(now())
-  stories     Story[]
-}
-
 model Story {
   id          Int      @id @default(autoincrement())
-  projectId   Int
   title       String
   slug        String   @unique
+  author      String?
   description String?
   coverImage  String?
   theme       Json     // Story-specific visual config
   components  Json     // Allowed components or config for this story
   createdAt   DateTime @default(now())
   sections    Section[]
-  project     Project  @relation(fields: [projectId], references: [id])
 }
 
 model Section {
