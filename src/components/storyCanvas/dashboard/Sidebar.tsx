@@ -57,7 +57,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 h-screen border-r bg-muted px-4 py-6 flex flex-col">
+    <aside className="w-64 h-screen border-r bg-muted p-6 flex flex-col">
       <button
         onClick={handleGoHome}
         className="text-lg font-semibold text-left mb-6  cursor-pointer hover:underline"
