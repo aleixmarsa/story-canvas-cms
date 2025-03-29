@@ -1,50 +1,49 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { useCmsStore } from "@/stores/cms-store";
-import CreateStoryForm from "@/components/storyCanvas/dashboard/CreateStoryForm";
-import CreateSectionForm from "@/components/storyCanvas/dashboard/CreateSectionForm";
-import EditSectionForm from "@/components/storyCanvas/dashboard/EditSectionForm";
+import { Story } from "@prisma/client";
+import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
+import { columns } from "@/components/storyCanvas/dashboard/DataTable/DataTableColumn";
 
 export default function DashboardPage() {
-  const { setStories, selectedStory, selectedSection } = useCmsStore();
+  const router = useRouter();
+  const { stories, setStories, selectStory, setSections, selectSection } =
+    useCmsStore();
 
-  // Fetch projects once
   useEffect(() => {
     const fetchStories = async () => {
       const res = await fetch("/api/stories");
       const data = await res.json();
       setStories(data);
     };
+
     fetchStories();
-  }, [setStories]);
+    selectStory(null);
+    selectSection(null);
+  }, [setStories, selectStory, selectSection]);
+
+  const handleRowClick = async (story: Story) => {
+    selectStory(story);
+    const res = await fetch(`/api/sections?storyId=${story.id}`);
+    const data = await res.json();
+    setSections(data);
+    router.push(`/admin/dashboard/${story.slug}`);
+  };
 
   return (
-    <main className="flex-1 p-8">
-      {!selectedStory && !selectedSection && (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold mb-4">New story</h2>
-          <CreateStoryForm />
+          <h1 className="text-2xl font-bold">Stories</h1>
         </div>
-      )}
-
-      {selectedStory && !selectedSection && (
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            New section for {selectedStory.title}
-          </h2>
-          <CreateSectionForm storyId={selectedStory.id} />
-        </div>
-      )}
-
-      {selectedSection && (
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            Edit Section: {selectedSection.type}
-          </h2>
-          <EditSectionForm section={selectedSection} />
-        </div>
-      )}
-    </main>
+        <Button onClick={() => router.push("/admin/dashboard/new")}>
+          New story
+        </Button>
+      </div>
+      <DataTable columns={columns} data={stories} onRowClick={handleRowClick} />
+    </div>
   );
 }
