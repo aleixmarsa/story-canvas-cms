@@ -30,5 +30,6 @@ model Section {
   type      String   // "text", "image", "video", etc.
   content   Json     // Section content and params
   order     Int
+  createdAt   DateTime @default(now())
   story     Story    @relation(fields: [storyId], references: [id])
 }
