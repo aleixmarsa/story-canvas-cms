@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // Get all stories
-export async function GET(req: NextRequest) {
+export async function GET() {
   const stories = await prisma.story.findMany({
     include: { sections: true },
   });
@@ -17,9 +17,7 @@ export async function POST(req: NextRequest) {
     data: {
       title: data.title,
       slug: data.slug,
-      description: data.description,
-      coverImage: data.coverImage,
-      theme: data.theme,
+      author: data.author,
       components: data.components,
     },
   });
