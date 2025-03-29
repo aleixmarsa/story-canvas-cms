@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { sectionTypes } from "@/lib/types/sectionTypes";
+import { sectionTypes } from "@/types/sectionTypes";
 import { Section } from "@prisma/client";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";

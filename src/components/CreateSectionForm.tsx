@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { sectionTypes } from "@/lib/types/sectionTypes";
+import { sectionTypes } from "@/types/sectionTypes";
 import { z } from "zod";
 
 const sectionSchema = z.object({
@@ -15,7 +15,7 @@ const sectionSchema = z.object({
 
 interface CreateSectionFormProps {
   storyId: number;
-  onSectionCreated: () => void;
+  onSectionCreated?: () => void;
 }
 
 export default function CreateSectionForm({
