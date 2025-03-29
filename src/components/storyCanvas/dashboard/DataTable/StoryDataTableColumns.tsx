@@ -24,18 +24,10 @@ export const columns: ColumnDef<Story>[] = [
   {
     accessorKey: "author",
     header: "Author",
-    cell: ({ row }) => {
-      const author = row.getValue("author") as Story["author"];
-      return <span>{author}</span>;
-    },
   },
   {
     accessorKey: "slug",
     header: "Slug",
-    cell: ({ row }) => {
-      const slug = row.getValue("slug") as Story["slug"];
-      return <span>{slug}</span>;
-    },
   },
 
   {

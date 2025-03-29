@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
-import { on } from "events";
 
 const storySchema = z.object({
   title: z.string().min(3, "Title is required"),

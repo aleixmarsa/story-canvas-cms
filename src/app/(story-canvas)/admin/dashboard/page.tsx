@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCmsStore } from "@/stores/cms-store";
 import { Story } from "@prisma/client";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
-import { columns } from "@/components/storyCanvas/dashboard/DataTable/DataTableColumn";
+import { columns } from "@/components/storyCanvas/dashboard/DataTable/StoryDataTableColumns";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/CreateStoryForm";
 
