@@ -12,6 +12,13 @@ enum StoryStatus {
   published
 }
 
+enum SectionType {
+  TITLE
+  PARAGRAPH
+  IMAGE
+  VIDEO
+}
+
 
 model Story {
   id          Int      @id @default(autoincrement())
@@ -27,7 +34,7 @@ model Story {
 model Section {
   id        Int      @id @default(autoincrement())
   storyId   Int
-  type      String   // "text", "image", "video", etc.
+  type      SectionType
   content   Json     // Section content and params
   order     Int
   createdAt   DateTime @default(now())
