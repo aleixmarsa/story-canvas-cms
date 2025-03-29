@@ -17,10 +17,7 @@ model Story {
   id          Int      @id @default(autoincrement())
   title       String
   slug        String   @unique
-  author      String?
-  description String?
-  coverImage  String?
-  theme       Json     // Story-specific visual config
+  author      String
   components  Json     // Allowed components or config for this story
   status      StoryStatus   @default(draft)
   createdAt   DateTime @default(now())
