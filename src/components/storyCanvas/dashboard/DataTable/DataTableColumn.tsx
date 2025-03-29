@@ -2,14 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-
-export type Story = {
-  id: number;
-  title: string;
-  slug: string;
-  status: "published" | "draft";
-  createdAt: string;
-};
+import { Story } from "@prisma/client";
 
 export const columns: ColumnDef<Story>[] = [
   {
@@ -28,6 +21,23 @@ export const columns: ColumnDef<Story>[] = [
       );
     },
   },
+  {
+    accessorKey: "author",
+    header: "Author",
+    cell: ({ row }) => {
+      const author = row.getValue("author") as Story["author"];
+      return <span>{author}</span>;
+    },
+  },
+  {
+    accessorKey: "slug",
+    header: "Slug",
+    cell: ({ row }) => {
+      const slug = row.getValue("slug") as Story["slug"];
+      return <span>{slug}</span>;
+    },
+  },
+
   {
     accessorKey: "createdAt",
     header: "Date",

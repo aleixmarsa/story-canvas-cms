@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { useCmsStore } from "@/stores/cms-store";
 import { Story } from "@prisma/client";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/DataTableColumn";
+import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
+import CreateStoryForm from "@/components/storyCanvas/dashboard/CreateStoryForm";
 
 export default function DashboardPage() {
   const router = useRouter();
   const { stories, setStories, selectStory, setSections, selectSection } =
     useCmsStore();
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -34,16 +36,26 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Stories</h1>
-        </div>
-        <Button onClick={() => router.push("/admin/dashboard/new")}>
-          New story
-        </Button>
-      </div>
-      <DataTable columns={columns} data={stories} onRowClick={handleRowClick} />
-    </div>
+    <>
+      {showCreateForm ? (
+        <>
+          <DashboardHeader title="New Story" />
+          <CreateStoryForm onCancel={() => setShowCreateForm(false)} />
+        </>
+      ) : (
+        <>
+          <DashboardHeader
+            title="Stories"
+            buttonLabel="New Story"
+            buttonOnClick={() => setShowCreateForm(true)}
+          />
+          <DataTable
+            columns={columns}
+            data={stories}
+            onRowClick={handleRowClick}
+          />
+        </>
+      )}
+    </>
   );
 }

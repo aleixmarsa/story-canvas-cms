@@ -6,22 +6,25 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
+import { on } from "events";
 
 const storySchema = z.object({
   title: z.string().min(3, "Title is required"),
   slug: z.string().min(3, "Slug is required"),
-  description: z.string().optional(),
-  coverImage: z.string().optional(),
+  author: z.string(),
 });
+
+type CreateStoryFormProps = {
+  onCancel: () => void;
+};
 
 type StoryFormData = z.infer<typeof storySchema>;
 
-const CreateStoryForm = () => {
+const CreateStoryForm = ({ onCancel }: CreateStoryFormProps) => {
   const [formData, setFormData] = useState<StoryFormData>({
     title: "",
     slug: "",
-    description: "",
-    coverImage: "",
+    author: "",
   });
   const [loading, setLoading] = useState(false);
   const { addStory } = useCmsStore();
@@ -50,7 +53,6 @@ const CreateStoryForm = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...parse.data,
-          theme: {},
           components: [],
         }),
       });
@@ -58,8 +60,9 @@ const CreateStoryForm = () => {
         throw new Error("Failed to create story");
       }
       const newStory = await res.json();
-      setFormData({ title: "", slug: "", description: "", coverImage: "" });
+      setFormData({ title: "", slug: "", author: "" });
       addStory(newStory);
+      onCancel();
     } catch (err) {
       console.error(err);
       alert("Failed to create story");
@@ -81,6 +84,11 @@ const CreateStoryForm = () => {
       </div>
 
       <div>
+        <Label>Author</Label>
+        <Input name="author" value={formData.author} onChange={handleChange} />
+      </div>
+
+      <div>
         <Label>Slug (URL)</Label>
         <Input
           name="slug"
@@ -89,28 +97,14 @@ const CreateStoryForm = () => {
           required
         />
       </div>
-
-      <div>
-        <Label>Description</Label>
-        <Input
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-        />
+      <div className="flex justify-end space-x-2">
+        <Button type="submit" disabled={loading}>
+          {loading ? "Creating..." : "Create Story"}
+        </Button>
+        <Button onClick={onCancel} variant="secondary">
+          Cancel
+        </Button>
       </div>
-
-      <div>
-        <Label>Cover Image URL</Label>
-        <Input
-          name="coverImage"
-          value={formData.coverImage}
-          onChange={handleChange}
-        />
-      </div>
-
-      <Button type="submit" disabled={loading}>
-        {loading ? "Creating..." : "Create Story"}
-      </Button>
     </form>
   );
 };
