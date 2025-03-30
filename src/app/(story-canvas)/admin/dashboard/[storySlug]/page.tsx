@@ -6,7 +6,7 @@ import { useCmsStore } from "@/stores/cms-store";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/SectionDataTableColumns";
-import CreateSectionForm from "@/components/storyCanvas/dashboard/sections/CreateSectionForm";
+import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 export default function StoryPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { slug } = useParams();

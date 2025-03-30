@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { z } from "zod";
+
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
 import { Select } from "@/components/ui/select";
+import { Label } from "@radix-ui/react-label";
 import {
   SelectTrigger,
   SelectValue,
@@ -17,8 +20,10 @@ const CreateSectionForm = () => {
     setSelectedType(value as SectionType);
   };
 
-  const handleSubmit = (data: any) => {
-    console.log("Submitted section content:", data);
+  const handleSubmit = <T extends SectionType>(
+    data: z.infer<(typeof sectionSchemas)[T]["schema"]>
+  ) => {
+    console.log("🚀 ~ handleSubmit ~ data:", data);
     // TODO: Send to API or update global state
   };
 
