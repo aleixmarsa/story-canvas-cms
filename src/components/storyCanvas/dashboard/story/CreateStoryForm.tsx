@@ -23,6 +23,7 @@ const CreateStoryForm = ({ onCancel }: CreateStoryFormProps) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setError,
   } = useForm<StoryFormData>({
     resolver: zodResolver(storySchema),
     defaultValues: {
@@ -40,6 +41,14 @@ const CreateStoryForm = ({ onCancel }: CreateStoryFormProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, components: [] }),
       });
+
+      if (res.status === 409) {
+        setError("slug", {
+          type: "manual",
+          message: "This slug is already in use",
+        });
+        return;
+      }
 
       if (!res.ok) {
         throw new Error("Failed to create story");
