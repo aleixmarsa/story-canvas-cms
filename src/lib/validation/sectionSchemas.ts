@@ -4,7 +4,7 @@ import { SectionType } from "@prisma/client";
 // Helper type for field UI metadata
 type FieldMeta = {
   label: string;
-  type: "text" | "textarea" | "url" | "image" | "richtext";
+  type: "text" | "number" | "textarea" | "url" | "image" | "richtext";
   required?: boolean;
   placeholder?: string;
 };
@@ -19,10 +19,31 @@ type SchemaWithUI<T extends z.ZodTypeAny> = {
 const sectionTypeValues = Object.values(SectionType) as [string, ...string[]];
 export const SectionTypeEnum = z.enum(sectionTypeValues);
 
+const baseFields = {
+  name: z.string().min(1, "Name is required"),
+  order: z.number().int().min(0, "Order is required"),
+};
+
+const baseUI: Record<keyof typeof baseFields, FieldMeta> = {
+  name: {
+    label: "Name",
+    type: "text",
+    required: true,
+    placeholder: "Name of the section",
+  },
+  order: {
+    label: "Order",
+    type: "number",
+    required: true,
+    placeholder: "Order number",
+  },
+};
+
 // Section schemas with UI metadata
 export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
   TITLE: {
     schema: z.object({
+      ...baseFields,
       text: z.string().min(1, "Title cannot be empty"),
       backgroundImage: z.string().optional(),
       // textColor: z.string().optional(),
@@ -32,6 +53,7 @@ export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
       // textTransform: z.enum(["uppercase", "lowercase", "capitalize"]).optional(),
     }),
     ui: {
+      ...baseUI,
       text: {
         label: "Title",
         type: "text",
@@ -48,9 +70,11 @@ export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
 
   PARAGRAPH: {
     schema: z.object({
+      ...baseFields,
       body: z.string().min(1, "Text cannot be empty"),
     }),
     ui: {
+      ...baseUI,
       body: {
         label: "Body",
         type: "textarea",
@@ -62,11 +86,13 @@ export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
 
   IMAGE: {
     schema: z.object({
+      ...baseFields,
       url: z.string().url("Invalid image URL"),
       alt: z.string().optional(),
       caption: z.string().optional(),
     }),
     ui: {
+      ...baseUI,
       url: {
         label: "Image URL",
         type: "url",
@@ -85,10 +111,12 @@ export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
 
   VIDEO: {
     schema: z.object({
+      ...baseFields,
       embedUrl: z.string().url("Invalid video URL"),
       title: z.string().min(1, "Title is required"),
     }),
     ui: {
+      ...baseUI,
       embedUrl: {
         label: "Embed URL",
         type: "url",

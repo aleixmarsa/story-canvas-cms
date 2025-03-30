@@ -17,10 +17,10 @@ export async function GET(req: NextRequest) {
 // Create a new section for a story
 export async function POST(req: NextRequest) {
   const data = await req.json();
-
   const section = await prisma.section.create({
     data: {
       storyId: data.storyId,
+      name: data.name,
       type: data.type,
       content: data.content,
       order: data.order,
