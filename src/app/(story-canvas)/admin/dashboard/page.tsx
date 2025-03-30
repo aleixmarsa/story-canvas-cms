@@ -7,7 +7,7 @@ import { Story } from "@prisma/client";
 import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/StoryDataTableColumns";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import CreateStoryForm from "@/components/storyCanvas/dashboard/CreateStoryForm";
+import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
 
 export default function DashboardPage() {
   const router = useRouter();
