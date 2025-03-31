@@ -9,12 +9,13 @@ import { Label } from "@/components/ui/label";
 import { useCmsStore } from "@/stores/cms-store";
 import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
 import { useState } from "react";
+import Link from "next/link";
 
 type CreateStoryFormProps = {
-  onCancel: () => void;
+  onCancelNavigateTo: string;
 };
 
-const CreateStoryForm = ({ onCancel }: CreateStoryFormProps) => {
+const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
   const { addStory } = useCmsStore();
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -90,8 +91,8 @@ const CreateStoryForm = ({ onCancel }: CreateStoryFormProps) => {
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Creating..." : "Create Story"}
         </Button>
-        <Button type="button" onClick={onCancel} variant="secondary">
-          Cancel
+        <Button type="button" asChild variant="secondary">
+          <Link href={onCancelNavigateTo}>Cancel</Link>
         </Button>
       </div>
     </form>

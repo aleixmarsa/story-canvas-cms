@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCmsStore } from "@/stores/cms-store";
 import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/StoryDataTableColumns";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
 
-export default function DashboardPage() {
+const DashboardPage = () => {
   const { stories, setStories, selectStory, selectSection } = useCmsStore();
-  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -25,25 +23,18 @@ export default function DashboardPage() {
 
   return (
     <>
-      {showCreateForm ? (
-        <>
-          <DashboardHeader title="New Story" />
-          <CreateStoryForm onCancel={() => setShowCreateForm(false)} />
-        </>
-      ) : (
-        <>
-          <DashboardHeader
-            title="Stories"
-            buttonLabel="New Story"
-            buttonOnClick={() => setShowCreateForm(true)}
-          />
-          <DataTable
-            columns={columns}
-            data={stories}
-            getRowLink={(row) => `/admin/dashboard/${row.slug}`}
-          />
-        </>
-      )}
+      <DashboardHeader
+        title="Stories"
+        href="/admin/dashboard/new-story"
+        linkText="New Story"
+      />
+      <DataTable
+        columns={columns}
+        data={stories}
+        getRowLink={(row) => `/admin/dashboard/${row.slug}`}
+      />
     </>
   );
-}
+};
+
+export default DashboardPage;
