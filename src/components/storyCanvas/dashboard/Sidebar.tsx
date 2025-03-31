@@ -17,8 +17,8 @@ const Sidebar = () => {
 
   return (
     <aside className="w-64 h-screen bg-muted flex flex-col space-y-6">
-      <div className="h-20  content-center px-8">
-        <h1 className="w-full justify-start pl-0 text-lg font-semibold text-left ">
+      <div className="h-20  content-center px-8 border-b">
+        <h1 className="w-full justify-start pl-0 text-lg font-semibold text-left">
           Story Canvas
         </h1>
       </div>
