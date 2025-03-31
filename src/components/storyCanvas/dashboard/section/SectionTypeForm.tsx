@@ -20,10 +20,7 @@ const SectionTypeForm = <T extends SectionType>({
   defaultValues,
   onSubmit,
 }: SectionFormProps<T>) => {
-  const schemaWithUI = sectionSchemas[type];
-  const schema = schemaWithUI.schema;
-  const ui = schemaWithUI.ui;
-
+  const { schema, ui } = sectionSchemas[type];
   type FormData = z.infer<typeof schema>;
 
   const {
@@ -35,57 +32,64 @@ const SectionTypeForm = <T extends SectionType>({
     defaultValues,
   });
 
+  const renderField = (
+    key: keyof typeof FormData,
+    config: (typeof ui)[typeof key]
+  ) => {
+    const error = errors[key]?.message as string;
+    const id = String(key);
+
+    let inputElement: React.ReactNode;
+
+    switch (config.type) {
+      case "textarea":
+        inputElement = (
+          <Textarea
+            id={id}
+            placeholder={config.placeholder}
+            {...register(key)}
+          />
+        );
+        break;
+      case "number":
+        inputElement = (
+          <Input
+            id={id}
+            type="number"
+            placeholder={config.placeholder}
+            {...register(key, { valueAsNumber: true })}
+          />
+        );
+        break;
+      case "text":
+      case "url":
+      default:
+        inputElement = (
+          <Input
+            id={id}
+            type={config.type}
+            placeholder={config.placeholder}
+            {...register(key)}
+          />
+        );
+    }
+
+    return (
+      <div key={id} className="flex flex-col gap-1">
+        <label htmlFor={id} className="font-medium">
+          {config.label}
+        </label>
+        {inputElement}
+        {error && <FormErrorMessage error={error} />}
+      </div>
+    );
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {(Object.keys(ui) as Array<keyof typeof FormData>).map((key) => {
-        const config = ui[key];
-        const fieldError = errors[key]?.message as string;
-
-        let fieldElement: React.ReactNode;
-
-        switch (config.type) {
-          case "textarea":
-            fieldElement = (
-              <Textarea
-                id={String(key)}
-                placeholder={config.placeholder}
-                {...register(key)}
-              />
-            );
-            break;
-          case "number":
-            fieldElement = (
-              <Input
-                id={String(key)}
-                type="number"
-                placeholder={config.placeholder}
-                {...register(key, { valueAsNumber: true })}
-              />
-            );
-            break;
-          case "text":
-          case "url":
-          default:
-            fieldElement = (
-              <Input
-                id={String(key)}
-                type={config.type}
-                placeholder={config.placeholder}
-                {...register(key)}
-              />
-            );
-        }
-
-        return (
-          <div key={String(key)} className="flex flex-col gap-1">
-            <label className="font-medium" htmlFor={String(key)}>
-              {config.label}
-            </label>
-            {fieldElement}
-            {fieldError && <FormErrorMessage error={fieldError} />}
-          </div>
-        );
-      })}
+      {(Object.keys(ui) as Array<keyof typeof FormData>).map((key) =>
+        renderField(key, ui[key])
+      )}
 
       <div className="flex justify-end space-x-2">
         <Button type="submit">Create Section</Button>
