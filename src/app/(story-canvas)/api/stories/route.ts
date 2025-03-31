@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { storySchema } from "@/lib/validation/storySchema";
 
 // Get all stories
 export async function GET() {
@@ -16,6 +17,16 @@ export async function POST(req: NextRequest) {
   const data = await req.json();
 
   try {
+    // Validate incoming data against the story schema
+    const parsed = storySchema.safeParse(data);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.format() },
+        { status: 422 }
+      );
+    }
+
     const story = await prisma.story.create({
       data: {
         title: data.title,
