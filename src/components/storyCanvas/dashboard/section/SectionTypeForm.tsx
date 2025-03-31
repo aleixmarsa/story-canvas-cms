@@ -8,17 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import FormErrorMessage from "../FormErrorMessage";
-
+import Link from "next/link";
 interface SectionFormProps<T extends SectionType> {
   type: T;
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
   onSubmit: (data: z.infer<(typeof sectionSchemas)[T]["schema"]>) => void;
+  onCancelNavigateTo: string;
 }
 
 const SectionTypeForm = <T extends SectionType>({
   type,
   defaultValues,
   onSubmit,
+  onCancelNavigateTo,
 }: SectionFormProps<T>) => {
   const { schema, ui } = sectionSchemas[type];
   type FormData = z.infer<typeof schema>;
@@ -93,8 +95,8 @@ const SectionTypeForm = <T extends SectionType>({
 
       <div className="flex justify-end space-x-2">
         <Button type="submit">Create Section</Button>
-        <Button type="button" variant="secondary">
-          Cancel
+        <Button type="button" asChild variant="secondary">
+          <Link href={onCancelNavigateTo}>Cancel</Link>
         </Button>
       </div>
     </form>

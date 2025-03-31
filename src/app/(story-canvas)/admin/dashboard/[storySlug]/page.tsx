@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useCmsStore } from "@/stores/cms-store";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/SectionDataTableColumns";
-import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 
 const StoryPage = () => {
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const { storySlug } = useParams();
   const {
     stories,
@@ -40,25 +38,16 @@ const StoryPage = () => {
 
   return (
     <>
-      {showCreateForm ? (
-        <>
-          <DashboardHeader title="New Section" />
-          <CreateSectionForm />
-        </>
-      ) : (
-        <>
-          <DashboardHeader
-            title={`${selectedStory.title}  Sections`}
-            buttonLabel="New Section"
-            buttonOnClick={() => setShowCreateForm(true)}
-          />
-          <DataTable
-            columns={columns}
-            data={sections}
-            onRowClick={() => console.log("test")}
-          />
-        </>
-      )}
+      <DashboardHeader
+        title={`${selectedStory.title}  Sections`}
+        href={`${selectedStory.slug}/new-section`}
+        linkText="New Section"
+      />
+      <DataTable
+        columns={columns}
+        data={sections}
+        onRowClick={() => console.log("test")}
+      />
     </>
   );
 };

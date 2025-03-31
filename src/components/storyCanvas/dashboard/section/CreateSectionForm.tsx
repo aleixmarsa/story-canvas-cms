@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
 import { SectionType } from "@prisma/client";
@@ -15,6 +18,8 @@ import {
 const CreateSectionForm = () => {
   const [selectedType, setSelectedType] = useState<SectionType | null>(null);
   const { addSection, selectedStory } = useCmsStore();
+  console.log("🚀 ~ CreateSectionForm ~ selectedStory:", selectedStory);
+  const router = useRouter();
 
   const handleTypeSelect = (value: string) => {
     setSelectedType(value as SectionType);
@@ -51,6 +56,7 @@ const CreateSectionForm = () => {
       console.log("New section created:", newSection);
       addSection(newSection);
       setSelectedType(null);
+      router.push(`/admin/dashboard/${selectedStory.slug}`);
     } catch (error) {
       console.error("Error creating section:", error);
     }
@@ -74,7 +80,11 @@ const CreateSectionForm = () => {
       </div>
       {selectedType && (
         <div className="space-y-4">
-          <SectionTypeForm type={selectedType} onSubmit={handleSubmit} />
+          <SectionTypeForm
+            type={selectedType}
+            onSubmit={handleSubmit}
+            onCancelNavigateTo={`/admin/dashboard/${selectedStory?.slug}`}
+          />
         </div>
       )}
     </div>

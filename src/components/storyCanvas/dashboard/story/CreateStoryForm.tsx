@@ -10,6 +10,7 @@ import { useCmsStore } from "@/stores/cms-store";
 import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type CreateStoryFormProps = {
   onCancelNavigateTo: string;
@@ -18,6 +19,7 @@ type CreateStoryFormProps = {
 const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
   const { addStory } = useCmsStore();
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -58,7 +60,7 @@ const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
       const newStory = await res.json();
       addStory(newStory);
       reset();
-      onCancel();
+      router.push(`/admin/dashboard/${newStory.slug}`);
     } catch (err) {
       console.error(err);
       setSubmitError("Failed to create story. Please try again.");
