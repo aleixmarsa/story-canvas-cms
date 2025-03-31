@@ -34,10 +34,13 @@ model Story {
 model Section {
   id        Int      @id @default(autoincrement())
   storyId   Int
-  name      String
+  name      String 
   type      SectionType
   content   Json     // Section content and params
   order     Int
   createdAt   DateTime @default(now())
   story     Story    @relation(fields: [storyId], references: [id])
+
+
+  @@unique([storyId, name])
 }
