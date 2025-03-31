@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCmsStore } from "@/stores/cms-store";
 import { LogOut } from "lucide-react";
+import Link from "next/link";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -32,25 +33,6 @@ export default function Sidebar() {
     }
   }, [stories.length, setStories]);
 
-  const handleStorySelect = async (storyId: number) => {
-    const story = stories.find((s) => s.id === storyId);
-    if (!story || selectedStory?.id === story.id) return;
-
-    selectStory(story);
-
-    const res = await fetch(`/api/sections?storyId=${story.id}`);
-    const data = await res.json();
-    setSections(data);
-
-    router.push(`/admin/dashboard/${story.slug}`);
-  };
-
-  const handleGoHome = () => {
-    selectStory(null);
-    selectSection(null);
-    router.push("/admin/dashboard");
-  };
-
   const handleLogout = () => {
     console.log("Logging out...");
     router.push("/login");
@@ -58,24 +40,23 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 h-screen border-r bg-muted p-6 flex flex-col">
-      <button
-        onClick={handleGoHome}
+      <Link
         className="text-lg font-semibold text-left mb-6  cursor-pointer hover:underline"
+        href="/admin/dashboard"
       >
         Story Canvas
-      </button>
+      </Link>
 
       <ScrollArea className="grow pr-2">
         <ul className="space-y-4">
           {stories.map((story) => (
             <li key={story.id}>
-              <Button
-                variant={selectedStory?.id === story.id ? "default" : "ghost"}
-                className="w-full justify-start text-left font-medium hover:bg-muted/50"
-                onClick={() => handleStorySelect(story.id)}
+              <Link
+                href={`/admin/dashboard/${story.slug}`}
+                className="text-sm font-medium text-muted-foreground hover:underline"
               >
                 {story.title}
-              </Button>
+              </Link>
 
               {selectedStory?.id === story.id && sections.length > 0 && (
                 <ul className="mt-2 pl-4 space-y-1">

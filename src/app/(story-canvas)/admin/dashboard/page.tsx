@@ -1,18 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useCmsStore } from "@/stores/cms-store";
-import { Story } from "@prisma/client";
 import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/StoryDataTableColumns";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const { stories, setStories, selectStory, setSections, selectSection } =
-    useCmsStore();
+  const { stories, setStories, selectStory, selectSection } = useCmsStore();
   const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
@@ -26,14 +22,6 @@ export default function DashboardPage() {
     selectStory(null);
     selectSection(null);
   }, [setStories, selectStory, selectSection]);
-
-  const handleRowClick = async (story: Story) => {
-    selectStory(story);
-    const res = await fetch(`/api/sections?storyId=${story.id}`);
-    const data = await res.json();
-    setSections(data);
-    router.push(`/admin/dashboard/${story.slug}`);
-  };
 
   return (
     <>
@@ -52,7 +40,7 @@ export default function DashboardPage() {
           <DataTable
             columns={columns}
             data={stories}
-            onRowClick={handleRowClick}
+            getRowLink={(row) => `/admin/dashboard/${row.slug}`}
           />
         </>
       )}

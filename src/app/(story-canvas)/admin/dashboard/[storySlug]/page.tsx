@@ -9,7 +9,7 @@ import { columns } from "@/components/storyCanvas/dashboard/dataTable/SectionDat
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 export default function StoryPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const { slug } = useParams();
+  const { storySlug } = useParams();
   const {
     stories,
     selectedStory,
@@ -20,7 +20,7 @@ export default function StoryPage() {
   } = useCmsStore();
 
   useEffect(() => {
-    const story = stories.find((s) => s.slug === slug);
+    const story = stories.find((s) => s.slug === storySlug);
     if (!story) return;
 
     selectStory(story);
@@ -33,7 +33,7 @@ export default function StoryPage() {
     };
 
     fetchSections();
-  }, [slug, stories, selectStory, selectSection, setSections]);
+  }, [storySlug, stories, selectStory, selectSection, setSections]);
 
   if (!selectedStory) return <p className="p-6">Loading...</p>;
 

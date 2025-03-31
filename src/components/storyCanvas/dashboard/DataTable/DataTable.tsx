@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   ColumnDef,
   flexRender,
@@ -7,25 +8,18 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onRowClick?: (row: TData) => void;
+  getRowLink?: (row: TData) => string;
 }
 
 export default function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
+  getRowLink,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -34,49 +28,70 @@ export default function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </TableHead>
+    <div className="border rounded-md divide-y divide-muted">
+      {/* Header */}
+      <div className="grid grid-cols-12 bg-muted text-sm font-medium px-4 py-2">
+        {table.getHeaderGroups().map((headerGroup) =>
+          headerGroup.headers.map((header) => (
+            <div
+              key={header.id}
+              className="col-span-3 truncate"
+              style={{ gridColumn: `span ${Math.floor(12 / columns.length)}` }}
+            >
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Body */}
+      {table.getRowModel().rows.length > 0 ? (
+        table.getRowModel().rows.map((row) => {
+          const rowData = row.original;
+          const isClickable = onRowClick || getRowLink;
+          const href = getRowLink?.(rowData);
+
+          const RowContent = (
+            <div
+              className={`grid grid-cols-12 px-4 py-3 text-sm hover:bg-muted/40 transition-colors ${
+                isClickable ? "cursor-pointer" : ""
+              }`}
+              onClick={() => {
+                if (!href && onRowClick) onRowClick(rowData);
+              }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <div
+                  key={cell.id}
+                  className="col-span-3 truncate"
+                  style={{
+                    gridColumn: `span ${Math.floor(12 / columns.length)}`,
+                  }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
               ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                onClick={() => onRowClick?.(row.original)}
-                className={onRowClick ? "cursor-pointer hover:bg-muted/50" : ""}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            </div>
+          );
+
+          return href ? (
+            <Link key={row.id} href={href} className="block">
+              {RowContent}
+            </Link>
           ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            <div key={row.id}>{RowContent}</div>
+          );
+        })
+      ) : (
+        <div className="p-4 text-center text-muted-foreground text-sm">
+          No results.
+        </div>
+      )}
     </div>
   );
 }
