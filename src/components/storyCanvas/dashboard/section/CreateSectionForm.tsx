@@ -18,7 +18,11 @@ import {
 const CreateSectionForm = () => {
   const [selectedType, setSelectedType] = useState<SectionType | null>(null);
   const { addSection, selectedStory } = useCmsStore();
-  console.log("🚀 ~ CreateSectionForm ~ selectedStory:", selectedStory);
+  const [externalError, setExternalError] = useState<{
+    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    message: string;
+  } | null>(null);
+
   const router = useRouter();
 
   const handleTypeSelect = (value: string) => {
@@ -47,6 +51,14 @@ const CreateSectionForm = () => {
           type: selectedType,
         }),
       });
+
+      if (res.status === 409) {
+        setExternalError({
+          field: "name",
+          message: "This name is already in use",
+        });
+        return;
+      }
 
       if (!res.ok) {
         throw new Error("Failed to create section");
@@ -84,6 +96,7 @@ const CreateSectionForm = () => {
             type={selectedType}
             onSubmit={handleSubmit}
             onCancelNavigateTo={`/admin/dashboard/${selectedStory?.slug}`}
+            externalError={externalError}
           />
         </div>
       )}

@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import { SectionType } from "@prisma/client";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
 import { z } from "zod";
@@ -14,6 +14,10 @@ interface SectionFormProps<T extends SectionType> {
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
   onSubmit: (data: z.infer<(typeof sectionSchemas)[T]["schema"]>) => void;
   onCancelNavigateTo: string;
+  externalError?: {
+    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    message: string;
+  } | null;
 }
 
 const SectionTypeForm = <T extends SectionType>({
@@ -21,6 +25,7 @@ const SectionTypeForm = <T extends SectionType>({
   defaultValues,
   onSubmit,
   onCancelNavigateTo,
+  externalError,
 }: SectionFormProps<T>) => {
   const { schema, ui } = sectionSchemas[type];
   type FormData = z.infer<typeof schema>;
@@ -29,6 +34,7 @@ const SectionTypeForm = <T extends SectionType>({
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -86,6 +92,15 @@ const SectionTypeForm = <T extends SectionType>({
       </div>
     );
   };
+
+  useEffect(() => {
+    if (externalError) {
+      setError(externalError.field as string, {
+        type: "manual",
+        message: externalError.message,
+      });
+    }
+  }, [externalError, setError]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

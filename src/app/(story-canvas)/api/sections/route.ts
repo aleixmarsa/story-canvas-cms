@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
 import { SectionType } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 // Get all sections (optionally filter by storyId)
 export async function GET(req: NextRequest) {
@@ -61,8 +62,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(section);
   } catch (error) {
     console.error("POST /api/sections error:", error);
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return NextResponse.json(
+        { message: "Section with this name already exists" },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
-      { error: "Internal server error" },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
