@@ -49,7 +49,7 @@ const StoryPage = () => {
       <DataTable
         columns={columns}
         data={sections}
-        getRowLink={(row) =>
+        getEditLink={(row) =>
           `/admin/dashboard/${selectedStory.slug}/${row.slug}`
         }
       />

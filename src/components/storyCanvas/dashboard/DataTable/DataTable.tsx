@@ -7,12 +7,15 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Pencil, Trash } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onRowClick?: (row: TData) => void;
   getRowLink?: (row: TData) => string;
+  getEditLink?: (row: TData) => string;
+  onDelete?: (row: TData) => void;
 }
 
 const DataTable = <TData, TValue>({
@@ -20,6 +23,8 @@ const DataTable = <TData, TValue>({
   data,
   onRowClick,
   getRowLink,
+  getEditLink,
+  onDelete,
 }: DataTableProps<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -47,6 +52,7 @@ const DataTable = <TData, TValue>({
             </div>
           ))
         )}
+        <div className="text-right col-span-1"> </div>
       </div>
 
       {/* Body */}
@@ -55,10 +61,11 @@ const DataTable = <TData, TValue>({
           const rowData = row.original;
           const isClickable = onRowClick || getRowLink;
           const href = getRowLink?.(rowData);
+          const editHref = getEditLink?.(rowData);
 
           const RowContent = (
             <div
-              className={`grid grid-cols-12 px-4 py-3 text-sm hover:bg-muted/40 transition-colors ${
+              className={`group relative grid grid-cols-12 px-4 py-3 text-sm hover:bg-muted/40 transition-colors ${
                 isClickable ? "cursor-pointer" : ""
               }`}
               onClick={() => {
@@ -76,6 +83,27 @@ const DataTable = <TData, TValue>({
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </div>
               ))}
+
+              {/* Edit / Delete icons */}
+              <div
+                className="absolute right-4 top-1/2 -translate-y-1/2 hidden group-hover:flex gap-2 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {editHref && (
+                  <Link key={row.id} href={editHref} className="block">
+                    <Pencil className="w-4 h-4" />
+                  </Link>
+                )}
+                {onDelete && (
+                  <button
+                    type="button"
+                    onClick={() => onDelete(rowData)}
+                    className="text-muted-foreground hover:text-destructive"
+                  >
+                    <Trash className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
           );
 
