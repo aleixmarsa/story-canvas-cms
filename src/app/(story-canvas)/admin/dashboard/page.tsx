@@ -25,8 +25,9 @@ const DashboardPage = () => {
     <>
       <DashboardHeader
         title="Stories"
-        href="/admin/dashboard/new-story"
-        linkText="New Story"
+        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        addHref="/admin/dashboard/new-story"
+        addButtonLabel="New Story"
       />
       <DataTable
         columns={columns}

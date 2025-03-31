@@ -39,9 +39,12 @@ const StoryPage = () => {
   return (
     <>
       <DashboardHeader
-        title={`${selectedStory.title}  Sections`}
-        href={`${selectedStory.slug}/new-section`}
-        linkText="New Section"
+        title={`${selectedStory.title} Sections`}
+        addHref={`${selectedStory.slug}/new-section`}
+        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        addButtonLabel="New Section"
+        onSaveDraft={() => {}}
+        onPublish={() => {}}
       />
       <DataTable
         columns={columns}

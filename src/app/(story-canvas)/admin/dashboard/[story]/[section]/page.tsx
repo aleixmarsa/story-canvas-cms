@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
 import { SectionType } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/client";
+import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditSectionPage = () => {
   const { sections, selectedStory } = useCmsStore();
@@ -44,13 +45,24 @@ const EditSectionPage = () => {
   if (!section || !selectedStory) return null;
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-semibold mb-4">Edit Section</h1>
+    <>
+      <DashboardHeader
+        title="Edit Section"
+        breadcrumbs={[
+          { label: "Dashboard", href: "/admin/dashboard" },
+          {
+            label: selectedStory.title,
+            href: `/admin/dashboard/${selectedStory.slug}`,
+          },
+        ]}
+        onSaveDraft={() => {}}
+        onPublish={() => {}}
+      />
       <EditSectionForm
         section={section}
         onCancelNavigateTo={`/admin/dashboard/${selectedStory.slug}`}
       />
-    </div>
+    </>
   );
 };
 
