@@ -7,7 +7,8 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/SectionDataTableColumns";
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
-export default function StoryPage() {
+
+const StoryPage = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { storySlug } = useParams();
   const {
@@ -60,4 +61,6 @@ export default function StoryPage() {
       )}
     </>
   );
-}
+};
+
+export default StoryPage;
