@@ -38,39 +38,49 @@ const Sidebar = () => {
 
   return (
     <aside className="w-64 h-screen border-r bg-muted p-6 flex flex-col">
-      <Link
-        className="text-lg font-semibold text-left mb-6  cursor-pointer hover:underline"
-        href="/admin/dashboard"
+      <Button
+        asChild
+        variant="link"
+        className="w-full justify-start pl-0 text-lg font-semibold text-left mb-6"
+        size="lg"
       >
-        Story Canvas
-      </Link>
-
+        <Link href="/admin/dashboard">Story Canvas</Link>
+      </Button>
       <ScrollArea className="grow pr-2">
         <ul className="space-y-4">
           {stories.map((story) => (
             <li key={story.id}>
-              <Link
-                href={`/admin/dashboard/${story.slug}`}
-                className="text-sm font-medium text-muted-foreground hover:underline"
+              <Button
+                asChild
+                variant="link"
+                className={`w-full justify-start text-left ${
+                  selectedStory?.id === story.id ? "underline" : ""
+                }`}
+                size="sm"
               >
-                {story.title}
-              </Link>
+                <Link href={`/admin/dashboard/${story.slug}`}>
+                  {story.title}
+                </Link>
+              </Button>
 
               {selectedStory?.id === story.id && sections.length > 0 && (
                 <ul className="mt-2 pl-4 space-y-1">
                   {sections.map((section) => (
                     <li key={section.id}>
                       <Button
-                        variant={
-                          selectedSection?.id === section.id
-                            ? "default"
-                            : "ghost"
-                        }
+                        variant="link"
                         size="sm"
-                        className="w-full justify-start text-left"
+                        className={`w-full justify-start text-left pl-0" ${
+                          selectedSection?.id === story.id ? "underline" : ""
+                        }`}
                         onClick={() => selectSection(section)}
+                        asChild
                       >
-                        {section.name}
+                        <Link
+                          href={`/admin/dashboard/${story.slug}/${section.slug}`}
+                        >
+                          {section.name}
+                        </Link>
                       </Button>
                     </li>
                   ))}
