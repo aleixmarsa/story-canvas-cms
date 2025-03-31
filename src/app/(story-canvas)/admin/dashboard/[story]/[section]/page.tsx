@@ -58,10 +58,12 @@ const EditSectionPage = () => {
         onSaveDraft={() => {}}
         onPublish={() => {}}
       />
-      <EditSectionForm
-        section={section}
-        onCancelNavigateTo={`/admin/dashboard/${selectedStory.slug}`}
-      />
+      <div className="px-6">
+        <EditSectionForm
+          section={section}
+          onCancelNavigateTo={`/admin/dashboard/${selectedStory.slug}`}
+        />
+      </div>
     </>
   );
 };

@@ -29,12 +29,14 @@ const DashboardPage = () => {
         addHref="/admin/dashboard/new-story"
         addButtonLabel="New Story"
       />
-      <DataTable
-        columns={columns}
-        data={stories}
-        getRowLink={(row) => `/admin/dashboard/${row.slug}`}
-        getEditLink={(row) => `/admin/dashboard/${row.slug}/edit`}
-      />
+      <div className="px-6">
+        <DataTable
+          columns={columns}
+          data={stories}
+          getRowLink={(row) => `/admin/dashboard/${row.slug}`}
+          getEditLink={(row) => `/admin/dashboard/${row.slug}/edit`}
+        />
+      </div>
     </>
   );
 };

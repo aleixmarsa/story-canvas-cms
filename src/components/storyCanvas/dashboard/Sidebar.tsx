@@ -16,16 +16,18 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="w-64 h-screen bg-muted p-6 flex flex-col">
-      <h1 className="w-full justify-start pl-0 text-lg font-semibold text-left mb-6">
-        Story Canvas
-      </h1>
-      <ScrollArea className="grow pr-2">
+    <aside className="w-64 h-screen bg-muted flex flex-col space-y-6">
+      <div className="h-20  content-center px-8">
+        <h1 className="w-full justify-start pl-0 text-lg font-semibold text-left ">
+          Story Canvas
+        </h1>
+      </div>
+      <ScrollArea className="grow px-4">
         <Button
           asChild
           variant="ghost"
           className={`w-full justify-start text-left ${
-            pathname === "/admin/dashboard" ? " bg-white  " : ""
+            pathname.includes("/admin/dashboard") ? " bg-white  " : ""
           }`}
         >
           <Link href="/admin/dashboard">Dashboard</Link>

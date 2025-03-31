@@ -52,7 +52,7 @@ const DashboardHeader = ({
   onPublish,
 }: DashboardHeaderProps) => {
   return (
-    <div className="flex items-center justify-between flex-wrap gap-4">
+    <div className="flex items-center justify-between flex-wrap gap-4 px-6 border-b h-20">
       <div className="space-y-1">
         <Breadcrumb>
           <BreadcrumbList>

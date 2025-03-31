@@ -48,7 +48,9 @@ const EditStoryPage = () => {
         onSaveDraft={() => {}}
         onPublish={() => {}}
       />
-      <EditStoryForm story={story} onCancelNavigateTo="/admin/dashboard" />
+      <div className="px-6">
+        <EditStoryForm story={story} onCancelNavigateTo="/admin/dashboard" />
+      </div>
     </>
   );
 };

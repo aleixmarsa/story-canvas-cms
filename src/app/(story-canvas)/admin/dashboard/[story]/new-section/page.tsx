@@ -22,8 +22,9 @@ const NewSectionPage = () => {
         onPublish={() => {}}
         onSaveDraft={() => {}}
       />
-
-      <CreateSectionForm />
+      <div className="px-6">
+        <CreateSectionForm />
+      </div>
     </>
   );
 };

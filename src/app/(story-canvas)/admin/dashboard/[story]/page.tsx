@@ -46,13 +46,15 @@ const StoryPage = () => {
         onSaveDraft={() => {}}
         onPublish={() => {}}
       />
-      <DataTable
-        columns={columns}
-        data={sections}
-        getEditLink={(row) =>
-          `/admin/dashboard/${selectedStory.slug}/${row.slug}`
-        }
-      />
+      <div className="px-6">
+        <DataTable
+          columns={columns}
+          data={sections}
+          getEditLink={(row) =>
+            `/admin/dashboard/${selectedStory.slug}/${row.slug}`
+          }
+        />
+      </div>
     </>
   );
 };
