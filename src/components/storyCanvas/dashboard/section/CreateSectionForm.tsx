@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { z } from "zod";
-
+import { useCmsStore } from "@/stores/cms-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
 import { Select } from "@/components/ui/select";
-import { Label } from "@radix-ui/react-label";
 import {
   SelectTrigger,
   SelectValue,
@@ -15,16 +14,46 @@ import {
 
 const CreateSectionForm = () => {
   const [selectedType, setSelectedType] = useState<SectionType | null>(null);
+  const { addSection, selectedStory } = useCmsStore();
 
   const handleTypeSelect = (value: string) => {
     setSelectedType(value as SectionType);
   };
 
-  const handleSubmit = <T extends SectionType>(
+  const handleSubmit = async <T extends SectionType>(
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
-    console.log("🚀 ~ handleSubmit ~ data:", data);
-    // TODO: Send to API or update global state
+    const selectedStoryId = selectedStory?.id;
+    if (!selectedType || !selectedStoryId) {
+      throw new Error("Section type or story ID is not selected");
+    }
+
+    const { name, order, ...content } = data;
+
+    try {
+      const res = await fetch("/api/sections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          storyId: selectedStoryId,
+          name,
+          order,
+          content,
+          type: selectedType,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create section");
+      }
+
+      const newSection = await res.json();
+      console.log("New section created:", newSection);
+      addSection(newSection);
+      setSelectedType(null);
+    } catch (error) {
+      console.error("Error creating section:", error);
+    }
   };
 
   return (
