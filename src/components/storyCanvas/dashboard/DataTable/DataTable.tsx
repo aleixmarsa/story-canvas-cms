@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ColumnDef,
   flexRender,
@@ -8,6 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Pencil, Trash } from "lucide-react";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,6 +27,8 @@ const DataTable = <TData, TValue>({
   getEditLink,
   onDelete,
 }: DataTableProps<TData, TValue>) => {
+  const router = useRouter();
+
   const table = useReactTable({
     data,
     columns,
@@ -59,17 +62,18 @@ const DataTable = <TData, TValue>({
       {table.getRowModel().rows.length > 0 ? (
         table.getRowModel().rows.map((row) => {
           const rowData = row.original;
-          const isClickable = onRowClick || getRowLink;
           const href = getRowLink?.(rowData);
           const editHref = getEditLink?.(rowData);
 
-          const RowContent = (
+          return (
             <div
+              key={row.id}
               className={`group relative grid grid-cols-12 px-4 py-3 text-sm hover:bg-muted/40 transition-colors ${
-                isClickable ? "cursor-pointer" : ""
+                href || onRowClick ? "cursor-pointer" : ""
               }`}
               onClick={() => {
-                if (!href && onRowClick) onRowClick(rowData);
+                if (href) router.push(href);
+                else if (onRowClick) onRowClick(rowData);
               }}
             >
               {row.getVisibleCells().map((cell) => (
@@ -87,10 +91,10 @@ const DataTable = <TData, TValue>({
               {/* Edit / Delete icons */}
               <div
                 className="absolute right-4 top-1/2 -translate-y-1/2 hidden group-hover:flex gap-2 z-10"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()} // evita que activi el click de la fila
               >
                 {editHref && (
-                  <Link key={row.id} href={editHref} className="block">
+                  <Link href={editHref}>
                     <Pencil className="w-4 h-4" />
                   </Link>
                 )}
@@ -105,14 +109,6 @@ const DataTable = <TData, TValue>({
                 )}
               </div>
             </div>
-          );
-
-          return href ? (
-            <Link key={row.id} href={href} className="block">
-              {RowContent}
-            </Link>
-          ) : (
-            <div key={row.id}>{RowContent}</div>
           );
         })
       ) : (
