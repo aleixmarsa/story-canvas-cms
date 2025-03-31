@@ -33,6 +33,7 @@ const DashboardPage = () => {
         columns={columns}
         data={stories}
         getRowLink={(row) => `/admin/dashboard/${row.slug}`}
+        getEditLink={(row) => `/admin/dashboard/${row.slug}/edit`}
       />
     </>
   );
