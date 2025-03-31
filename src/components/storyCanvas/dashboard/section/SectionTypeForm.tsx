@@ -12,6 +12,7 @@ import Link from "next/link";
 interface SectionFormProps<T extends SectionType> {
   type: T;
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
+  onSubmitButtonLabel: string;
   onSubmit: (data: z.infer<(typeof sectionSchemas)[T]["schema"]>) => void;
   onCancelNavigateTo: string;
   externalError?: {
@@ -26,6 +27,7 @@ const SectionTypeForm = <T extends SectionType>({
   onSubmit,
   onCancelNavigateTo,
   externalError,
+  onSubmitButtonLabel,
 }: SectionFormProps<T>) => {
   const { schema, ui } = sectionSchemas[type];
   type FormData = z.infer<typeof schema>;
@@ -109,7 +111,7 @@ const SectionTypeForm = <T extends SectionType>({
       )}
 
       <div className="flex justify-end space-x-2">
-        <Button type="submit">Create Section</Button>
+        <Button type="submit">{onSubmitButtonLabel}</Button>
         <Button type="button" asChild variant="secondary">
           <Link href={onCancelNavigateTo}>Cancel</Link>
         </Button>

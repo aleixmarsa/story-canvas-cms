@@ -97,6 +97,7 @@ const CreateSectionForm = () => {
             onSubmit={handleSubmit}
             onCancelNavigateTo={`/admin/dashboard/${selectedStory?.slug}`}
             externalError={externalError}
+            onSubmitButtonLabel="Create Section"
           />
         </div>
       )}

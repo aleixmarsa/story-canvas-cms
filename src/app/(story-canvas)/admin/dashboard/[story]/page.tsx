@@ -8,7 +8,7 @@ import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/dataTable/SectionDataTableColumns";
 
 const StoryPage = () => {
-  const { storySlug } = useParams();
+  const { story: storySlug } = useParams();
   const {
     stories,
     selectedStory,
@@ -46,7 +46,9 @@ const StoryPage = () => {
       <DataTable
         columns={columns}
         data={sections}
-        onRowClick={() => console.log("test")}
+        getRowLink={(row) =>
+          `/admin/dashboard/${selectedStory.slug}/${row.slug}`
+        }
       />
     </>
   );
