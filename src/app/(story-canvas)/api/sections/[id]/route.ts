@@ -4,8 +4,9 @@ import { sectionSchemas } from "@/lib/validation/sectionSchemas";
 import { SectionType } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { slugify } from "@/lib/utils";
+
 // Update a section by ID
-export async function PUT(
+export async function PATCH(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {

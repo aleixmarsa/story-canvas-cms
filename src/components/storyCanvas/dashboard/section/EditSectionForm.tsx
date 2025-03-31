@@ -49,7 +49,7 @@ const EditSectionForm = ({
 
     try {
       const res = await fetch(`/api/sections/${section.id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
