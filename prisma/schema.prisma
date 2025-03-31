@@ -7,15 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum StoryStatus {
+  draft
+  published
+}
+
+enum SectionType {
+  TITLE
+  PARAGRAPH
+  IMAGE
+  VIDEO
+}
+
+
 model Story {
   id          Int      @id @default(autoincrement())
   title       String
   slug        String   @unique
-  author      String?
-  description String?
-  coverImage  String?
-  theme       Json     // Story-specific visual config
+  author      String
   components  Json     // Allowed components or config for this story
+  status      StoryStatus   @default(draft)
   createdAt   DateTime @default(now())
   sections    Section[]
 }
@@ -23,8 +34,14 @@ model Story {
 model Section {
   id        Int      @id @default(autoincrement())
   storyId   Int
-  type      String   // "text", "image", "video", etc.
+  slug      String
+  name      String 
+  type      SectionType
   content   Json     // Section content and params
   order     Int
+  createdAt   DateTime @default(now())
   story     Story    @relation(fields: [storyId], references: [id])
+
+
+  @@unique([storyId, name])
 }

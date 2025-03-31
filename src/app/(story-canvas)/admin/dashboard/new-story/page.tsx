@@ -1,0 +1,19 @@
+"use client";
+import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
+import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
+
+const NewStoryPage = () => {
+  return (
+    <>
+      <DashboardHeader
+        title="New Story"
+        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        onPublish={() => {}}
+        onSaveDraft={() => {}}
+      />
+      <CreateStoryForm onCancelNavigateTo="/admin/dashboard" />
+    </>
+  );
+};
+
+export default NewStoryPage;

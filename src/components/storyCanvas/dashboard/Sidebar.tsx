@@ -1,82 +1,50 @@
 "use client";
 
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useCmsStore } from "@/stores/cms-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { LogOut } from "lucide-react";
+import Link from "next/link";
 
-export default function Sidebar() {
-  const {
-    stories,
-    sections,
-    selectedStory,
-    selectedSection,
-    setStories,
-    setSections,
-    selectStory,
-    selectSection,
-    resetSelection,
-    resetStoryAndSection,
-  } = useCmsStore();
+const Sidebar = () => {
+  const router = useRouter();
+  const pathname = usePathname();
 
-  // Loads project once
-  useEffect(() => {
-    if (stories.length === 0) {
-      const fetchStories = async () => {
-        const res = await fetch("/api/stories");
-        const data = await res.json();
-        setStories(data);
-      };
-      fetchStories();
-    }
-  }, [stories.length, setStories]);
-
-  // Fetches only if selected story is different to avoid unnecessary fetches
-  const handleStorySelect = async (storyId: number) => {
-    if (selectedStory?.id === storyId) return;
-    const story = stories.find((s) => s.id === storyId);
-    if (!story) return;
-    selectStory(story);
-
-    const res = await fetch(`/api/sections?storyId=${story.id}`);
-    const data = await res.json();
-    setSections(data);
+  const handleLogout = () => {
+    console.log("Logging out...");
+    router.push("/login");
   };
 
   return (
-    <aside className="w-64 border-r px-4 py-8 space-y-4">
-      <ul className="ml-4 mt-2 space-y-2">
-        {stories.map((story) => (
-          <li key={story.id}>
-            <Button
-              variant={selectedStory?.id === story.id ? "default" : "outline"}
-              className="w-full justify-start cursor-pointer"
-              onClick={() => handleStorySelect(story.id)}
-            >
-              {story.title}
-            </Button>
-
-            {selectedStory?.id === story.id && (
-              <ul className="ml-4 mt-2 space-y-2">
-                {sections.map((section) => (
-                  <li key={section.id}>
-                    <Button
-                      variant={
-                        selectedSection?.id === section.id
-                          ? "default"
-                          : "outline"
-                      }
-                      className="w-full justify-start cursor-pointer"
-                      onClick={() => selectSection(section)}
-                    >
-                      {section.type}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+    <aside className="w-64 h-screen bg-muted flex flex-col space-y-6">
+      <div className="h-20  content-center px-8 border-b">
+        <h1 className="w-full justify-start pl-0 text-lg font-semibold text-left">
+          Story Canvas
+        </h1>
+      </div>
+      <ScrollArea className="grow px-4">
+        <Button
+          asChild
+          variant="ghost"
+          className={`w-full justify-start text-left ${
+            pathname.includes("/admin/dashboard") ? " bg-white  " : ""
+          }`}
+        >
+          <Link href="/admin/dashboard">Dashboard</Link>
+        </Button>
+      </ScrollArea>
+      <div className="mt-6 pt-4 border-t">
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-left cursor-pointer text-destructive hover:bg-destructive/10"
+          onClick={handleLogout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Log out
+        </Button>
+      </div>
     </aside>
   );
-}
+};
+
+export default Sidebar;

@@ -2,49 +2,43 @@
 
 import { useEffect } from "react";
 import { useCmsStore } from "@/stores/cms-store";
-import CreateStoryForm from "@/components/storyCanvas/dashboard/CreateStoryForm";
-import CreateSectionForm from "@/components/storyCanvas/dashboard/CreateSectionForm";
-import EditSectionForm from "@/components/storyCanvas/dashboard/EditSectionForm";
+import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
+import { columns } from "@/components/storyCanvas/dashboard/dataTable/StoryDataTableColumns";
+import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
-export default function DashboardPage() {
-  const { setStories, selectedStory, selectedSection } = useCmsStore();
+const DashboardPage = () => {
+  const { stories, setStories, selectStory, selectSection } = useCmsStore();
 
-  // Fetch projects once
   useEffect(() => {
     const fetchStories = async () => {
       const res = await fetch("/api/stories");
       const data = await res.json();
       setStories(data);
     };
+
     fetchStories();
-  }, [setStories]);
+    selectStory(null);
+    selectSection(null);
+  }, [setStories, selectStory, selectSection]);
 
   return (
-    <main className="flex-1 p-8">
-      {!selectedStory && !selectedSection && (
-        <div>
-          <h2 className="text-xl font-bold mb-4">New story</h2>
-          <CreateStoryForm />
-        </div>
-      )}
-
-      {selectedStory && !selectedSection && (
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            New section for {selectedStory.title}
-          </h2>
-          <CreateSectionForm storyId={selectedStory.id} />
-        </div>
-      )}
-
-      {selectedSection && (
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            Edit Section: {selectedSection.type}
-          </h2>
-          <EditSectionForm section={selectedSection} />
-        </div>
-      )}
-    </main>
+    <>
+      <DashboardHeader
+        title="Stories"
+        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        addHref="/admin/dashboard/new-story"
+        addButtonLabel="New Story"
+      />
+      <div className="px-6">
+        <DataTable
+          columns={columns}
+          data={stories}
+          getRowLink={(row) => `/admin/dashboard/${row.slug}`}
+          getEditLink={(row) => `/admin/dashboard/${row.slug}/edit`}
+        />
+      </div>
+    </>
   );
-}
+};
+
+export default DashboardPage;
