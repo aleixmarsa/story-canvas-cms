@@ -6,9 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import FormErrorMessage from "../FormErrorMessage";
-import Link from "next/link";
+import FormButtons from "../FormButtons";
+
 interface SectionFormProps<T extends SectionType> {
   type: T;
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
@@ -35,7 +35,7 @@ const SectionTypeForm = <T extends SectionType>({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setError,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -109,13 +109,11 @@ const SectionTypeForm = <T extends SectionType>({
       {(Object.keys(ui) as Array<keyof typeof FormData>).map((key) =>
         renderField(key, ui[key])
       )}
-
-      <div className="flex justify-end space-x-2">
-        <Button type="submit">{onSubmitButtonLabel}</Button>
-        <Button type="button" asChild variant="secondary">
-          <Link href={onCancelNavigateTo}>Cancel</Link>
-        </Button>
-      </div>
+      <FormButtons
+        submitButtonLabel={onSubmitButtonLabel}
+        isSubmitting={isSubmitting}
+        onCancelNavigateTo={onCancelNavigateTo}
+      />
     </form>
   );
 };

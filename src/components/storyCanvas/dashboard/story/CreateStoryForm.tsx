@@ -4,13 +4,12 @@ import { useForm } from "react-hook-form";
 import FormErrorMessage from "../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useCmsStore } from "@/stores/cms-store";
 import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import FormButtons from "../FormButtons";
 
 type CreateStoryFormProps = {
   onCancelNavigateTo: string;
@@ -88,15 +87,11 @@ const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
       </div>
 
       {submitError && <FormErrorMessage error={submitError} textRight />}
-
-      <div className="flex justify-end space-x-2">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Creating..." : "Create Story"}
-        </Button>
-        <Button type="button" asChild variant="secondary">
-          <Link href={onCancelNavigateTo}>Cancel</Link>
-        </Button>
-      </div>
+      <FormButtons
+        submitButtonLabel="Create Story"
+        isSubmitting={isSubmitting}
+        onCancelNavigateTo={onCancelNavigateTo}
+      />
     </form>
   );
 };
