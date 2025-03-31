@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
 import { SectionType } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { slugify } from "@/lib/utils";
 
 // Get all sections (optionally filter by storyId)
 export async function GET(req: NextRequest) {
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest) {
         order,
         type,
         content,
+        slug: slugify(name),
       },
     });
 
