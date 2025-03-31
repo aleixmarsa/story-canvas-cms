@@ -130,10 +130,3 @@ export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
     },
   },
 };
-
-// Validation function
-export function validateSectionContent(type: SectionType, content: unknown) {
-  const entry = sectionSchemas[type];
-  if (!entry) throw new Error(`No schema found for type: ${type}`);
-  return entry.schema.parse(content);
-}
