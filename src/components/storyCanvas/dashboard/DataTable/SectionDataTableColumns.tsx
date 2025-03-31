@@ -5,6 +5,10 @@ import { Section } from "@prisma/client";
 
 export const columns: ColumnDef<Section>[] = [
   {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
     accessorKey: "type",
     header: "Type",
   },
