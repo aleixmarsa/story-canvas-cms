@@ -15,12 +15,12 @@ interface DataTableProps<TData, TValue> {
   getRowLink?: (row: TData) => string;
 }
 
-export default function DataTable<TData, TValue>({
+const DataTable = <TData, TValue>({
   columns,
   data,
   onRowClick,
   getRowLink,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData, TValue>) => {
   const table = useReactTable({
     data,
     columns,
@@ -94,4 +94,6 @@ export default function DataTable<TData, TValue>({
       )}
     </div>
   );
-}
+};
+
+export default DataTable;

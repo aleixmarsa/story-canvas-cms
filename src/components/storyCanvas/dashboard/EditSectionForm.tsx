@@ -19,7 +19,7 @@ type EditSectionFormProps = {
   section: Section;
 };
 
-export default function EditSectionForm({ section }: EditSectionFormProps) {
+const EditSectionForm = ({ section }: EditSectionFormProps) => {
   const [formData, setFormData] = useState({
     type: section.type,
     content: section.content?.text || "",
@@ -134,4 +134,6 @@ export default function EditSectionForm({ section }: EditSectionFormProps) {
       </Button>
     </form>
   );
-}
+};
+
+export default EditSectionForm;

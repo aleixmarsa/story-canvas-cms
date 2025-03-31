@@ -8,7 +8,7 @@ import { useCmsStore } from "@/stores/cms-store";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 
-export default function Sidebar() {
+const Sidebar = () => {
   const router = useRouter();
 
   const {
@@ -17,8 +17,6 @@ export default function Sidebar() {
     selectedStory,
     selectedSection,
     setStories,
-    setSections,
-    selectStory,
     selectSection,
   } = useCmsStore();
 
@@ -72,7 +70,7 @@ export default function Sidebar() {
                         className="w-full justify-start text-left"
                         onClick={() => selectSection(section)}
                       >
-                        {section.type}
+                        {section.name}
                       </Button>
                     </li>
                   ))}
@@ -94,4 +92,6 @@ export default function Sidebar() {
       </div>
     </aside>
   );
-}
+};
+
+export default Sidebar;
