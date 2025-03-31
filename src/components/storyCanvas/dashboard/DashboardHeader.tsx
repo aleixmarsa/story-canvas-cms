@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Rocket, Save } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -86,12 +86,7 @@ const DashboardHeader = ({
               </Link>
             </Button>
           ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-sm"
-              onClick={onAddClick}
-            >
+            <Button variant="ghost" size="sm" onClick={onAddClick}>
               <Plus className="w-4 h-4 mr-1" />
               {addButtonLabel}
             </Button>
@@ -101,11 +96,13 @@ const DashboardHeader = ({
           <>
             {onSaveDraft && (
               <Button variant="outline" onClick={onSaveDraft} size="sm">
+                <Save className="w-4 h-4 mr-1" />
                 Save draft
               </Button>
             )}
             {onPublish && (
               <Button onClick={onPublish} size="sm">
+                <Rocket className="w-4 h-4 mr-1" />
                 Publish
               </Button>
             )}
