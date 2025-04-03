@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { Feather, ScrollText } from "lucide-react";
 import Link from "next/link";
-import { NavUser } from "@/components/nav-user";
+import { NavUser } from "@/components/storyCanvas/dashboard/nav-user";
 import { useCmsStore } from "@/stores/cms-store";
 
 import {
