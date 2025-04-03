@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/storyCanvas/dashboard/app-sidebar";
+import { AppSidebar } from "@/components/storyCanvas/dashboard/Sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,

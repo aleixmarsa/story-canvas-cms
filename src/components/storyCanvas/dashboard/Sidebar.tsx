@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { Feather, ScrollText } from "lucide-react";
 import Link from "next/link";
-import { NavUser } from "@/components/storyCanvas/dashboard/nav-user";
+import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
 import { useCmsStore } from "@/stores/cms-store";
 
 import {
@@ -21,7 +21,9 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function DashboardSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   const { stories, setStories } = useCmsStore();
 
   useEffect(() => {
