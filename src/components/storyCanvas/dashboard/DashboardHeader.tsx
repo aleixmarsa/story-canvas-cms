@@ -57,7 +57,7 @@ const DashboardHeader = ({
       <div className="flex items-center gap-2 h-full">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <div className="space-y-1">
+        <div className="space-y-1 group-has-[[data-collapsible=icon]]/sidebar-wrapper:space-y-0">
           <Breadcrumb>
             <BreadcrumbList>
               {breadcrumbs.map((item, idx) => (
@@ -65,10 +65,17 @@ const DashboardHeader = ({
                   <BreadcrumbItem>
                     {item.href ? (
                       <BreadcrumbLink asChild>
-                        <Link href={item.href}>{item.label}</Link>
+                        <Link
+                          href={item.href}
+                          className="group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-xs"
+                        >
+                          {item.label}
+                        </Link>
                       </BreadcrumbLink>
                     ) : (
-                      <BreadcrumbLink>{item.label}</BreadcrumbLink>
+                      <BreadcrumbLink className="group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-xs">
+                        {item.label}
+                      </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
                   {idx < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
@@ -76,7 +83,9 @@ const DashboardHeader = ({
               ))}
             </BreadcrumbList>
           </Breadcrumb>
-          <p className="text-lg font-semibold">{title}</p>
+          <p className="text-lg font-semibold group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-sm">
+            {title}
+          </p>
         </div>
       </div>
 
