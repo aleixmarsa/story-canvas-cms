@@ -11,7 +11,9 @@ const NewStoryPage = () => {
         onPublish={() => {}}
         onSaveDraft={() => {}}
       />
-      <CreateStoryForm onCancelNavigateTo="/admin/dashboard" />
+      <div className="px-6">
+        <CreateStoryForm onCancelNavigateTo="/admin/dashboard" />
+      </div>
     </>
   );
 };
