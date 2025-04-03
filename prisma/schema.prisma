@@ -19,29 +19,31 @@ enum SectionType {
   VIDEO
 }
 
-
 model Story {
-  id          Int      @id @default(autoincrement())
-  title       String
-  slug        String   @unique
-  author      String
-  components  Json     // Allowed components or config for this story
-  status      StoryStatus   @default(draft)
-  createdAt   DateTime @default(now())
-  sections    Section[]
+  id               Int          @id @default(autoincrement())
+  slug             String       @unique
+  author           String
+  status           StoryStatus  @default(draft)
+  components       Json         // Allowed components or config for this story
+  draftVersion     Json         // Editable version
+  publishedVersion Json?        // Snapshot at publish time
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  publishedAt      DateTime?
+  sections         Section[]
 }
 
 model Section {
-  id        Int      @id @default(autoincrement())
-  storyId   Int
-  slug      String
-  name      String 
-  type      SectionType
-  content   Json     // Section content and params
-  order     Int
-  createdAt   DateTime @default(now())
-  story     Story    @relation(fields: [storyId], references: [id])
-
-
+  id               Int          @id @default(autoincrement())
+  storyId          Int
+  slug             String
+  name             String
+  type             SectionType
+  draftVersion     Json         // Editable content
+  publishedVersion Json?        // Final content
+  order            Int
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  story            Story        @relation(fields: [storyId], references: [id])
   @@unique([storyId, name])
 }
