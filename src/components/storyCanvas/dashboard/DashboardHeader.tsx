@@ -10,7 +10,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 // Types
 
 type DashboardHeaderProps =
@@ -52,27 +53,31 @@ const DashboardHeader = ({
   onPublish,
 }: DashboardHeaderProps) => {
   return (
-    <div className="flex items-center justify-between flex-wrap gap-4 px-6 border-b h-20">
-      <div className="space-y-1">
-        <Breadcrumb>
-          <BreadcrumbList>
-            {breadcrumbs.map((item, idx) => (
-              <Fragment key={idx}>
-                <BreadcrumbItem>
-                  {item.href ? (
-                    <BreadcrumbLink asChild>
-                      <Link href={item.href}>{item.label}</Link>
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbLink>{item.label}</BreadcrumbLink>
-                  )}
-                </BreadcrumbItem>
-                {idx < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-              </Fragment>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
-        <p className="text-lg font-semibold">{title}</p>
+    <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+      <div className="flex items-center gap-2 h-full">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <div className="space-y-1">
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumbs.map((item, idx) => (
+                <Fragment key={idx}>
+                  <BreadcrumbItem>
+                    {item.href ? (
+                      <BreadcrumbLink asChild>
+                        <Link href={item.href}>{item.label}</Link>
+                      </BreadcrumbLink>
+                    ) : (
+                      <BreadcrumbLink>{item.label}</BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                  {idx < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                </Fragment>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+          <p className="text-lg font-semibold">{title}</p>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">
@@ -109,7 +114,7 @@ const DashboardHeader = ({
           </>
         )}
       </div>
-    </div>
+    </header>
   );
 };
 

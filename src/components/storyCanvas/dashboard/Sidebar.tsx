@@ -1,50 +1,102 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { LogOut } from "lucide-react";
+import { useEffect } from "react";
+import { Feather, ScrollText } from "lucide-react";
 import Link from "next/link";
+import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
+import { useCmsStore } from "@/stores/cms-store";
 
-const Sidebar = () => {
-  const router = useRouter();
-  const pathname = usePathname();
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarGroup,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
 
-  const handleLogout = () => {
-    console.log("Logging out...");
-    router.push("/login");
+export function DashboardSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const { stories, setStories } = useCmsStore();
+
+  useEffect(() => {
+    if (stories.length === 0) {
+      const fetchStories = async () => {
+        const res = await fetch("/api/stories");
+        const data = await res.json();
+        setStories(data);
+      };
+      fetchStories();
+    }
+  }, [stories.length, setStories]);
+
+  const user = {
+    name: "Aleix",
+    email: "aleix.marsa@gmail.com",
+    avatar: "AM",
   };
 
   return (
-    <aside className="w-64 h-screen bg-muted flex flex-col space-y-6">
-      <div className="h-20  content-center px-8 border-b">
-        <h1 className="w-full justify-start pl-0 text-lg font-semibold text-left">
-          Story Canvas
-        </h1>
-      </div>
-      <ScrollArea className="grow px-4">
-        <Button
-          asChild
-          variant="ghost"
-          className={`w-full justify-start text-left ${
-            pathname.includes("/admin/dashboard") ? " bg-white  " : ""
-          }`}
-        >
-          <Link href="/admin/dashboard">Dashboard</Link>
-        </Button>
-      </ScrollArea>
-      <div className="mt-6 pt-4 border-t">
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-left cursor-pointer text-destructive hover:bg-destructive/10"
-          onClick={handleLogout}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          Log out
-        </Button>
-      </div>
-    </aside>
-  );
-};
+    <Sidebar collapsible="icon" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <Link href="/admin/dashboard">
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <Feather className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-lg leading-tight">
+                  <span className="truncate font-medium">Story Canvas</span>
+                </div>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
 
-export default Sidebar;
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip={"Stories"}>
+                <Link href="/admin/dashboard" className="font-medium">
+                  <ScrollText className="h-4 w-4" />
+                  Stories
+                </Link>
+              </SidebarMenuButton>
+
+              {stories.length > 0 && (
+                <SidebarMenuSub>
+                  {stories.map((story) => (
+                    <SidebarMenuSubItem key={story.id}>
+                      <SidebarMenuSubButton asChild>
+                        <Link href={`/admin/dashboard/${story.slug}`}>
+                          {story.title}
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              )}
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+}
