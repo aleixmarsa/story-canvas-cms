@@ -14,6 +14,7 @@ type EditSectionFormProps = {
     id: number;
     name: string;
     order: number;
+    createdBy: string;
     type: SectionType;
     content: JsonValue;
   };
@@ -31,12 +32,14 @@ const EditSectionForm = ({
   } | null>(null);
 
   const router = useRouter();
-  const { name, order, type, content } = section;
+  const { name, order, type, content, createdBy } = section;
+  console.log("🚀 ~ section:", section);
 
   const contentObject =
     typeof content === "object" && content !== null ? content : {};
-  const defaultValues = { name, order, ...contentObject };
+  const defaultValues = { name, order, createdBy, ...contentObject };
 
+  console.log("🚀 ~ defaultValues:", defaultValues);
   const handleSubmit = async <T extends SectionType>(
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
@@ -45,7 +48,7 @@ const EditSectionForm = ({
       throw new Error("Section type or story ID is not selected");
     }
 
-    const { name, order, ...content } = data;
+    const { name, order, createdBy, ...content } = data;
 
     try {
       const res = await fetch(`/api/sections/${section.id}`, {
@@ -54,6 +57,7 @@ const EditSectionForm = ({
         body: JSON.stringify({
           name,
           order,
+          createdBy,
           content,
         }),
       });
@@ -72,7 +76,7 @@ const EditSectionForm = ({
 
       const updated = await res.json();
       updateSection(updated);
-      router.push(`/admin/dashboard/${selectedStory.slug}`);
+      router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
     } catch (error) {
       console.error("Error updating section:", error);
     }

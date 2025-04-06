@@ -17,8 +17,10 @@ const EditSectionPage = () => {
     id: number;
     name: string;
     order: number;
+    createdBy: string;
     type: SectionType;
     content: JsonValue;
+    currentDraftId: number | null;
   } | null>(null);
 
   useEffect(() => {
@@ -27,18 +29,28 @@ const EditSectionPage = () => {
       return;
     }
 
-    const found = sections.find((s) => s.slug === sectionSlug);
+    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
     if (!found) {
       router.push("/admin/dashboard");
       return;
     }
-    const { id, name, order, type, content } = found;
+    const { id, currentDraft, currentDraftId } = found;
+
+    if (!currentDraft) {
+      router.push("/admin/dashboard");
+      return;
+    }
+
+    const { name, order, type, content, createdBy } = currentDraft;
+
     setSection({
       id,
       name,
       order,
+      createdBy,
       type,
       content,
+      currentDraftId,
     });
   }, [sectionSlug, sections, router]);
 
@@ -51,8 +63,8 @@ const EditSectionPage = () => {
         breadcrumbs={[
           { label: "Dashboard", href: "/admin/dashboard" },
           {
-            label: selectedStory.title,
-            href: `/admin/dashboard/${selectedStory.slug}`,
+            label: selectedStory.currentDraft?.title ?? "Untitled",
+            href: `/admin/dashboard/${selectedStory.currentDraft?.slug}`,
           },
         ]}
         onSaveDraft={() => {}}
@@ -61,7 +73,7 @@ const EditSectionPage = () => {
       <div className="px-6">
         <EditSectionForm
           section={section}
-          onCancelNavigateTo={`/admin/dashboard/${selectedStory.slug}`}
+          onCancelNavigateTo={`/admin/dashboard/${selectedStory.currentDraft?.slug}`}
         />
       </div>
     </>
