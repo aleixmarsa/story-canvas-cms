@@ -1,18 +1,19 @@
 import { create } from "zustand";
-import { Story, Section } from "@prisma/client";
+import { Section } from "@prisma/client";
+import { StoryWithVersions } from "@/types/story";
 
 interface CmsState {
-  stories: Story[];
+  stories: StoryWithVersions[];
   sections: Section[];
-  selectedStory: Story | null;
+  selectedStory: StoryWithVersions | null;
   selectedSection: Section | null;
 
   // Setters
-  setStories: (stories: Story[]) => void;
+  setStories: (stories: StoryWithVersions[]) => void;
   setSections: (sections: Section[]) => void;
 
   // Selectors
-  selectStory: (story: Story | null) => void;
+  selectStory: (story: StoryWithVersions | null) => void;
   selectSection: (section: Section | null) => void;
 
   resetSelection: () => void;
@@ -20,8 +21,8 @@ interface CmsState {
 
   // CRUD Helpers
 
-  addStory: (story: Story) => void;
-  updateStory: (story: Story) => void;
+  addStory: (story: StoryWithVersions) => void;
+  updateStory: (story: StoryWithVersions) => void;
   deleteStory: (storyId: number) => void;
 
   addSection: (section: Section) => void;

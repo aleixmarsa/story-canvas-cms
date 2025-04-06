@@ -10,6 +10,7 @@ import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FormButtons from "../FormButtons";
+import { StoryWithVersions } from "@/types/story";
 
 type CreateStoryFormProps = {
   onCancelNavigateTo: string;
@@ -31,7 +32,7 @@ const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
     defaultValues: {
       title: "",
       slug: "",
-      author: "",
+      createdBy: "",
     },
   });
 
@@ -56,10 +57,10 @@ const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
         throw new Error("Failed to create story");
       }
 
-      const newStory = await res.json();
+      const newStory: StoryWithVersions = await res.json();
       addStory(newStory);
       reset();
-      router.push(`/admin/dashboard/${newStory.slug}`);
+      router.push(`/admin/dashboard/${newStory.currentDraft?.slug}`);
     } catch (err) {
       console.error(err);
       setSubmitError("Failed to create story. Please try again.");
@@ -75,9 +76,11 @@ const CreateStoryForm = ({ onCancelNavigateTo }: CreateStoryFormProps) => {
       </div>
 
       <div>
-        <Label htmlFor="author">Author</Label>
-        <Input id="author" {...register("author" as const)} />
-        {errors.author && <FormErrorMessage error={errors.author.message} />}
+        <Label htmlFor="createdBy">Created by</Label>
+        <Input id="createdBy" {...register("createdBy" as const)} />
+        {errors.createdBy && (
+          <FormErrorMessage error={errors.createdBy.message} />
+        )}
       </div>
 
       <div>

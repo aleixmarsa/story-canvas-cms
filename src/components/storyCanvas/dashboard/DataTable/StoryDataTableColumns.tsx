@@ -2,18 +2,18 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { Story } from "@prisma/client";
+import { StoryWithVersions } from "@/types/story";
 
-export const columns: ColumnDef<Story>[] = [
+export const columns: ColumnDef<StoryWithVersions>[] = [
   {
-    accessorKey: "title",
     header: "Title",
+    accessorFn: (row) => row.currentDraft?.title ?? "(untitled)",
   },
   {
-    accessorKey: "status",
     header: "Status",
+    accessorFn: (row) => (row.publishedVersion ? "published" : "draft"),
     cell: ({ row }) => {
-      const status = row.getValue("status") as Story["status"];
+      const status = row.getValue("Status") as string;
       return (
         <Badge variant={status === "published" ? "default" : "outline"}>
           {status}
@@ -22,19 +22,18 @@ export const columns: ColumnDef<Story>[] = [
     },
   },
   {
-    accessorKey: "author",
     header: "Author",
+    accessorFn: (row) => row.currentDraft?.createdBy ?? "-",
   },
   {
-    accessorKey: "slug",
     header: "Slug",
+    accessorFn: (row) => row.currentDraft?.slug ?? "-",
   },
-
   {
-    accessorKey: "createdAt",
     header: "Date",
+    accessorFn: (row) => row.createdAt,
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
+      const date = new Date(row.getValue("Date"));
       return date.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
