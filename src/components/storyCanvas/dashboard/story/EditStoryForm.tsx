@@ -15,7 +15,7 @@ type EditStoryFormProps = {
     id: number;
     title: string;
     slug: string;
-    author: string;
+    createdBy: string;
   };
   onCancelNavigateTo: string;
 };
@@ -38,7 +38,7 @@ const EditStoryForm = ({ story, onCancelNavigateTo }: EditStoryFormProps) => {
   useEffect(() => {
     setValue("title", story.title);
     setValue("slug", story.slug);
-    setValue("author", story.author);
+    setValue("createdBy", story.createdBy);
   }, [story, setValue]);
 
   const onSubmit = async (data: StoryFormData) => {
@@ -82,9 +82,11 @@ const EditStoryForm = ({ story, onCancelNavigateTo }: EditStoryFormProps) => {
       </div>
 
       <div>
-        <Label htmlFor="author">Author</Label>
-        <Input id="author" {...register("author")} />
-        {errors.author && <FormErrorMessage error={errors.author.message} />}
+        <Label htmlFor="createdBy">Created By</Label>
+        <Input id="createdBy" {...register("createdBy")} />
+        {errors.createdBy && (
+          <FormErrorMessage error={errors.createdBy.message} />
+        )}
       </div>
 
       <div>
