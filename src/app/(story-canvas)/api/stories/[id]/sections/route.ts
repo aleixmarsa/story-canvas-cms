@@ -5,9 +5,10 @@ import prisma from "@/lib/prisma";
 // Returns all sections for a specific story
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const storyId = Number(params.id);
+  const resolvedParams = await params;
+  const storyId = Number(resolvedParams.id);
 
   if (isNaN(storyId)) {
     return NextResponse.json({ error: "Invalid story ID" }, { status: 400 });

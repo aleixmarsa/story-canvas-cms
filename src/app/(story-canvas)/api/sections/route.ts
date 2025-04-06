@@ -10,7 +10,6 @@ import { SectionType } from "@prisma/client";
 // Create Section + Initial Draft Version
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log("🚀 ~ POST ~ body:", body);
   const parsed = createSectionVersionSchema.safeParse(body);
 
   if (!parsed.success) {

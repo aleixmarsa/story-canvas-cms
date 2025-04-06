@@ -56,7 +56,7 @@ const StoryPage = () => {
           columns={columns}
           data={sections}
           getEditLink={(row) =>
-            `/admin/dashboard/${slug}/${row.currentDraft?.slug}`
+            `/admin/dashboard/${slug}/${row.currentDraft?.id}`
           }
         />
       </div>

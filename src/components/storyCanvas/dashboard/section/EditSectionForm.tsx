@@ -33,13 +33,11 @@ const EditSectionForm = ({
 
   const router = useRouter();
   const { name, order, type, content, createdBy } = section;
-  console.log("🚀 ~ section:", section);
 
   const contentObject =
     typeof content === "object" && content !== null ? content : {};
   const defaultValues = { name, order, createdBy, ...contentObject };
 
-  console.log("🚀 ~ defaultValues:", defaultValues);
   const handleSubmit = async <T extends SectionType>(
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
@@ -55,6 +53,8 @@ const EditSectionForm = ({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          storyId: selectedStoryId,
+          type,
           name,
           order,
           createdBy,
@@ -76,6 +76,7 @@ const EditSectionForm = ({
 
       const updated = await res.json();
       updateSection(updated);
+
       router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
     } catch (error) {
       console.error("Error updating section:", error);

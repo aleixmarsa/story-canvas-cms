@@ -10,7 +10,8 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 
 const EditSectionPage = () => {
   const { sections, selectedStory } = useCmsStore();
-  const { section: sectionSlug } = useParams();
+  const { section: sectionIdParam } = useParams();
+  const sectionId = Number(sectionIdParam);
   const router = useRouter();
 
   const [section, setSection] = useState<{
@@ -24,12 +25,8 @@ const EditSectionPage = () => {
   } | null>(null);
 
   useEffect(() => {
-    if (!sectionSlug) {
-      router.push("/admin/dashboard");
-      return;
-    }
+    const found = sections.find((s) => s.id === sectionId);
 
-    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
     if (!found) {
       router.push("/admin/dashboard");
       return;
@@ -52,7 +49,7 @@ const EditSectionPage = () => {
       content,
       currentDraftId,
     });
-  }, [sectionSlug, sections, router]);
+  }, [sectionId, sections, router]);
 
   if (!section || !selectedStory) return null;
 

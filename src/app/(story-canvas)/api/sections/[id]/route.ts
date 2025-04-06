@@ -1,70 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
-import { SectionType } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { slugify } from "@/lib/utils";
+import { updateSectionVersionSchema } from "@/lib/validation/sectionSchemas";
+import { SectionType } from "@prisma/client";
 
-// Update a section by ID
+// PATCH /api/sections/:id
+// Updates a section version
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const id = Number(params.id);
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: "Invalid section ID" },
-        { status: 400 }
-      );
-    }
+  const resolvedParams = await params;
+  const versionId = Number(resolvedParams.id);
 
-    const body = await req.json();
-    const { name, order, content } = body;
-
-    const existingSection = await prisma.section.findUnique({ where: { id } });
-    if (!existingSection) {
-      return NextResponse.json({ error: "Section not found" }, { status: 404 });
-    }
-
-    const schema = sectionSchemas[existingSection.type as SectionType].schema;
-    const parsed = schema.safeParse({ name, order, ...content });
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.format() },
-        { status: 422 }
-      );
-    }
-
-    try {
-      const updated = await prisma.section.update({
-        where: { id },
-        data: {
-          name,
-          order,
-          content,
-          slug: slugify(name),
-        },
-      });
-
-      return NextResponse.json(updated);
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === "P2002"
-      ) {
-        return NextResponse.json(
-          { error: "Section name must be unique" },
-          { status: 409 }
-        );
-      }
-      throw error;
-    }
-  } catch (error) {
-    console.error("Error updating section:", error);
+  if (isNaN(versionId)) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { message: "Invalid sectionVersion ID" },
+      { status: 400 }
+    );
+  }
+
+  const body = await req.json();
+  const parsed = updateSectionVersionSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.format() }, { status: 422 });
+  }
+
+  const { name, type, order, content, comment, storyId } = parsed.data;
+
+  try {
+    const updated = await prisma.sectionVersion.update({
+      where: { id: versionId },
+      data: {
+        name,
+        slug: slugify(name),
+        type: type as SectionType,
+        order,
+        content,
+        comment,
+      },
+    });
+
+    const updatedSection = await prisma.section.findUnique({
+      where: { id: updated.sectionId },
+      include: {
+        currentDraft: true,
+        publishedVersion: true,
+      },
+    });
+
+    return NextResponse.json(updatedSection);
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return NextResponse.json(
+        { message: "Slug already exists in this section" },
+        { status: 409 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: "Failed to update section version", error },
       { status: 500 }
     );
   }
