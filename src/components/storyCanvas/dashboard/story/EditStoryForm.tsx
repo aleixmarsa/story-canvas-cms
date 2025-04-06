@@ -12,7 +12,7 @@ import FormButtons from "../FormButtons";
 
 type EditStoryFormProps = {
   story: {
-    id: number;
+    currentDraftId: number | null;
     title: string;
     slug: string;
     createdBy: string;
@@ -44,7 +44,7 @@ const EditStoryForm = ({ story, onCancelNavigateTo }: EditStoryFormProps) => {
   const onSubmit = async (data: StoryFormData) => {
     setSubmitError(null);
     try {
-      const res = await fetch(`/api/stories/${story.id}`, {
+      const res = await fetch(`/api/story-versions/${story.currentDraftId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -77,13 +77,13 @@ const EditStoryForm = ({ story, onCancelNavigateTo }: EditStoryFormProps) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-lg">
       <div>
         <Label htmlFor="title">Title</Label>
-        <Input id="title" {...register("title")} />
+        <Input id="title" {...register("title" as const)} />
         {errors.title && <FormErrorMessage error={errors.title.message} />}
       </div>
 
       <div>
         <Label htmlFor="createdBy">Created By</Label>
-        <Input id="createdBy" {...register("createdBy")} />
+        <Input id="createdBy" {...register("createdBy" as const)} />
         {errors.createdBy && (
           <FormErrorMessage error={errors.createdBy.message} />
         )}
@@ -91,7 +91,7 @@ const EditStoryForm = ({ story, onCancelNavigateTo }: EditStoryFormProps) => {
 
       <div>
         <Label htmlFor="slug">Slug (URL)</Label>
-        <Input id="slug" {...register("slug")} />
+        <Input id="slug" {...register("slug" as const)} />
         {errors.slug && <FormErrorMessage error={errors.slug.message} />}
       </div>
 

@@ -36,9 +36,10 @@ export async function GET(
 // Updates Story metadata (only fields stored on Story, not the version)
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const storyId = Number(params.id);
+  const resolvedParams = await params;
+  const storyId = Number(resolvedParams.id);
   if (isNaN(storyId)) {
     return NextResponse.json({ message: "Invalid story ID" }, { status: 400 });
   }

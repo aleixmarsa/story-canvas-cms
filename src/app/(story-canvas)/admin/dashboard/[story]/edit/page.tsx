@@ -16,6 +16,7 @@ const EditStoryPage = () => {
     createdBy: string;
     title: string;
     slug: string;
+    currentDraftId: number | null;
   } | null>(null);
 
   useEffect(() => {
@@ -29,17 +30,18 @@ const EditStoryPage = () => {
       router.push("/admin/dashboard");
       return;
     }
-    const { currentDraft } = found;
+    const { id, currentDraft, currentDraftId } = found;
     if (!currentDraft) {
       router.push("/admin/dashboard");
       return;
     }
-    const { id, title, slug, createdBy } = currentDraft;
+    const { title, slug, createdBy } = currentDraft;
     setStory({
       id,
       title,
       slug,
       createdBy,
+      currentDraftId,
     });
   }, [storySlug, stories, router]);
 
