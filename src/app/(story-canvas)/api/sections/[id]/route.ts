@@ -28,7 +28,7 @@ export async function PATCH(
     return NextResponse.json({ error: parsed.error.format() }, { status: 422 });
   }
 
-  const { name, type, order, content, comment, storyId } = parsed.data;
+  const { name, type, order, content, comment } = parsed.data;
 
   try {
     const updated = await prisma.sectionVersion.update({
