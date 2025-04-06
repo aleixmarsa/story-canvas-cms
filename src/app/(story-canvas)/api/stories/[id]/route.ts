@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
+// GET /api/stories/:id
 // Returns a single story by ID, including its currentDraft, publishedVersion and version history
 export async function GET(
   _req: NextRequest,
@@ -31,6 +32,7 @@ export async function GET(
   return NextResponse.json(story);
 }
 
+// POST /api/stories
 // Updates Story metadata (only fields stored on Story, not the version)
 export async function PATCH(
   req: NextRequest,
