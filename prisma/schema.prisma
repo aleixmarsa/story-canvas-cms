@@ -54,6 +54,7 @@ model StoryVersion {
   // Main editable metadata
   title       String
   slug        String
+  createdBy String
   description String?
 
   // Visual configuration and layout content
@@ -64,7 +65,6 @@ model StoryVersion {
   // Version metadata
   status    StoryStatus
   createdAt DateTime    @default(now())
-  createdBy String?
   comment   String?
 
   // Relations
@@ -107,6 +107,7 @@ model SectionVersion {
   // Editable metadata
   name  String
   slug  String
+  createdBy String
   type  SectionType
   order Int
 
@@ -116,7 +117,6 @@ model SectionVersion {
   // Version metadata
   status    StoryStatus
   createdAt DateTime    @default(now())
-  createdBy String?
   comment   String?
 
   // Relations

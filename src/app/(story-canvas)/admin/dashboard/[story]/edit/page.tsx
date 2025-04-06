@@ -13,7 +13,7 @@ const EditStoryPage = () => {
 
   const [story, setStory] = useState<{
     id: number;
-    author: string;
+    createdBy: string;
     title: string;
     slug: string;
   } | null>(null);
@@ -24,17 +24,22 @@ const EditStoryPage = () => {
       return;
     }
 
-    const found = stories.find((s) => s.slug === storySlug);
+    const found = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (!found) {
       router.push("/admin/dashboard");
       return;
     }
-    const { id, title, slug, author } = found;
+    const { currentDraft } = found;
+    if (!currentDraft) {
+      router.push("/admin/dashboard");
+      return;
+    }
+    const { id, title, slug, createdBy } = currentDraft;
     setStory({
       id,
       title,
       slug,
-      author,
+      createdBy,
     });
   }, [storySlug, stories, router]);
 
