@@ -36,11 +36,15 @@ const StoryPage = () => {
 
   if (!selectedStory) return <p className="p-6">Loading...</p>;
 
+  const { currentDraft } = selectedStory;
+  if (!currentDraft) return <p className="p-6">No draft found</p>;
+  const { title, slug } = currentDraft;
+
   return (
     <>
       <DashboardHeader
-        title={`${selectedStory.currentDraft?.title} Sections`}
-        addHref={`${selectedStory.currentDraft?.slug}/new-section`}
+        title={`${title} Sections`}
+        addHref={`${slug}/new-section`}
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
         addButtonLabel="New Section"
         onSaveDraft={() => {}}
@@ -50,9 +54,7 @@ const StoryPage = () => {
         <DataTable
           columns={columns}
           data={sections}
-          getEditLink={(row) =>
-            `/admin/dashboard/${selectedStory.slug}/${row.slug}`
-          }
+          getEditLink={(row) => `/admin/dashboard/${slug}/${row.slug}`}
         />
       </div>
     </>
