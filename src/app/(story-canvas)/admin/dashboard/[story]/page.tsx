@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useCmsStore } from "@/stores/cms-store";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
-import { columns } from "@/components/storyCanvas/dashboard/dataTable/SectionDataTableColumns";
+import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
+import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -19,7 +19,7 @@ const StoryPage = () => {
   } = useCmsStore();
 
   useEffect(() => {
-    const story = stories.find((s) => s.slug === storySlug);
+    const story = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (!story) return;
 
     selectStory(story);
@@ -39,8 +39,8 @@ const StoryPage = () => {
   return (
     <>
       <DashboardHeader
-        title={`${selectedStory.title} Sections`}
-        addHref={`${selectedStory.slug}/new-section`}
+        title={`${selectedStory.currentDraft?.title} Sections`}
+        addHref={`${selectedStory.currentDraft?.slug}/new-section`}
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
         addButtonLabel="New Section"
         onSaveDraft={() => {}}
