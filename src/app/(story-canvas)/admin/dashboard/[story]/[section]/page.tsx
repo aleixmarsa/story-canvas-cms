@@ -2,7 +2,7 @@
 
 import { useCmsStore } from "@/stores/cms-store";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
 import { SectionType } from "@prisma/client";
 import { JsonValue } from "@prisma/client/runtime/client";
@@ -13,7 +13,6 @@ const EditSectionPage = () => {
   const { section: sectionIdParam } = useParams();
   const sectionId = Number(sectionIdParam);
   const router = useRouter();
-
   const [section, setSection] = useState<{
     id: number;
     name: string;
@@ -23,21 +22,19 @@ const EditSectionPage = () => {
     content: JsonValue;
     currentDraftId: number | null;
   } | null>(null);
+  const [formIsDirty, setFormIsDirty] = useState(false);
+  const [formIsSubmitting, setFormIsSubmitting] = useState(false);
+
+  const formRef = useRef<(() => void) | undefined>(undefined);
 
   useEffect(() => {
     const found = sections.find((s) => s.id === sectionId);
-
-    if (!found) {
+    if (!found || !found.currentDraft) {
       router.push("/admin/dashboard");
       return;
     }
+
     const { id, currentDraft, currentDraftId } = found;
-
-    if (!currentDraft) {
-      router.push("/admin/dashboard");
-      return;
-    }
-
     const { name, order, type, content, createdBy } = currentDraft;
 
     setSection({
@@ -50,6 +47,12 @@ const EditSectionPage = () => {
       currentDraftId,
     });
   }, [sectionId, sections, router]);
+
+  const handleSaveDraft = async () => {
+    if (formRef.current) {
+      await formRef.current();
+    }
+  };
 
   if (!section || !selectedStory) return null;
 
@@ -64,13 +67,18 @@ const EditSectionPage = () => {
             href: `/admin/dashboard/${selectedStory.currentDraft?.slug}`,
           },
         ]}
-        onSaveDraft={() => {}}
+        onSaveDraft={handleSaveDraft}
         onPublish={() => {}}
+        disableSaveButton={!formIsDirty}
+        loadingSaveButton={formIsSubmitting}
       />
       <div className="px-6">
         <EditSectionForm
           section={section}
           onCancelNavigateTo={`/admin/dashboard/${selectedStory.currentDraft?.slug}`}
+          formRef={formRef}
+          onDirtyChange={setFormIsDirty}
+          onSubmittingChange={setFormIsSubmitting}
         />
       </div>
     </>

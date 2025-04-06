@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-// Types
+import { Loader2 } from "lucide-react";
 
 type DashboardHeaderProps =
   | {
@@ -23,6 +23,8 @@ type DashboardHeaderProps =
       onAddClick?: undefined;
       onSaveDraft?: () => void;
       onPublish?: () => void;
+      disableSaveButton?: boolean;
+      loadingSaveButton?: boolean;
     }
   | {
       title: string;
@@ -32,6 +34,8 @@ type DashboardHeaderProps =
       onAddClick?: never;
       onSaveDraft?: () => void;
       onPublish?: () => void;
+      disableSaveButton?: boolean;
+      loadingSaveButton?: boolean;
     }
   | {
       title: string;
@@ -41,6 +45,8 @@ type DashboardHeaderProps =
       addHref?: never;
       onSaveDraft?: () => void;
       onPublish?: () => void;
+      disableSaveButton?: boolean;
+      loadingSaveButton?: boolean;
     };
 
 const DashboardHeader = ({
@@ -51,6 +57,8 @@ const DashboardHeader = ({
   onAddClick,
   onSaveDraft,
   onPublish,
+  disableSaveButton,
+  loadingSaveButton,
 }: DashboardHeaderProps) => {
   return (
     <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -109,8 +117,17 @@ const DashboardHeader = ({
         {(onPublish || onSaveDraft) && (
           <>
             {onSaveDraft && (
-              <Button variant="outline" onClick={onSaveDraft} size="sm">
-                <Save className="w-4 h-4 mr-1" />
+              <Button
+                variant="outline"
+                onClick={onSaveDraft}
+                size="sm"
+                disabled={disableSaveButton}
+              >
+                {loadingSaveButton ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-1" />
+                )}
                 Save draft
               </Button>
             )}

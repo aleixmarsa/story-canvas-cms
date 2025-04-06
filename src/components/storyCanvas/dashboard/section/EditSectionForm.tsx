@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
@@ -19,26 +19,33 @@ type EditSectionFormProps = {
     content: JsonValue;
   };
   onCancelNavigateTo: string;
+  formRef: React.MutableRefObject<(() => void) | undefined>;
+  onDirtyChange: (dirty: boolean) => void;
+  onSubmittingChange?: (submitting: boolean) => void;
 };
 
 const EditSectionForm = ({
   section,
   onCancelNavigateTo,
+  formRef,
+  onDirtyChange,
+  onSubmittingChange,
 }: EditSectionFormProps) => {
   const { updateSection, selectedStory } = useCmsStore();
-  const [externalError, setExternalError] = useState<{
-    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
-    message: string;
-  } | null>(null);
-
   const router = useRouter();
   const { name, order, type, content, createdBy } = section;
-
+  const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const contentObject =
     typeof content === "object" && content !== null ? content : {};
   const defaultValues = { name, order, createdBy, ...contentObject };
 
-  const handleSubmit = async <T extends SectionType>(
+  // Placeholder to store any field-level error
+  let externalError: {
+    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    message: string;
+  } | null = null;
+
+  const submitHandler = async <T extends SectionType>(
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
     const selectedStoryId = selectedStory?.id;
@@ -63,10 +70,10 @@ const EditSectionForm = ({
       });
 
       if (res.status === 409) {
-        setExternalError({
+        externalError = {
           field: "name",
           message: "This name is already in use",
-        });
+        };
         return;
       }
 
@@ -83,15 +90,26 @@ const EditSectionForm = ({
     }
   };
 
+  useEffect(() => {
+    formRef.current = async () => {
+      if (formSubmitRef.current) {
+        formSubmitRef.current();
+      }
+    };
+  }, [formRef]);
+
   return (
     <div className="space-y-4 max-w-lg">
       <SectionTypeForm
         type={type}
         defaultValues={defaultValues}
-        onSubmit={handleSubmit}
+        onSubmit={submitHandler}
         onCancelNavigateTo={onCancelNavigateTo}
         externalError={externalError}
         onSubmitButtonLabel="Update Section"
+        formSubmitRef={formSubmitRef}
+        onDirtyChange={onDirtyChange}
+        onSubmittingChange={onSubmittingChange}
       />
     </div>
   );
