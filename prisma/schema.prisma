@@ -20,30 +20,110 @@ enum SectionType {
 }
 
 model Story {
-  id               Int          @id @default(autoincrement())
-  slug             String       @unique
-  author           String
-  status           StoryStatus  @default(draft)
-  components       Json         // Allowed components or config for this story
-  draftVersion     Json         // Editable version
-  publishedVersion Json?        // Snapshot at publish time
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  publishedAt      DateTime?
-  sections         Section[]
+  id Int @id @default(autoincrement())
+
+  // Slug of the currently published version
+  publicSlug String? @unique
+
+  // Relations to the active draft and published versions
+  currentDraftId     Int? @unique
+  publishedVersionId Int? @unique
+
+  // Edit/locking metadata
+  lockedBy     String?
+  lastEditedBy String?
+
+  // Timestamps
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  versions StoryVersion[]
+  sections Section[]
+
+  // Draft and published version relations
+  currentDraft     StoryVersion? @relation("CurrentDraft", fields: [currentDraftId], references: [id])
+  publishedVersion StoryVersion? @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
+}
+
+model StoryVersion {
+  id      Int @id @default(autoincrement())
+  storyId Int
+
+  // Main editable metadata
+  title       String
+  slug        String
+  description String?
+
+  // Visual configuration and layout content
+  theme      Json?
+  components Json?
+  content    Json?
+
+  // Version metadata
+  status    StoryStatus
+  createdAt DateTime    @default(now())
+  createdBy String?
+  comment   String?
+
+  // Relations
+  story          Story  @relation(fields: [storyId], references: [id])
+  currentDraftOf Story? @relation("CurrentDraft")
+  publishedOf    Story? @relation("PublishedVersion")
+
+  @@unique([slug, status])
+  @@index([storyId, status])
 }
 
 model Section {
-  id               Int          @id @default(autoincrement())
-  storyId          Int
-  slug             String
-  name             String
-  type             SectionType
-  draftVersion     Json         // Editable content
-  publishedVersion Json?        // Final content
-  order            Int
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
-  story            Story        @relation(fields: [storyId], references: [id])
-  @@unique([storyId, name])
+  id      Int @id @default(autoincrement())
+  storyId Int
+
+  // Relations to the active draft and published versions
+  currentDraftId     Int? @unique
+  publishedVersionId Int? @unique
+
+  // Edit/locking metadata
+  lockedBy     String?
+  lastEditedBy String?
+
+  // Timestamps
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  versions         SectionVersion[]
+  story            Story            @relation(fields: [storyId], references: [id])
+  currentDraft     SectionVersion?  @relation("SectionCurrentDraft", fields: [currentDraftId], references: [id])
+  publishedVersion SectionVersion?  @relation("SectionPublishedVersion", fields: [publishedVersionId], references: [id])
+}
+
+model SectionVersion {
+  id        Int @id @default(autoincrement())
+  sectionId Int
+
+  // Editable metadata
+  name  String
+  slug  String
+  type  SectionType
+  order Int
+
+  // Section content (e.g. text, image, etc.)
+  content Json
+
+  // Version metadata
+  status    StoryStatus
+  createdAt DateTime    @default(now())
+  createdBy String?
+  comment   String?
+
+  // Relations
+  section        Section  @relation(fields: [sectionId], references: [id])
+  currentDraftOf Section? @relation("SectionCurrentDraft")
+  publishedOf    Section? @relation("SectionPublishedVersion")
+
+  @@unique([sectionId, status])
+  @@index([sectionId, status])
 }
