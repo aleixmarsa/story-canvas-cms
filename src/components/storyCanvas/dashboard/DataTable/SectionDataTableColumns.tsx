@@ -1,20 +1,20 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Section } from "@prisma/client";
+import { SectionWithVersions } from "@/types/section";
 
-export const columns: ColumnDef<Section>[] = [
+export const columns: ColumnDef<SectionWithVersions>[] = [
   {
-    accessorKey: "name",
     header: "Name",
+    accessorFn: (row) => row.currentDraft?.name ?? "(untitled)",
   },
   {
     accessorKey: "type",
-    header: "Type",
+    accessorFn: (row) => row.currentDraft?.type ?? "(untitled)",
   },
   {
     accessorKey: "order",
-    header: "Order",
+    accessorFn: (row) => row.currentDraft?.order ?? "(untitled)",
   },
   {
     accessorKey: "createdAt",

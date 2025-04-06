@@ -37,7 +37,7 @@ const CreateSectionForm = () => {
       throw new Error("Section type or story ID is not selected");
     }
 
-    const { name, order, ...content } = data;
+    const { name, order, createdBy, ...content } = data;
 
     try {
       const res = await fetch("/api/sections", {
@@ -47,6 +47,7 @@ const CreateSectionForm = () => {
           storyId: selectedStoryId,
           name,
           order,
+          createdBy,
           content,
           type: selectedType,
         }),
@@ -68,7 +69,7 @@ const CreateSectionForm = () => {
       console.log("New section created:", newSection);
       addSection(newSection);
       setSelectedType(null);
-      router.push(`/admin/dashboard/${selectedStory.slug}`);
+      router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
     } catch (error) {
       console.error("Error creating section:", error);
     }
@@ -95,7 +96,7 @@ const CreateSectionForm = () => {
           <SectionTypeForm
             type={selectedType}
             onSubmit={handleSubmit}
-            onCancelNavigateTo={`/admin/dashboard/${selectedStory?.slug}`}
+            onCancelNavigateTo={`/admin/dashboard/${selectedStory?.currentDraft?.slug}`}
             externalError={externalError}
             onSubmitButtonLabel="Create Section"
           />

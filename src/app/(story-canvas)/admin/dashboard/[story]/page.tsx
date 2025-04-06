@@ -6,6 +6,7 @@ import { useCmsStore } from "@/stores/cms-store";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
+import { SectionWithVersions } from "@/types/section";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -26,8 +27,8 @@ const StoryPage = () => {
     selectSection(null);
 
     const fetchSections = async () => {
-      const res = await fetch(`/api/sections?storyId=${story.id}`);
-      const data = await res.json();
+      const res = await fetch(`/api/stories/${story.id}/sections`);
+      const data: SectionWithVersions[] = await res.json();
       setSections(data);
     };
 
@@ -54,7 +55,9 @@ const StoryPage = () => {
         <DataTable
           columns={columns}
           data={sections}
-          getEditLink={(row) => `/admin/dashboard/${slug}/${row.slug}`}
+          getEditLink={(row) =>
+            `/admin/dashboard/${slug}/${row.currentDraft?.slug}`
+          }
         />
       </div>
     </>

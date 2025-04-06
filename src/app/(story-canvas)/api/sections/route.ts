@@ -1,80 +1,77 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
-import { SectionType } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { slugify } from "@/lib/utils";
 
-// Get all sections (optionally filter by storyId)
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const storyId = searchParams.get("storyId");
+import { createSectionVersionSchema } from "@/lib/validation/sectionSchemas";
+import { SectionType } from "@prisma/client";
 
-  const sections = await prisma.section.findMany({
-    where: storyId ? { storyId: Number(storyId) } : undefined,
-    orderBy: { order: "asc" },
-  });
-
-  return NextResponse.json(sections);
-}
-
-// Create a new section for a story
+// POST /api/sections
+// Create Section + Initial Draft Version
 export async function POST(req: NextRequest) {
+  const body = await req.json();
+  console.log("🚀 ~ POST ~ body:", body);
+  const parsed = createSectionVersionSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.format() }, { status: 422 });
+  }
+
+  const { storyId, name, type, order, content, createdBy } = parsed.data;
+
   try {
-    const data = await req.json();
+    const result = await prisma.$transaction(async (tx) => {
+      // Creates base Section
+      const section = await tx.section.create({
+        data: {
+          storyId,
+          lastEditedBy: createdBy,
+          lockedBy: createdBy,
+        },
+      });
 
-    const { storyId, name, order, type, content } = data;
+      // Creates initial draft version
+      const draftVersion = await tx.sectionVersion.create({
+        data: {
+          sectionId: section.id,
+          name,
+          slug: slugify(name),
+          type: type as SectionType,
+          order,
+          content,
+          createdBy,
+          status: "draft",
+        },
+      });
 
-    if (!storyId || !name || typeof order !== "number" || !type || !content) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+      // Links currentDraft
+      const updated = await tx.section.update({
+        where: { id: section.id },
+        data: {
+          currentDraftId: draftVersion.id,
+        },
+        include: {
+          currentDraft: true,
+        },
+      });
 
-    if (!(type in sectionSchemas)) {
-      return NextResponse.json(
-        { error: `Unsupported section type: ${type}` },
-        { status: 400 }
-      );
-    }
-
-    // Validate content according to section type schema
-    const schema = sectionSchemas[type as SectionType].schema;
-    const parsed = schema.safeParse({ name, order, ...content });
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.format() },
-        { status: 422 }
-      );
-    }
-
-    const section = await prisma.section.create({
-      data: {
-        storyId,
-        name,
-        order,
-        type,
-        content,
-        slug: slugify(name),
-      },
+      return updated;
     });
 
-    return NextResponse.json(section);
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error("POST /api/sections error:", error);
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
       return NextResponse.json(
-        { message: "Section with this name already exists" },
+        { message: "Slug already exists in this section" },
         { status: 409 }
       );
     }
+
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Internal server error", error },
       { status: 500 }
     );
   }
