@@ -43,14 +43,22 @@ const SectionTypeForm = <T extends SectionType>({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     setError,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues,
   });
 
+  const internalSubmitHandler = async (data: FormData) => {
+    // Calls the onSubmit function from the parent component
+    await onSubmit(data);
+    // Resets the form after submission to deactivate the dirty state
+    reset(data);
+  };
+
   useEffect(() => {
     if (formSubmitRef) {
-      formSubmitRef.current = handleSubmit(onSubmit);
+      formSubmitRef.current = handleSubmit(internalSubmitHandler);
     }
   }, [formSubmitRef, handleSubmit, onSubmit]);
 

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
 import { SectionType } from "@prisma/client";
@@ -32,7 +31,6 @@ const EditSectionForm = ({
   onSubmittingChange,
 }: EditSectionFormProps) => {
   const { updateSection, selectedStory } = useCmsStore();
-  const router = useRouter();
   const { name, order, type, content, createdBy } = section;
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const contentObject =
@@ -83,8 +81,6 @@ const EditSectionForm = ({
 
       const updated = await res.json();
       updateSection(updated);
-
-      router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
     } catch (error) {
       console.error("Error updating section:", error);
     }
