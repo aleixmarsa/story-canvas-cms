@@ -6,9 +6,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <main className="flex-1">
+        <div className="flex-1">
           <div className="space-y-6">{children}</div>
-        </main>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

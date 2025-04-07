@@ -1,7 +1,7 @@
 "use client";
+import { useRef, useState } from "react";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
-import { useRef, useState } from "react";
 
 const NewStoryPage = () => {
   const [isDirty, setDirty] = useState(false);
