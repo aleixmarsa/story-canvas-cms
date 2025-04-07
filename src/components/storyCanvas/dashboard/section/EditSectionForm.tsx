@@ -17,7 +17,6 @@ type EditSectionFormProps = {
     type: SectionType;
     content: JsonValue;
   };
-  onCancelNavigateTo: string;
   formRef: React.MutableRefObject<(() => void) | undefined>;
   onDirtyChange: (dirty: boolean) => void;
   onSubmittingChange?: (submitting: boolean) => void;
@@ -25,7 +24,6 @@ type EditSectionFormProps = {
 
 const EditSectionForm = ({
   section,
-  onCancelNavigateTo,
   formRef,
   onDirtyChange,
   onSubmittingChange,
@@ -100,7 +98,6 @@ const EditSectionForm = ({
         type={type}
         defaultValues={defaultValues}
         onSubmit={submitHandler}
-        onCancelNavigateTo={onCancelNavigateTo}
         externalError={externalError}
         onSubmitButtonLabel="Update Section"
         formSubmitRef={formSubmitRef}

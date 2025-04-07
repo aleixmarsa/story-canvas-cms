@@ -7,14 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import FormErrorMessage from "../FormErrorMessage";
-import FormButtons from "../FormButtons";
 
 interface SectionFormProps<T extends SectionType> {
   type: T;
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
   onSubmitButtonLabel: string;
   onSubmit: (data: z.infer<(typeof sectionSchemas)[T]["schema"]>) => void;
-  onCancelNavigateTo: string;
   externalError?: {
     field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
     message: string;
@@ -28,9 +26,7 @@ const SectionTypeForm = <T extends SectionType>({
   type,
   defaultValues,
   onSubmit,
-  onCancelNavigateTo,
   externalError,
-  onSubmitButtonLabel,
   formSubmitRef,
   onDirtyChange,
   onSubmittingChange,
@@ -139,11 +135,6 @@ const SectionTypeForm = <T extends SectionType>({
       {(Object.keys(ui) as Array<keyof typeof FormData>).map((key) =>
         renderField(key, ui[key])
       )}
-      {/* <FormButtons
-        submitButtonLabel={onSubmitButtonLabel}
-        isSubmitting={isSubmitting}
-        onCancelNavigateTo={onCancelNavigateTo}
-      /> */}
     </form>
   );
 };

@@ -2,11 +2,28 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { SectionWithVersions } from "@/types/section";
+import { Badge } from "@/components/ui/badge";
+import { StoryStatus } from "@prisma/client";
 
 export const columns: ColumnDef<SectionWithVersions>[] = [
   {
     header: "Name",
     accessorFn: (row) => row.currentDraft?.name ?? "(untitled)",
+  },
+  {
+    header: "Status",
+    accessorFn: (row) =>
+      row.publishedVersion ? StoryStatus.published : StoryStatus.draft,
+    cell: ({ row }) => {
+      const status = row.getValue("Status") as string;
+      return (
+        <Badge
+          variant={status === StoryStatus.published ? "default" : "outline"}
+        >
+          {status}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "type",

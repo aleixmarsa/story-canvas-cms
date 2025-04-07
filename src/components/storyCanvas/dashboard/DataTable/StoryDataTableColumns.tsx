@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { StoryWithVersions } from "@/types/story";
+import { StoryStatus } from "@prisma/client";
 
 export const columns: ColumnDef<StoryWithVersions>[] = [
   {
@@ -11,11 +12,14 @@ export const columns: ColumnDef<StoryWithVersions>[] = [
   },
   {
     header: "Status",
-    accessorFn: (row) => (row.publishedVersion ? "published" : "draft"),
+    accessorFn: (row) =>
+      row.publishedVersion ? StoryStatus.published : StoryStatus.draft,
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
       return (
-        <Badge variant={status === "published" ? "default" : "outline"}>
+        <Badge
+          variant={status === StoryStatus.published ? "default" : "outline"}
+        >
           {status}
         </Badge>
       );
