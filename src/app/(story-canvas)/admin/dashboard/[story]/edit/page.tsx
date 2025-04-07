@@ -2,7 +2,7 @@
 
 import { useCmsStore } from "@/stores/cms-store";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
@@ -10,6 +10,10 @@ const EditStoryPage = () => {
   const { stories } = useCmsStore();
   const { story: storySlug } = useParams();
   const router = useRouter();
+  const [isDirty, setDirty] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const [story, setStory] = useState<{
     id: number;
@@ -52,10 +56,18 @@ const EditStoryPage = () => {
       <DashboardHeader
         title="Edit Story"
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
-        onSaveDraft={() => {}}
+        onPublish={() => {}}
+        onSaveDraft={() => formRef.current?.requestSubmit()}
+        saveDisabled={!isDirty}
+        isSaving={isSubmitting}
       />
       <div className="px-6">
-        <EditStoryForm story={story} onCancelNavigateTo="/admin/dashboard" />
+        <EditStoryForm
+          story={story}
+          setDirty={setDirty}
+          setIsSubmitting={setIsSubmitting}
+          ref={formRef}
+        />
       </div>
     </>
   );
