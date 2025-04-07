@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { slugify } from "@/lib/utils";
 import { updateSectionVersionSchema } from "@/lib/validation/sectionSchemas";
 import { SectionType } from "@prisma/client";
 
@@ -35,7 +34,6 @@ export async function PATCH(
       where: { id: versionId },
       data: {
         name,
-        slug: slugify(name),
         type: type as SectionType,
         order,
         content,
