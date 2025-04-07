@@ -23,8 +23,8 @@ type DashboardHeaderProps =
       onAddClick?: undefined;
       onSaveDraft?: () => void;
       onPublish?: () => void;
-      disableSaveButton?: boolean;
-      loadingSaveButton?: boolean;
+      saveDisabled?: boolean;
+      isSaving?: boolean;
     }
   | {
       title: string;
@@ -34,8 +34,8 @@ type DashboardHeaderProps =
       onAddClick?: never;
       onSaveDraft?: () => void;
       onPublish?: () => void;
-      disableSaveButton?: boolean;
-      loadingSaveButton?: boolean;
+      saveDisabled?: boolean;
+      isSaving?: boolean;
     }
   | {
       title: string;
@@ -45,8 +45,8 @@ type DashboardHeaderProps =
       addHref?: never;
       onSaveDraft?: () => void;
       onPublish?: () => void;
-      disableSaveButton?: boolean;
-      loadingSaveButton?: boolean;
+      saveDisabled?: boolean;
+      isSaving?: boolean;
     };
 
 const DashboardHeader = ({
@@ -57,8 +57,8 @@ const DashboardHeader = ({
   onAddClick,
   onSaveDraft,
   onPublish,
-  disableSaveButton,
-  loadingSaveButton,
+  saveDisabled,
+  isSaving,
 }: DashboardHeaderProps) => {
   return (
     <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -121,9 +121,9 @@ const DashboardHeader = ({
                 variant="outline"
                 onClick={onSaveDraft}
                 size="sm"
-                disabled={disableSaveButton}
+                disabled={saveDisabled}
               >
-                {loadingSaveButton ? (
+                {isSaving ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   <Save className="w-4 h-4 mr-1" />

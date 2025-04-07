@@ -48,7 +48,6 @@ const StoryPage = () => {
         addHref={`${slug}/new-section`}
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
         addButtonLabel="New Section"
-        onSaveDraft={() => {}}
         onPublish={() => {}}
       />
       <div className="px-6">

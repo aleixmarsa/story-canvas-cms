@@ -69,13 +69,12 @@ const EditSectionPage = () => {
         ]}
         onSaveDraft={handleSaveDraft}
         onPublish={() => {}}
-        disableSaveButton={!formIsDirty}
-        loadingSaveButton={formIsSubmitting}
+        saveDisabled={!formIsDirty}
+        isSaving={formIsSubmitting}
       />
       <div className="px-6">
         <EditSectionForm
           section={section}
-          onCancelNavigateTo={`/admin/dashboard/${selectedStory.currentDraft?.slug}`}
           formRef={formRef}
           onDirtyChange={setFormIsDirty}
           onSubmittingChange={setFormIsSubmitting}

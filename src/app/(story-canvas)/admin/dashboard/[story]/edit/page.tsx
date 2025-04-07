@@ -53,7 +53,6 @@ const EditStoryPage = () => {
         title="Edit Story"
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
         onSaveDraft={() => {}}
-        onPublish={() => {}}
       />
       <div className="px-6">
         <EditStoryForm story={story} onCancelNavigateTo="/admin/dashboard" />
