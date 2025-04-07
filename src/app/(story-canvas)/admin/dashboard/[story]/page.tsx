@@ -49,6 +49,7 @@ const StoryPage = () => {
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
         addButtonLabel="New Section"
         onPublish={() => {}}
+        publishButtonLabel="Publish Story"
       />
       <div className="px-6">
         <DataTable

@@ -14,40 +14,40 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Loader2 } from "lucide-react";
 
+type Breadcrumb = { label: string; href?: string };
+
+type BaseDashboardHeaderProps = {
+  title: string;
+  breadcrumbs: Breadcrumb[];
+  onSaveDraft?: () => void;
+  onPublish?: () => void;
+  saveDisabled?: boolean;
+  isSaving?: boolean;
+  publishButtonLabel?: string;
+};
+
+type AddButtonWithHref = {
+  addButtonLabel: string;
+  addHref: string;
+  onAddClick?: never;
+};
+
+type AddButtonWithClick = {
+  addButtonLabel: string;
+  onAddClick: () => void;
+  addHref?: never;
+};
+
+type NoAddButton = {
+  addButtonLabel?: undefined;
+  addHref?: undefined;
+  onAddClick?: undefined;
+};
+
 type DashboardHeaderProps =
-  | {
-      title: string;
-      breadcrumbs: { label: string; href?: string }[];
-      addButtonLabel?: undefined;
-      addHref?: undefined;
-      onAddClick?: undefined;
-      onSaveDraft?: () => void;
-      onPublish?: () => void;
-      saveDisabled?: boolean;
-      isSaving?: boolean;
-    }
-  | {
-      title: string;
-      breadcrumbs: { label: string; href?: string }[];
-      addButtonLabel: string;
-      addHref: string;
-      onAddClick?: never;
-      onSaveDraft?: () => void;
-      onPublish?: () => void;
-      saveDisabled?: boolean;
-      isSaving?: boolean;
-    }
-  | {
-      title: string;
-      breadcrumbs: { label: string; href?: string }[];
-      addButtonLabel: string;
-      onAddClick: () => void;
-      addHref?: never;
-      onSaveDraft?: () => void;
-      onPublish?: () => void;
-      saveDisabled?: boolean;
-      isSaving?: boolean;
-    };
+  | (BaseDashboardHeaderProps & AddButtonWithHref)
+  | (BaseDashboardHeaderProps & AddButtonWithClick)
+  | (BaseDashboardHeaderProps & NoAddButton);
 
 const DashboardHeader = ({
   title,
@@ -59,6 +59,7 @@ const DashboardHeader = ({
   onPublish,
   saveDisabled,
   isSaving,
+  publishButtonLabel = "Publish",
 }: DashboardHeaderProps) => {
   return (
     <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -134,7 +135,7 @@ const DashboardHeader = ({
             {onPublish && (
               <Button onClick={onPublish} size="sm">
                 <Rocket className="w-4 h-4 mr-1" />
-                Publish
+                {publishButtonLabel}
               </Button>
             )}
           </>

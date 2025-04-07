@@ -29,7 +29,6 @@ const NewSectionPage = () => {
           },
         ]}
         onSaveDraft={handleSaveDraft}
-        onPublish={() => {}}
         saveDisabled={!formIsDirty}
         isSaving={formIsSubmitting}
       />

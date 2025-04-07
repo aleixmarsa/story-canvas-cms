@@ -71,6 +71,7 @@ const EditSectionPage = () => {
         onPublish={() => {}}
         saveDisabled={!formIsDirty}
         isSaving={formIsSubmitting}
+        publishButtonLabel="Publish Section"
       />
       <div className="px-6">
         <EditSectionForm

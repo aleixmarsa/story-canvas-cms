@@ -60,6 +60,7 @@ const EditStoryPage = () => {
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
+        publishButtonLabel="Publish Story"
       />
       <div className="px-6">
         <EditStoryForm
