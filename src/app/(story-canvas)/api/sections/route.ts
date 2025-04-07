@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
 import { createSectionVersionSchema } from "@/lib/validation/sectionSchemas";
 import { SectionType } from "@prisma/client";
 
@@ -57,16 +55,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    if (
-      error instanceof PrismaClientKnownRequestError &&
-      error.code === "P2002"
-    ) {
-      return NextResponse.json(
-        { message: "Slug already exists in this section" },
-        { status: 409 }
-      );
-    }
-
     return NextResponse.json(
       { message: "Internal server error", error },
       { status: 500 }
