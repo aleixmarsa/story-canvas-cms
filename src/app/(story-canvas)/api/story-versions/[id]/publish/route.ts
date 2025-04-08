@@ -17,7 +17,7 @@ export async function POST(
   }
 
   try {
-    // Findsthe version to publish
+    // Finds the version to publish
     const original = await prisma.storyVersion.findUnique({
       where: { id: versionId },
     });
@@ -42,7 +42,7 @@ export async function POST(
       data: {
         storyId: original.storyId,
         title: original.title,
-        slug: `${original.slug}-draft-${Date.now()}`,
+        slug: original.slug,
         description: original.description ?? undefined,
         theme: original.theme ?? undefined,
         components: original.components ?? undefined,
