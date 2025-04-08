@@ -33,6 +33,7 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
         title: selectedStory?.currentDraft?.title,
         slug: selectedStory?.currentDraft?.slug,
         createdBy: selectedStory?.currentDraft?.createdBy,
+        storyId: selectedStory?.id,
       },
     });
 
@@ -47,6 +48,7 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
     const onSubmit = async (data: StoryFormData) => {
       setSubmitError(null);
       try {
+        //Add the story ID to the data
         const res = await fetch(
           `/api/story-versions/${selectedStory?.currentDraftId}`,
           {

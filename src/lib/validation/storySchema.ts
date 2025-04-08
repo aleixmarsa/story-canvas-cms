@@ -23,6 +23,7 @@ export const storySchema = baseStorySchema.extend({
   theme: z.any().optional(),
   components: z.any().optional(),
   content: z.any().optional(),
+  storyId: z.number().optional(),
 });
 
 export type StoryFormData = z.infer<typeof storySchema>;
