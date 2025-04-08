@@ -7,32 +7,33 @@ import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import FormErrorMessage from "../FormErrorMessage";
+import { useRouter } from "next/navigation";
+import { useCmsStore } from "@/stores/cms-store";
+import { StoryVersion } from "@prisma/client";
 
 type EditStoryFormProps = {
-  story: {
-    currentDraftId: number | null;
-    title: string;
-    slug: string;
-    createdBy: string;
-  };
   setDirty?: (dirty: boolean) => void;
   setIsSubmitting?: (submitting: boolean) => void;
 };
 
 const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
-  ({ story, setDirty, setIsSubmitting }, ref) => {
+  ({ setDirty, setIsSubmitting }, ref) => {
     const [submitError, setSubmitError] = useState<string | null>(null);
-
+    const { updateStory, selectedStory, selectStory } = useCmsStore();
+    const router = useRouter();
     const {
       register,
       handleSubmit,
       formState: { errors, isSubmitting, isDirty },
       setError,
-      setValue,
       reset,
     } = useForm<StoryFormData>({
       resolver: zodResolver(storySchema),
-      defaultValues: story,
+      defaultValues: {
+        title: selectedStory?.currentDraft?.title,
+        slug: selectedStory?.currentDraft?.slug,
+        createdBy: selectedStory?.currentDraft?.createdBy,
+      },
     });
 
     useEffect(() => {
@@ -43,20 +44,17 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
       if (setIsSubmitting) setIsSubmitting(isSubmitting);
     }, [isSubmitting, setIsSubmitting]);
 
-    useEffect(() => {
-      setValue("title", story.title);
-      setValue("slug", story.slug);
-      setValue("createdBy", story.createdBy);
-    }, [story, setValue]);
-
     const onSubmit = async (data: StoryFormData) => {
       setSubmitError(null);
       try {
-        const res = await fetch(`/api/story-versions/${story.currentDraftId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        });
+        const res = await fetch(
+          `/api/story-versions/${selectedStory?.currentDraftId}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          }
+        );
 
         if (res.status === 409) {
           setError("slug", {
@@ -70,10 +68,26 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           throw new Error("Failed to update story");
         }
 
-        const updated = await res.json();
-        if (!updated) {
+        const updatedStoryVersion: StoryVersion = await res.json();
+        if (!updatedStoryVersion) {
           throw new Error("Failed to update story");
         }
+        // Update the URL if the slug has changed
+        if (data.slug !== selectedStory?.currentDraft?.slug) {
+          router.replace(`/admin/dashboard/${data.slug}/edit`);
+        }
+
+        // Update the story in the store
+        if (selectedStory) {
+          const updatedStory = {
+            ...selectedStory,
+            currentDraft: updatedStoryVersion,
+          };
+          updateStory(updatedStory);
+          selectStory(updatedStory);
+        }
+
+        // Reset the form with the updated data to reset the dirty state
         reset(data);
       } catch (err) {
         console.error(err);

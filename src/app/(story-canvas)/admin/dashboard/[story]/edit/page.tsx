@@ -7,7 +7,7 @@ import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryFor
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditStoryPage = () => {
-  const { stories } = useCmsStore();
+  const { stories, selectStory, selectedStory } = useCmsStore();
   const { story: storySlug } = useParams();
   const router = useRouter();
   const [isDirty, setDirty] = useState(false);
@@ -15,41 +15,24 @@ const EditStoryPage = () => {
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const [story, setStory] = useState<{
-    id: number;
-    createdBy: string;
-    title: string;
-    slug: string;
-    currentDraftId: number | null;
-  } | null>(null);
+  useEffect(() => {
+    if (!storySlug || stories.length === 0) return;
+
+    const found = stories.find((s) => s.currentDraft?.slug === storySlug);
+    if (found) {
+      selectStory(found);
+    }
+  }, [stories, storySlug]);
 
   useEffect(() => {
-    if (!storySlug) {
-      router.push("/admin/dashboard");
-      return;
-    }
-
+    if (!storySlug || stories.length === 0) return;
     const found = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (!found) {
       router.push("/admin/dashboard");
-      return;
     }
-    const { id, currentDraft, currentDraftId } = found;
-    if (!currentDraft) {
-      router.push("/admin/dashboard");
-      return;
-    }
-    const { title, slug, createdBy } = currentDraft;
-    setStory({
-      id,
-      title,
-      slug,
-      createdBy,
-      currentDraftId,
-    });
-  }, [storySlug, stories, router]);
+  }, [storySlug]);
 
-  if (!story) return null;
+  if (!selectedStory) return null;
 
   return (
     <>
@@ -64,7 +47,6 @@ const EditStoryPage = () => {
       />
       <div className="px-6">
         <EditStoryForm
-          story={story}
           setDirty={setDirty}
           setIsSubmitting={setIsSubmitting}
           ref={formRef}
