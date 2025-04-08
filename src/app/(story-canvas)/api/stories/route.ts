@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { storySchema } from "@/lib/validation/storySchema";
 
+class ConflictError extends Error {}
+
 // Get all stories. Each story includes its current draft and published version
 export async function GET() {
   const stories = await prisma.story.findMany({
@@ -39,6 +41,21 @@ export async function POST(req: NextRequest) {
           lastEditedBy: createdBy,
         },
       });
+
+      // Checks if the slug is already used by another story
+      // This is necessary because the slug is unique across all stories but
+      const conflicting = await tx.storyVersion.findFirst({
+        where: {
+          slug,
+          storyId: {
+            not: story.id,
+          },
+        },
+      });
+
+      if (conflicting) {
+        throw new ConflictError("Slug already exists");
+      }
 
       // Creates the initial StoryVersion as draft
       const draftVersion = await tx.storyVersion.create({
@@ -80,7 +97,12 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
-
+    if (error instanceof ConflictError) {
+      return NextResponse.json(
+        { message: "Slug already exists" },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { message: "Internal server error", error },
       { status: 500 }
