@@ -54,7 +54,7 @@ model StoryVersion {
   // Main editable metadata
   title       String
   slug        String
-  createdBy String
+  createdBy   String
   description String?
 
   // Visual configuration and layout content
@@ -72,7 +72,10 @@ model StoryVersion {
   currentDraftOf Story? @relation("CurrentDraft")
   publishedOf    Story? @relation("PublishedVersion")
 
-  @@unique([slug, status])
+  // This allows different StoryVersions in the same Story to share a slug,
+  // but prevents the same slug from being reused in different Stories.
+  @@unique([slug, storyId])
+  // Index to optimize queries filtering by storyId and status
   @@index([storyId, status])
 }
 
@@ -105,10 +108,10 @@ model SectionVersion {
   sectionId Int
 
   // Editable metadata
-  name  String
+  name      String
   createdBy String
-  type  SectionType
-  order Int
+  type      SectionType
+  order     Int
 
   // Section content (e.g. text, image, etc.)
   content Json
