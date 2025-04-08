@@ -72,10 +72,6 @@ model StoryVersion {
   currentDraftOf Story? @relation("CurrentDraft")
   publishedOf    Story? @relation("PublishedVersion")
 
-  // This allows different StoryVersions in the same Story to share a slug,
-  // but prevents the same slug from being reused in different Stories.
-  @@unique([slug, storyId])
-  // Index to optimize queries filtering by storyId and status
   @@index([storyId, status])
 }
 
