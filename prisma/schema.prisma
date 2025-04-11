@@ -10,6 +10,7 @@ datasource db {
 enum StoryStatus {
   draft
   published
+  changed
 }
 
 enum SectionType {
@@ -65,6 +66,7 @@ model StoryVersion {
   // Version metadata
   status    StoryStatus
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   comment   String?
 
   // Relations
