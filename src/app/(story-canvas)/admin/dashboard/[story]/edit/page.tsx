@@ -7,13 +7,38 @@ import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryFor
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditStoryPage = () => {
-  const { stories, selectStory, selectedStory } = useCmsStore();
+  const { stories, selectStory, selectedStory, updateStory } = useCmsStore();
   const { story: storySlug } = useParams();
   const router = useRouter();
   const [isDirty, setDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const formRef = useRef<HTMLFormElement | null>(null);
+
+  const handlePublishStory = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch(
+        `/api/story-versions/${selectedStory?.currentDraftId}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed publishing the Story");
+      }
+      const updatedStory = await res.json();
+      console.log("🚀 ~ handlePublishStory ~ updatedStory:", updatedStory);
+      updateStory(updatedStory);
+    } catch (err) {
+      console.error("Failed to publish the story", err);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   useEffect(() => {
     if (!storySlug || stories.length === 0) return;
@@ -39,11 +64,12 @@ const EditStoryPage = () => {
       <DashboardHeader
         title="Edit Story"
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
-        onPublish={() => {}}
+        onPublish={handlePublishStory}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
         publishButtonLabel="Publish Story"
+        isPublishing={isPublishing}
       />
       <div className="px-6">
         <EditStoryForm
