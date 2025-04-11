@@ -24,6 +24,7 @@ type BaseDashboardHeaderProps = {
   saveDisabled?: boolean;
   isSaving?: boolean;
   publishButtonLabel?: string;
+  isPublishing?: boolean;
 };
 
 type AddButtonWithHref = {
@@ -60,6 +61,7 @@ const DashboardHeader = ({
   saveDisabled,
   isSaving,
   publishButtonLabel = "Publish",
+  isPublishing,
 }: DashboardHeaderProps) => {
   return (
     <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -134,7 +136,11 @@ const DashboardHeader = ({
             )}
             {onPublish && (
               <Button onClick={onPublish} size="sm">
-                <Rocket className="w-4 h-4 mr-1" />
+                {isPublishing ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <Rocket className="w-4 h-4 mr-1" />
+                )}
                 {publishButtonLabel}
               </Button>
             )}
