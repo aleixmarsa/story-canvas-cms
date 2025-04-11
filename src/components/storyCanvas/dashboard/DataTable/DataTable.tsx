@@ -91,7 +91,7 @@ const DataTable = <TData, TValue>({
               {/* Edit / Delete icons */}
               <div
                 className="absolute right-4 top-1/2 -translate-y-1/2 hidden group-hover:flex gap-2 z-10"
-                onClick={(e) => e.stopPropagation()} // evita que activi el click de la fila
+                onClick={(e) => e.stopPropagation()} // Prevent row click event
               >
                 {editHref && (
                   <Link href={editHref}>

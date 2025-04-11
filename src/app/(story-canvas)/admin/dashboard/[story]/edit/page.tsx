@@ -31,7 +31,6 @@ const EditStoryPage = () => {
         throw new Error("Failed publishing the Story");
       }
       const updatedStory = await res.json();
-      console.log("🚀 ~ handlePublishStory ~ updatedStory:", updatedStory);
       updateStory(updatedStory);
     } catch (err) {
       console.error("Failed to publish the story", err);
@@ -42,7 +41,6 @@ const EditStoryPage = () => {
 
   useEffect(() => {
     if (!storySlug || stories.length === 0) return;
-
     const found = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (found) {
       selectStory(found);

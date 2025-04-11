@@ -38,6 +38,17 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
     });
 
     useEffect(() => {
+      if (selectedStory?.currentDraft) {
+        reset({
+          title: selectedStory.currentDraft.title,
+          slug: selectedStory.currentDraft.slug,
+          createdBy: selectedStory.currentDraft.createdBy,
+          storyId: selectedStory.id,
+        });
+      }
+    }, [selectedStory, reset]);
+
+    useEffect(() => {
       if (setDirty) setDirty(isDirty);
     }, [isDirty, setDirty]);
 
