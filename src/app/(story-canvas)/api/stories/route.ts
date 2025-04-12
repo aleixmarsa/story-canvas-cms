@@ -32,8 +32,8 @@ export async function POST(req: NextRequest) {
     parsed.data;
 
   try {
-    // If an error occurs, Prisma will throw an error.
-    //  For example, if the slug already exists, the StoryVersion creation will fail and the created Story will be rolled back.
+    // If an error occurs, Prisma will throw an error and the transaction will be rolled back.
+    // For example, if the slug already exists, the StoryVersion creation will fail and the created Story will be rolled back.
     const result = await prisma.$transaction(async (tx) => {
       // Creates the Story
       const story = await tx.story.create({
@@ -43,7 +43,8 @@ export async function POST(req: NextRequest) {
       });
 
       // Checks if the slug is already used by another story
-      // This is necessary because the slug is unique across all stories but
+      // StoryVersion within the same story can have the same slug
+      // For example, a story can have a draft and a published version with the same slug
       const conflicting = await tx.storyVersion.findFirst({
         where: {
           slug,
