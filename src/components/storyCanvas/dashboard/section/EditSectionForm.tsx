@@ -6,31 +6,38 @@ import { useCmsStore } from "@/stores/cms-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
-import { JsonValue } from "@prisma/client/runtime/client";
+import { useRouter } from "next/navigation";
+import { SectionWithVersions } from "@/types/section";
 
 type EditSectionFormProps = {
-  section: {
-    id: number;
-    name: string;
-    order: number;
-    createdBy: string;
-    type: SectionType;
-    content: JsonValue;
-  };
   formRef: React.MutableRefObject<(() => void) | undefined>;
   onDirtyChange: (dirty: boolean) => void;
   onSubmittingChange?: (submitting: boolean) => void;
 };
 
 const EditSectionForm = ({
-  section,
   formRef,
   onDirtyChange,
   onSubmittingChange,
 }: EditSectionFormProps) => {
-  const { updateSection, selectedStory } = useCmsStore();
-  const { name, order, type, content, createdBy } = section;
+  const { updateSection, selectedStory, selectedSection, selectSection } =
+    useCmsStore();
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
+  const router = useRouter();
+
+  useEffect(() => {
+    formRef.current = async () => {
+      if (formSubmitRef.current) {
+        formSubmitRef.current();
+      }
+    };
+  }, [formRef]);
+
+  if (!selectedSection) return null;
+  const { currentDraft: currentSectionDraft } = selectedSection;
+  if (!currentSectionDraft) return null;
+  const { name, order, type, content, createdBy } = currentSectionDraft;
+
   const contentObject =
     typeof content === "object" && content !== null ? content : {};
   const defaultValues = { name, order, createdBy, ...contentObject };
@@ -45,52 +52,61 @@ const EditSectionForm = ({
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
     const selectedStoryId = selectedStory?.id;
+    const { name, order, createdBy, ...content } = data;
     if (!type || !selectedStoryId) {
       throw new Error("Section type or story ID is not selected");
     }
 
-    const { name, order, createdBy, ...content } = data;
-
     try {
-      const res = await fetch(`/api/sections/${section.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          storyId: selectedStoryId,
-          type,
-          name,
-          order,
-          createdBy,
-          content,
-        }),
-      });
+      const res = await fetch(
+        `/api/sections/${selectedSection?.currentDraft?.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyId: selectedStoryId,
+            type,
+            name,
+            order,
+            createdBy,
+            content,
+          }),
+        }
+      );
 
       if (res.status === 409) {
         externalError = {
           field: "name",
           message: "This name is already in use",
         };
-        return;
+        return false;
       }
 
       if (!res.ok) {
         throw new Error("Failed to update section");
       }
 
-      const updated = await res.json();
-      updateSection(updated);
+      const updatedSection: SectionWithVersions = await res.json();
+      if (!updatedSection) {
+        throw new Error("Failed to update story");
+      }
+      // Update the URL if the name has changed
+      if (
+        updatedSection?.currentDraft?.name !==
+        selectedSection?.currentDraft?.name
+      ) {
+        router.replace(
+          `/admin/dashboard/${selectedStory.currentDraft?.id}/${updatedSection?.currentDraft?.slug}`
+        );
+      }
+      updateSection(updatedSection);
+      selectSection(updatedSection);
+      return true;
     } catch (error) {
       console.error("Error updating section:", error);
+      return false;
     }
   };
-
-  useEffect(() => {
-    formRef.current = async () => {
-      if (formSubmitRef.current) {
-        formSubmitRef.current();
-      }
-    };
-  }, [formRef]);
 
   return (
     <div className="space-y-4 max-w-lg">

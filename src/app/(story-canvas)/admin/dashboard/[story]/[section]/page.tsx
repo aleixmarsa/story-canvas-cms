@@ -4,49 +4,34 @@ import { useCmsStore } from "@/stores/cms-store";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
-import { SectionType } from "@prisma/client";
-import { JsonValue } from "@prisma/client/runtime/client";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditSectionPage = () => {
-  const { sections, selectedStory } = useCmsStore();
-  const { section: sectionIdParam } = useParams();
-  const sectionId = Number(sectionIdParam);
+  const { sections, selectedStory, selectedSection, selectSection } =
+    useCmsStore();
+  const { section: sectionSlug } = useParams();
   const router = useRouter();
-  const [section, setSection] = useState<{
-    id: number;
-    name: string;
-    order: number;
-    createdBy: string;
-    type: SectionType;
-    content: JsonValue;
-    currentDraftId: number | null;
-  } | null>(null);
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formIsSubmitting, setFormIsSubmitting] = useState(false);
 
   const formRef = useRef<(() => void) | undefined>(undefined);
+  useEffect(() => {
+    if (!sectionSlug) return;
+    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
+    if (found) {
+      selectSection(found);
+    }
+  }, [sections, sectionSlug]);
 
   useEffect(() => {
-    const found = sections.find((s) => s.id === sectionId);
-    if (!found || !found.currentDraft) {
+    if (!sectionSlug) return;
+    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
+    if (!found) {
       router.push("/admin/dashboard");
-      return;
     }
+  }, [sectionSlug]);
 
-    const { id, currentDraft, currentDraftId } = found;
-    const { name, order, type, content, createdBy } = currentDraft;
-
-    setSection({
-      id,
-      name,
-      order,
-      createdBy,
-      type,
-      content,
-      currentDraftId,
-    });
-  }, [sectionId, sections, router]);
+  if (!selectedStory) return null;
 
   const handleSaveDraft = async () => {
     if (formRef.current) {
@@ -54,7 +39,7 @@ const EditSectionPage = () => {
     }
   };
 
-  if (!section || !selectedStory) return null;
+  if (!selectedSection) return null;
 
   return (
     <>
@@ -75,7 +60,6 @@ const EditSectionPage = () => {
       />
       <div className="px-6">
         <EditSectionForm
-          section={section}
           formRef={formRef}
           onDirtyChange={setFormIsDirty}
           onSubmittingChange={setFormIsSubmitting}

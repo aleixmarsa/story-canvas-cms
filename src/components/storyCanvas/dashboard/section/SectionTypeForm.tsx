@@ -53,7 +53,7 @@ const SectionTypeForm = <T extends SectionType>({
       const success = await onSubmit(data);
       // Resets the form after submission to deactivate the dirty state
       if (success) {
-        reset(data); // Només si ha anat bé
+        reset(data);
       }
     } catch (error) {
       console.log("🚀 ~ internalSubmitHandler ~ error:", error);
