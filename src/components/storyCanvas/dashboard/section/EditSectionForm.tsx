@@ -59,7 +59,7 @@ const EditSectionForm = ({
 
     try {
       const res = await fetch(
-        `/api/sections/${selectedSection?.currentDraft?.id}`,
+        `/api/section-versions/${selectedSection?.currentDraft?.id}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
