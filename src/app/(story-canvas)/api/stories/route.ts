@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { storySchema } from "@/lib/validation/storySchema";
+import { storySchema } from "@/lib/validation/story-schema";
 
 class ConflictError extends Error {}
 
