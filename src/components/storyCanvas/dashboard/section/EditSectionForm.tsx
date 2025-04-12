@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
+import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
 import { SectionWithVersions } from "@/types/section";
 

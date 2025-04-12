@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { createSectionVersionSchema } from "@/lib/validation/sectionSchemas";
+import { createSectionVersionSchema } from "@/lib/validation/section-schemas";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";

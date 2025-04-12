@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { SectionType } from "@prisma/client";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
+import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
