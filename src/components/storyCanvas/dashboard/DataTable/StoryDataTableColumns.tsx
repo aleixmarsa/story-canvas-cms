@@ -27,7 +27,13 @@ export const columns: ColumnDef<StoryWithVersions>[] = [
       const status = row.getValue("Status") as string;
       return (
         <Badge
-          variant={status === StoryStatus.published ? "default" : "outline"}
+          variant={
+            status === StoryStatus.published
+              ? "default"
+              : status === StoryStatus.draft
+              ? "outline"
+              : "secondary"
+          }
         >
           {status}
         </Badge>

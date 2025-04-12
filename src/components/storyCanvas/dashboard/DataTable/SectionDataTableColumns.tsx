@@ -12,18 +12,37 @@ export const columns: ColumnDef<SectionWithVersions>[] = [
   },
   {
     header: "Status",
-    accessorFn: (row) =>
-      row.publishedVersion ? StoryStatus.published : StoryStatus.draft,
+    accessorFn: (row) => {
+      if (!row.publishedAt) return StoryStatus.draft;
+      if (!row.currentDraft) return StoryStatus.published;
+      const publishedAt = new Date(row.publishedAt);
+      const draftUpdatedAt = new Date(row.currentDraft.updatedAt);
+      publishedAt.setMilliseconds(0);
+      draftUpdatedAt.setMilliseconds(0);
+      return publishedAt >= draftUpdatedAt
+        ? StoryStatus.published
+        : StoryStatus.changed;
+    },
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
       return (
         <Badge
-          variant={status === StoryStatus.published ? "default" : "outline"}
+          variant={
+            status === StoryStatus.published
+              ? "default"
+              : status === StoryStatus.draft
+              ? "outline"
+              : "secondary"
+          }
         >
           {status}
         </Badge>
       );
     },
+  },
+  {
+    header: "Slug",
+    accessorFn: (row) => row.currentDraft?.slug ?? "-",
   },
   {
     accessorKey: "type",
