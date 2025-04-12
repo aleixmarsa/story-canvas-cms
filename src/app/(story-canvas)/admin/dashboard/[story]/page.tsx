@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useCmsStore } from "@/stores/cms-store";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
@@ -10,6 +10,7 @@ import { SectionWithVersions } from "@/types/section";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
+  const [isPublishing, setIsPublishing] = useState(false);
   const {
     stories,
     selectedStory,
@@ -17,15 +18,14 @@ const StoryPage = () => {
     setSections,
     selectStory,
     selectSection,
+    updateStory,
   } = useCmsStore();
 
   useEffect(() => {
     const story = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (!story) return;
-
     selectStory(story);
     selectSection(null);
-
     const fetchSections = async () => {
       const res = await fetch(`/api/stories/${story.id}/sections`);
       const data: SectionWithVersions[] = await res.json();
@@ -41,6 +41,29 @@ const StoryPage = () => {
   if (!currentDraft) return <p className="p-6">No draft found</p>;
   const { title, slug } = currentDraft;
 
+  const handlePublishStory = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch(
+        `/api/story-versions/${currentDraft.id}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed publishing the Story");
+      }
+      const updatedStory = await res.json();
+      updateStory(updatedStory);
+    } catch (err) {
+      console.error("Failed to publish the story", err);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   return (
     <>
       <DashboardHeader
@@ -48,15 +71,16 @@ const StoryPage = () => {
         addHref={`${slug}/new-section`}
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
         addButtonLabel="New Section"
-        onPublish={() => {}}
+        onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
+        isPublishing={isPublishing}
       />
       <div className="px-6">
         <DataTable
           columns={columns}
           data={sections}
           getEditLink={(row) =>
-            `/admin/dashboard/${slug}/${row.currentDraft?.id}`
+            `/admin/dashboard/${slug}/${row.currentDraft?.slug}`
           }
         />
       </div>
