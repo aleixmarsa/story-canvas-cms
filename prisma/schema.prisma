@@ -107,6 +107,7 @@ model SectionVersion {
 
   // Editable metadata
   name      String
+  slug      String
   createdBy String
   type      SectionType
   order     Int
@@ -117,6 +118,7 @@ model SectionVersion {
   // Version metadata
   status    StoryStatus
   createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   comment   String?
 
   // Relations
@@ -124,6 +126,5 @@ model SectionVersion {
   currentDraftOf Section? @relation("SectionCurrentDraft")
   publishedOf    Section? @relation("SectionPublishedVersion")
 
-  @@unique([sectionId, status])
   @@index([sectionId, status])
 }
