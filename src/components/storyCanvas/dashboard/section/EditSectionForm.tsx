@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { z } from "zod";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/section-schemas";
@@ -21,7 +21,7 @@ const EditSectionForm = ({
   onSubmittingChange,
 }: EditSectionFormProps) => {
   const { updateSection, selectedStory, selectedSection, selectSection } =
-    useCmsStore();
+    useDashboardStore();
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
 

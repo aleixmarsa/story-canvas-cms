@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { StoryWithVersions } from "@/types/story";
 import { SectionWithVersions } from "@/types/section";
 
-interface CmsState {
+interface DashboardState {
   stories: StoryWithVersions[];
   sections: SectionWithVersions[];
   selectedStory: StoryWithVersions | null;
@@ -30,7 +30,7 @@ interface CmsState {
   deleteSection: (sectionId: number) => void;
 }
 
-export const useCmsStore = create<CmsState>((set) => ({
+export const useDashboardStore = create<DashboardState>((set) => ({
   stories: [],
   sections: [],
   selectedStory: null,
