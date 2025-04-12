@@ -1,80 +1,110 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useRef } from "react";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/sectionSchemas";
-import { JsonValue } from "@prisma/client/runtime/client";
+import { useRouter } from "next/navigation";
+import { SectionWithVersions } from "@/types/section";
 
 type EditSectionFormProps = {
-  section: {
-    id: number;
-    name: string;
-    order: number;
-    type: SectionType;
-    content: JsonValue;
-  };
-  onCancelNavigateTo: string;
+  formRef: React.MutableRefObject<(() => void) | undefined>;
+  onDirtyChange: (dirty: boolean) => void;
+  onSubmittingChange?: (submitting: boolean) => void;
 };
 
 const EditSectionForm = ({
-  section,
-  onCancelNavigateTo,
+  formRef,
+  onDirtyChange,
+  onSubmittingChange,
 }: EditSectionFormProps) => {
-  const { updateSection, selectedStory } = useCmsStore();
-  const [externalError, setExternalError] = useState<{
-    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
-    message: string;
-  } | null>(null);
-
+  const { updateSection, selectedStory, selectedSection, selectSection } =
+    useCmsStore();
+  const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
-  const { name, order, type, content } = section;
+
+  useEffect(() => {
+    formRef.current = async () => {
+      if (formSubmitRef.current) {
+        formSubmitRef.current();
+      }
+    };
+  }, [formRef]);
+
+  if (!selectedSection) return null;
+  const { currentDraft: currentSectionDraft } = selectedSection;
+  if (!currentSectionDraft) return null;
+  const { name, order, type, content, createdBy } = currentSectionDraft;
 
   const contentObject =
     typeof content === "object" && content !== null ? content : {};
-  const defaultValues = { name, order, ...contentObject };
+  const defaultValues = { name, order, createdBy, ...contentObject };
 
-  const handleSubmit = async <T extends SectionType>(
+  // Placeholder to store any field-level error
+  let externalError: {
+    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    message: string;
+  } | null = null;
+
+  const submitHandler = async <T extends SectionType>(
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
     const selectedStoryId = selectedStory?.id;
+    const { name, order, createdBy, ...content } = data;
     if (!type || !selectedStoryId) {
       throw new Error("Section type or story ID is not selected");
     }
 
-    const { name, order, ...content } = data;
-
     try {
-      const res = await fetch(`/api/sections/${section.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          order,
-          content,
-        }),
-      });
+      const res = await fetch(
+        `/api/section-versions/${selectedSection?.currentDraft?.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyId: selectedStoryId,
+            type,
+            name,
+            order,
+            createdBy,
+            content,
+          }),
+        }
+      );
 
       if (res.status === 409) {
-        setExternalError({
+        externalError = {
           field: "name",
           message: "This name is already in use",
-        });
-        return;
+        };
+        return false;
       }
 
       if (!res.ok) {
         throw new Error("Failed to update section");
       }
 
-      const updated = await res.json();
-      updateSection(updated);
-      router.push(`/admin/dashboard/${selectedStory.slug}`);
+      const updatedSection: SectionWithVersions = await res.json();
+      if (!updatedSection) {
+        throw new Error("Failed to update story");
+      }
+      // Update the URL if the name has changed
+      if (
+        updatedSection?.currentDraft?.name !==
+        selectedSection?.currentDraft?.name
+      ) {
+        router.replace(
+          `/admin/dashboard/${selectedStory.currentDraft?.id}/${updatedSection?.currentDraft?.slug}`
+        );
+      }
+      updateSection(updatedSection);
+      selectSection(updatedSection);
+      return true;
     } catch (error) {
       console.error("Error updating section:", error);
+      return false;
     }
   };
 
@@ -83,10 +113,12 @@ const EditSectionForm = ({
       <SectionTypeForm
         type={type}
         defaultValues={defaultValues}
-        onSubmit={handleSubmit}
-        onCancelNavigateTo={onCancelNavigateTo}
+        onSubmit={submitHandler}
         externalError={externalError}
         onSubmitButtonLabel="Update Section"
+        formSubmitRef={formSubmitRef}
+        onDirtyChange={onDirtyChange}
+        onSubmittingChange={onSubmittingChange}
       />
     </div>
   );

@@ -2,10 +2,19 @@
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 import { useCmsStore } from "@/stores/cms-store";
+import { useRef, useState } from "react";
 
 const NewSectionPage = () => {
   const { selectedStory } = useCmsStore();
+  const formRef = useRef<(() => void) | undefined>(undefined);
+  const [formIsDirty, setFormIsDirty] = useState(false);
+  const [formIsSubmitting, setFormIsSubmitting] = useState(false);
 
+  const handleSaveDraft = async () => {
+    if (formRef.current) {
+      await formRef.current();
+    }
+  };
   if (!selectedStory) return <p className="p-6">Loading...</p>;
 
   return (
@@ -15,15 +24,20 @@ const NewSectionPage = () => {
         breadcrumbs={[
           { label: "Dashboard", href: "/admin/dashboard" },
           {
-            label: selectedStory.title,
-            href: `/admin/dashboard/${selectedStory.slug}`,
+            label: selectedStory.currentDraft?.title ?? "Untitled",
+            href: `/admin/dashboard/${selectedStory.currentDraft?.slug}`,
           },
         ]}
-        onPublish={() => {}}
-        onSaveDraft={() => {}}
+        onSaveDraft={handleSaveDraft}
+        saveDisabled={!formIsDirty}
+        isSaving={formIsSubmitting}
       />
       <div className="px-6">
-        <CreateSectionForm />
+        <CreateSectionForm
+          formRef={formRef}
+          onDirtyChange={setFormIsDirty}
+          onSubmittingChange={setFormIsSubmitting}
+        />
       </div>
     </>
   );

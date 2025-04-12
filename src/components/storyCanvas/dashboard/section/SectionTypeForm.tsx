@@ -7,27 +7,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import FormErrorMessage from "../FormErrorMessage";
-import FormButtons from "../FormButtons";
 
 interface SectionFormProps<T extends SectionType> {
   type: T;
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
   onSubmitButtonLabel: string;
-  onSubmit: (data: z.infer<(typeof sectionSchemas)[T]["schema"]>) => void;
-  onCancelNavigateTo: string;
+  onSubmit: (
+    data: z.infer<(typeof sectionSchemas)[T]["schema"]>
+  ) => Promise<boolean>;
   externalError?: {
     field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
     message: string;
   } | null;
+  formSubmitRef?: React.MutableRefObject<(() => void) | undefined>;
+  onDirtyChange?: (dirty: boolean) => void;
+  onSubmittingChange?: (submitting: boolean) => void;
 }
 
 const SectionTypeForm = <T extends SectionType>({
   type,
   defaultValues,
   onSubmit,
-  onCancelNavigateTo,
   externalError,
-  onSubmitButtonLabel,
+  formSubmitRef,
+  onDirtyChange,
+  onSubmittingChange,
 }: SectionFormProps<T>) => {
   const { schema, ui } = sectionSchemas[type];
   type FormData = z.infer<typeof schema>;
@@ -35,12 +39,42 @@ const SectionTypeForm = <T extends SectionType>({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     setError,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues,
   });
+
+  const internalSubmitHandler = async (data: FormData) => {
+    // Calls the onSubmit function from the parent component
+    try {
+      const success = await onSubmit(data);
+      // Resets the form after submission to deactivate the dirty state
+      if (success) {
+        reset(data);
+      }
+    } catch (error) {
+      console.log("🚀 ~ internalSubmitHandler ~ error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (formSubmitRef) {
+      formSubmitRef.current = handleSubmit(internalSubmitHandler);
+    }
+  }, [formSubmitRef, handleSubmit, onSubmit]);
+
+  // Notifies the parent component about when the form has been modified
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  // Notifies the parent component about when the form is submitting
+  useEffect(() => {
+    onSubmittingChange?.(isSubmitting);
+  }, [isSubmitting, onSubmittingChange]);
 
   const renderField = (
     key: keyof typeof FormData,
@@ -109,11 +143,6 @@ const SectionTypeForm = <T extends SectionType>({
       {(Object.keys(ui) as Array<keyof typeof FormData>).map((key) =>
         renderField(key, ui[key])
       )}
-      <FormButtons
-        submitButtonLabel={onSubmitButtonLabel}
-        isSubmitting={isSubmitting}
-        onCancelNavigateTo={onCancelNavigateTo}
-      />
     </form>
   );
 };

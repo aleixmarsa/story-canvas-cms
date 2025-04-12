@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { SectionType } from "@prisma/client";
 
-// Helper type for field UI metadata
+// ----------
+// UI metadata types
+// ----------
 type FieldMeta = {
   label: string;
   type: "text" | "number" | "textarea" | "url" | "image" | "richtext";
@@ -9,19 +11,22 @@ type FieldMeta = {
   placeholder?: string;
 };
 
-// Schema + metadata bundle
 type SchemaWithUI<T extends z.ZodTypeAny> = {
   schema: T;
   ui: Record<keyof z.infer<T>, FieldMeta>;
 };
 
-// Dynamic enum from Prisma
-const sectionTypeValues = Object.values(SectionType) as [string, ...string[]];
-export const SectionTypeEnum = z.enum(sectionTypeValues);
+// ----------
+// Base fields for all section types
+// ----------
+export const SectionTypeEnum = z.enum(
+  Object.values(SectionType) as [string, ...string[]]
+);
 
 const baseFields = {
   name: z.string().min(1, "Name is required"),
   order: z.number().int().min(0, "Order is required"),
+  createdBy: z.string().min(1, "Author is required"),
 };
 
 const baseUI: Record<keyof typeof baseFields, FieldMeta> = {
@@ -37,20 +42,23 @@ const baseUI: Record<keyof typeof baseFields, FieldMeta> = {
     required: true,
     placeholder: "Order number",
   },
+  createdBy: {
+    label: "Created by",
+    type: "text",
+    required: true,
+    placeholder: "Author of this section",
+  },
 };
 
-// Section schemas with UI metadata
+// ----------
+// Frontend schemas by type (with UI metadata)
+// ----------
 export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
   TITLE: {
     schema: z.object({
       ...baseFields,
       text: z.string().min(1, "Title cannot be empty"),
       backgroundImage: z.string().optional(),
-      // textColor: z.string().optional(),
-      // textSize: z.enum(["small", "medium", "large"]).optional(),
-      // textAlign: z.enum(["left", "center", "right"]).optional(),
-      // textWeight: z.enum(["normal", "bold"]).optional(),
-      // textTransform: z.enum(["uppercase", "lowercase", "capitalize"]).optional(),
     }),
     ui: {
       ...baseUI,
@@ -130,3 +138,23 @@ export const sectionSchemas: Record<SectionType, SchemaWithUI<z.ZodTypeAny>> = {
     },
   },
 };
+
+// ----------
+// Backend schemas for API use
+// ----------
+
+// For creating a new SectionVersion
+export const createSectionVersionSchema = z.object({
+  storyId: z.number().min(1),
+  name: baseFields.name,
+  type: SectionTypeEnum,
+  order: baseFields.order,
+  content: z.record(z.any()),
+  createdBy: z.string().min(1),
+  comment: z.string().optional(),
+});
+
+// For updating an existing SectionVersion
+export const updateSectionVersionSchema = createSectionVersionSchema.omit({
+  createdBy: true,
+});

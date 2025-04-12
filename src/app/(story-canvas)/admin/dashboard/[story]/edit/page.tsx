@@ -2,54 +2,79 @@
 
 import { useCmsStore } from "@/stores/cms-store";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditStoryPage = () => {
-  const { stories } = useCmsStore();
+  const { stories, selectStory, selectedStory, updateStory } = useCmsStore();
   const { story: storySlug } = useParams();
   const router = useRouter();
+  const [isDirty, setDirty] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
 
-  const [story, setStory] = useState<{
-    id: number;
-    author: string;
-    title: string;
-    slug: string;
-  } | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  const handlePublishStory = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch(
+        `/api/story-versions/${selectedStory?.currentDraftId}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed publishing the Story");
+      }
+      const updatedStory = await res.json();
+      updateStory(updatedStory);
+    } catch (err) {
+      console.error("Failed to publish the story", err);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   useEffect(() => {
-    if (!storySlug) {
-      router.push("/admin/dashboard");
-      return;
+    if (!storySlug || stories.length === 0) return;
+    const found = stories.find((s) => s.currentDraft?.slug === storySlug);
+    if (found) {
+      selectStory(found);
     }
+  }, [stories, storySlug]);
 
-    const found = stories.find((s) => s.slug === storySlug);
+  useEffect(() => {
+    if (!storySlug || stories.length === 0) return;
+    const found = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (!found) {
       router.push("/admin/dashboard");
-      return;
     }
-    const { id, title, slug, author } = found;
-    setStory({
-      id,
-      title,
-      slug,
-      author,
-    });
-  }, [storySlug, stories, router]);
+  }, [storySlug]);
 
-  if (!story) return null;
+  if (!selectedStory) return null;
 
   return (
     <>
       <DashboardHeader
         title="Edit Story"
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
-        onSaveDraft={() => {}}
-        onPublish={() => {}}
+        onPublish={handlePublishStory}
+        onSaveDraft={() => formRef.current?.requestSubmit()}
+        saveDisabled={!isDirty}
+        isSaving={isSubmitting}
+        publishButtonLabel="Publish Story"
+        isPublishing={isPublishing}
       />
       <div className="px-6">
-        <EditStoryForm story={story} onCancelNavigateTo="/admin/dashboard" />
+        <EditStoryForm
+          setDirty={setDirty}
+          setIsSubmitting={setIsSubmitting}
+          ref={formRef}
+        />
       </div>
     </>
   );

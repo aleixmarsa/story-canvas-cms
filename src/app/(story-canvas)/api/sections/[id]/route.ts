@@ -1,70 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
-import { SectionType } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { slugify } from "@/lib/utils";
 
-// Update a section by ID
+// PATCH /api/sections/:id
+// Updates a Section metadata (only fields stored on Section, not the version)
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const id = Number(params.id);
-    if (isNaN(id)) {
-      return NextResponse.json(
-        { error: "Invalid section ID" },
-        { status: 400 }
-      );
-    }
+  const resolvedParams = await params;
+  const sectionId = Number(resolvedParams.id);
 
-    const body = await req.json();
-    const { name, order, content } = body;
-
-    const existingSection = await prisma.section.findUnique({ where: { id } });
-    if (!existingSection) {
-      return NextResponse.json({ error: "Section not found" }, { status: 404 });
-    }
-
-    const schema = sectionSchemas[existingSection.type as SectionType].schema;
-    const parsed = schema.safeParse({ name, order, ...content });
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.format() },
-        { status: 422 }
-      );
-    }
-
-    try {
-      const updated = await prisma.section.update({
-        where: { id },
-        data: {
-          name,
-          order,
-          content,
-          slug: slugify(name),
-        },
-      });
-
-      return NextResponse.json(updated);
-    } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === "P2002"
-      ) {
-        return NextResponse.json(
-          { error: "Section name must be unique" },
-          { status: 409 }
-        );
-      }
-      throw error;
-    }
-  } catch (error) {
-    console.error("Error updating section:", error);
+  if (isNaN(sectionId)) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { message: "Invalid section ID" },
+      { status: 400 }
+    );
+  }
+
+  const body = await req.json();
+
+  try {
+    const updated = await prisma.section.update({
+      where: { id: sectionId },
+      data: {
+        lastEditedBy: body.lastEditedBy,
+        lockedBy: body.lockedBy ?? null,
+      },
+    });
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to update section", error },
       { status: 500 }
     );
   }

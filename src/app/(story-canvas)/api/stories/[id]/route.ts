@@ -1,31 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { storySchema } from "@/lib/validation/storySchema";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+
+// GET /api/stories/:id
+// Returns a single story by ID, including its currentDraft, publishedVersion and version history
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const storyId = parseInt(params.id);
+
+  if (isNaN(storyId)) {
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
+  const story = await prisma.story.findUnique({
+    where: { id: storyId },
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+      versions: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  if (!story) {
+    return NextResponse.json({ error: "Story not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(story);
+}
+
+/**
+ * POST /api/stories
+ * Updates Story metadata (only fields stored on Story, not the version)
+ */
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const storyId = Number(params.id);
+  const resolvedParams = await params;
+  const storyId = Number(resolvedParams.id);
+
   if (isNaN(storyId)) {
     return NextResponse.json({ message: "Invalid story ID" }, { status: 400 });
   }
 
   const body = await req.json();
-  const parsed = storySchema.safeParse(body);
-
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.format() }, { status: 422 });
-  }
 
   try {
     const updated = await prisma.story.update({
       where: { id: storyId },
       data: {
-        title: parsed.data.title,
-        slug: parsed.data.slug,
-        author: parsed.data.author,
+        publicSlug: body.publicSlug,
+        lastEditedBy: body.lastEditedBy,
+        lockedBy: body.lockedBy ?? null,
       },
     });
 

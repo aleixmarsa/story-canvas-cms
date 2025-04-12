@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { useCmsStore } from "@/stores/cms-store";
@@ -15,14 +15,22 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-const CreateSectionForm = () => {
+const CreateSectionForm = ({
+  onDirtyChange,
+  onSubmittingChange,
+  formRef,
+}: {
+  formRef: React.MutableRefObject<(() => void) | undefined>;
+  onDirtyChange: (dirty: boolean) => void;
+  onSubmittingChange?: (submitting: boolean) => void;
+}) => {
   const [selectedType, setSelectedType] = useState<SectionType | null>(null);
   const { addSection, selectedStory } = useCmsStore();
   const [externalError, setExternalError] = useState<{
     field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
     message: string;
   } | null>(null);
-
+  const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
 
   const handleTypeSelect = (value: string) => {
@@ -37,7 +45,7 @@ const CreateSectionForm = () => {
       throw new Error("Section type or story ID is not selected");
     }
 
-    const { name, order, ...content } = data;
+    const { name, order, createdBy, ...content } = data;
 
     try {
       const res = await fetch("/api/sections", {
@@ -47,6 +55,7 @@ const CreateSectionForm = () => {
           storyId: selectedStoryId,
           name,
           order,
+          createdBy,
           content,
           type: selectedType,
         }),
@@ -57,7 +66,7 @@ const CreateSectionForm = () => {
           field: "name",
           message: "This name is already in use",
         });
-        return;
+        return false;
       }
 
       if (!res.ok) {
@@ -68,11 +77,21 @@ const CreateSectionForm = () => {
       console.log("New section created:", newSection);
       addSection(newSection);
       setSelectedType(null);
-      router.push(`/admin/dashboard/${selectedStory.slug}`);
+      router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
+      return true;
     } catch (error) {
       console.error("Error creating section:", error);
+      return false;
     }
   };
+
+  useEffect(() => {
+    formRef.current = async () => {
+      if (formSubmitRef.current) {
+        formSubmitRef.current();
+      }
+    };
+  }, [formRef]);
 
   return (
     <div className="space-y-4 max-w-lg">
@@ -95,9 +114,11 @@ const CreateSectionForm = () => {
           <SectionTypeForm
             type={selectedType}
             onSubmit={handleSubmit}
-            onCancelNavigateTo={`/admin/dashboard/${selectedStory?.slug}`}
             externalError={externalError}
             onSubmitButtonLabel="Create Section"
+            formSubmitRef={formSubmitRef}
+            onDirtyChange={onDirtyChange}
+            onSubmittingChange={onSubmittingChange}
           />
         </div>
       )}

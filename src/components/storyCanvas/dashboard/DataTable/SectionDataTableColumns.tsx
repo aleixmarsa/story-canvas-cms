@@ -1,20 +1,56 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Section } from "@prisma/client";
+import { SectionWithVersions } from "@/types/section";
+import { Badge } from "@/components/ui/badge";
+import { StoryStatus } from "@prisma/client";
 
-export const columns: ColumnDef<Section>[] = [
+export const columns: ColumnDef<SectionWithVersions>[] = [
   {
-    accessorKey: "name",
     header: "Name",
+    accessorFn: (row) => row.currentDraft?.name ?? "(untitled)",
+  },
+  {
+    header: "Status",
+    accessorFn: (row) => {
+      if (!row.publishedAt) return StoryStatus.draft;
+      if (!row.currentDraft) return StoryStatus.published;
+      const publishedAt = new Date(row.publishedAt);
+      const draftUpdatedAt = new Date(row.currentDraft.updatedAt);
+      publishedAt.setMilliseconds(0);
+      draftUpdatedAt.setMilliseconds(0);
+      return publishedAt >= draftUpdatedAt
+        ? StoryStatus.published
+        : StoryStatus.changed;
+    },
+    cell: ({ row }) => {
+      const status = row.getValue("Status") as string;
+      return (
+        <Badge
+          variant={
+            status === StoryStatus.published
+              ? "default"
+              : status === StoryStatus.draft
+              ? "outline"
+              : "secondary"
+          }
+        >
+          {status}
+        </Badge>
+      );
+    },
+  },
+  {
+    header: "Slug",
+    accessorFn: (row) => row.currentDraft?.slug ?? "-",
   },
   {
     accessorKey: "type",
-    header: "Type",
+    accessorFn: (row) => row.currentDraft?.type ?? "(untitled)",
   },
   {
     accessorKey: "order",
-    header: "Order",
+    accessorFn: (row) => row.currentDraft?.order ?? "(untitled)",
   },
   {
     accessorKey: "createdAt",

@@ -1,80 +1,104 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
-import { SectionType } from "@prisma/client";
+import { createSectionVersionSchema } from "@/lib/validation/sectionSchemas";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 
-// Get all sections (optionally filter by storyId)
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const storyId = searchParams.get("storyId");
+class ConflictError extends Error {}
 
-  const sections = await prisma.section.findMany({
-    where: storyId ? { storyId: Number(storyId) } : undefined,
-    orderBy: { order: "asc" },
-  });
-
-  return NextResponse.json(sections);
-}
-
-// Create a new section for a story
+// POST /api/sections
+// Create Section + initial Draft Version
 export async function POST(req: NextRequest) {
+  const body = await req.json();
+
+  // Validates input
+  const parsed = createSectionVersionSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.format() }, { status: 422 });
+  }
+
+  const { storyId, name, type, order, content, createdBy } = parsed.data;
+
+  const slug = slugify(name);
+
   try {
-    const data = await req.json();
+    // If an error occurs, Prisma will throw an error and the transaction will be rolled back.
+    // For example, if the slug already exists, the SectionVersion creation will fail and the created Story will be rolled back.
+    const result = await prisma.$transaction(async (tx) => {
+      // Creates base Section
+      const section = await tx.section.create({
+        data: {
+          storyId,
+          lastEditedBy: createdBy,
+          lockedBy: createdBy,
+        },
+      });
 
-    const { storyId, name, order, type, content } = data;
+      // Checks if the slug is already used by another section
+      // StoryVersion within the same section can have the same slug
+      // For example, a section can have a draft and a published version with the same slug
+      const conflicting = await tx.sectionVersion.findFirst({
+        where: {
+          slug,
+          sectionId: {
+            not: section.id,
+          },
+        },
+      });
 
-    if (!storyId || !name || typeof order !== "number" || !type || !content) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
+      if (conflicting) {
+        throw new ConflictError("Slug already exists");
+      }
 
-    if (!(type in sectionSchemas)) {
-      return NextResponse.json(
-        { error: `Unsupported section type: ${type}` },
-        { status: 400 }
-      );
-    }
+      // Creates initial SectionVersion as draft
+      const draftVersion = await tx.sectionVersion.create({
+        data: {
+          sectionId: section.id,
+          name,
+          slug,
+          type: type as SectionType,
+          order,
+          content,
+          createdBy,
+          status: "draft",
+        },
+      });
 
-    // Validate content according to section type schema
-    const schema = sectionSchemas[type as SectionType].schema;
-    const parsed = schema.safeParse({ name, order, ...content });
+      // Links currentDraft
+      const updated = await tx.section.update({
+        where: { id: section.id },
+        data: {
+          currentDraftId: draftVersion.id,
+        },
+        include: {
+          currentDraft: true,
+        },
+      });
 
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.format() },
-        { status: 422 }
-      );
-    }
-
-    const section = await prisma.section.create({
-      data: {
-        storyId,
-        name,
-        order,
-        type,
-        content,
-        slug: slugify(name),
-      },
+      return updated;
     });
 
-    return NextResponse.json(section);
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error("POST /api/sections error:", error);
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
       return NextResponse.json(
-        { message: "Section with this name already exists" },
+        { message: "Slug already exists" },
+        { status: 409 }
+      );
+    }
+    if (error instanceof ConflictError) {
+      return NextResponse.json(
+        { message: "Slug already exists" },
         { status: 409 }
       );
     }
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Internal server error", error },
       { status: 500 }
     );
   }

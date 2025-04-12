@@ -12,36 +12,43 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-// Types
+import { Loader2 } from "lucide-react";
+
+type Breadcrumb = { label: string; href?: string };
+
+type BaseDashboardHeaderProps = {
+  title: string;
+  breadcrumbs: Breadcrumb[];
+  onSaveDraft?: () => void;
+  onPublish?: () => void;
+  saveDisabled?: boolean;
+  isSaving?: boolean;
+  publishButtonLabel?: string;
+  isPublishing?: boolean;
+};
+
+type AddButtonWithHref = {
+  addButtonLabel: string;
+  addHref: string;
+  onAddClick?: never;
+};
+
+type AddButtonWithClick = {
+  addButtonLabel: string;
+  onAddClick: () => void;
+  addHref?: never;
+};
+
+type NoAddButton = {
+  addButtonLabel?: undefined;
+  addHref?: undefined;
+  onAddClick?: undefined;
+};
 
 type DashboardHeaderProps =
-  | {
-      title: string;
-      breadcrumbs: { label: string; href?: string }[];
-      addButtonLabel?: undefined;
-      addHref?: undefined;
-      onAddClick?: undefined;
-      onSaveDraft?: () => void;
-      onPublish?: () => void;
-    }
-  | {
-      title: string;
-      breadcrumbs: { label: string; href?: string }[];
-      addButtonLabel: string;
-      addHref: string;
-      onAddClick?: never;
-      onSaveDraft?: () => void;
-      onPublish?: () => void;
-    }
-  | {
-      title: string;
-      breadcrumbs: { label: string; href?: string }[];
-      addButtonLabel: string;
-      onAddClick: () => void;
-      addHref?: never;
-      onSaveDraft?: () => void;
-      onPublish?: () => void;
-    };
+  | (BaseDashboardHeaderProps & AddButtonWithHref)
+  | (BaseDashboardHeaderProps & AddButtonWithClick)
+  | (BaseDashboardHeaderProps & NoAddButton);
 
 const DashboardHeader = ({
   title,
@@ -51,6 +58,10 @@ const DashboardHeader = ({
   onAddClick,
   onSaveDraft,
   onPublish,
+  saveDisabled,
+  isSaving,
+  publishButtonLabel = "Publish",
+  isPublishing,
 }: DashboardHeaderProps) => {
   return (
     <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -109,15 +120,28 @@ const DashboardHeader = ({
         {(onPublish || onSaveDraft) && (
           <>
             {onSaveDraft && (
-              <Button variant="outline" onClick={onSaveDraft} size="sm">
-                <Save className="w-4 h-4 mr-1" />
+              <Button
+                variant="outline"
+                onClick={onSaveDraft}
+                size="sm"
+                disabled={saveDisabled}
+              >
+                {isSaving ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-1" />
+                )}
                 Save draft
               </Button>
             )}
             {onPublish && (
               <Button onClick={onPublish} size="sm">
-                <Rocket className="w-4 h-4 mr-1" />
-                Publish
+                {isPublishing ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <Rocket className="w-4 h-4 mr-1" />
+                )}
+                {publishButtonLabel}
               </Button>
             )}
           </>

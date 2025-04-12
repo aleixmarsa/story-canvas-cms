@@ -1,26 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import { useCmsStore } from "@/stores/cms-store";
-import DataTable from "@/components/storyCanvas/dashboard/dataTable/DataTable";
-import { columns } from "@/components/storyCanvas/dashboard/dataTable/StoryDataTableColumns";
+import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
+import { columns } from "@/components/storyCanvas/dashboard/DataTable/StoryDataTableColumns";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const DashboardPage = () => {
-  const { stories, setStories, selectStory, selectSection } = useCmsStore();
-
-  useEffect(() => {
-    const fetchStories = async () => {
-      const res = await fetch("/api/stories");
-      const data = await res.json();
-      setStories(data);
-    };
-
-    fetchStories();
-    selectStory(null);
-    selectSection(null);
-  }, [setStories, selectStory, selectSection]);
-
+  const { stories } = useCmsStore();
   return (
     <>
       <DashboardHeader
@@ -33,8 +19,10 @@ const DashboardPage = () => {
         <DataTable
           columns={columns}
           data={stories}
-          getRowLink={(row) => `/admin/dashboard/${row.slug}`}
-          getEditLink={(row) => `/admin/dashboard/${row.slug}/edit`}
+          getRowLink={(row) => `/admin/dashboard/${row.currentDraft?.slug}`}
+          getEditLink={(row) =>
+            `/admin/dashboard/${row.currentDraft?.slug}/edit`
+          }
         />
       </div>
     </>

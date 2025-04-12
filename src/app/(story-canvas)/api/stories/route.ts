@@ -3,40 +3,91 @@ import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { storySchema } from "@/lib/validation/storySchema";
 
-// Get all stories
+class ConflictError extends Error {}
+
+// Get all stories. Each story includes its current draft and published version
 export async function GET() {
   const stories = await prisma.story.findMany({
-    include: { sections: true },
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+    },
   });
 
   return NextResponse.json(stories);
 }
 
-// Create a new story
+// Creates a new Story + initial draft version
 export async function POST(req: NextRequest) {
-  const data = await req.json();
+  const body = await req.json();
+
+  // Validates input
+  const parsed = storySchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.format() }, { status: 422 });
+  }
+
+  const { title, slug, description, theme, components, content, createdBy } =
+    parsed.data;
 
   try {
-    // Validate incoming data against the story schema
-    const parsed = storySchema.safeParse(data);
+    // If an error occurs, Prisma will throw an error and the transaction will be rolled back.
+    // For example, if the slug already exists, the StoryVersion creation will fail and the created Story will be rolled back.
+    const result = await prisma.$transaction(async (tx) => {
+      // Creates the Story
+      const story = await tx.story.create({
+        data: {
+          lastEditedBy: createdBy,
+        },
+      });
 
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: parsed.error.format() },
-        { status: 422 }
-      );
-    }
+      // Checks if the slug is already used by another story
+      // StoryVersion within the same story can have the same slug
+      // For example, a story can have a draft and a published version with the same slug
+      const conflicting = await tx.storyVersion.findFirst({
+        where: {
+          slug,
+          storyId: {
+            not: story.id,
+          },
+        },
+      });
 
-    const story = await prisma.story.create({
-      data: {
-        title: data.title,
-        slug: data.slug,
-        author: data.author,
-        components: data.components,
-      },
+      if (conflicting) {
+        throw new ConflictError("Slug already exists");
+      }
+
+      // Creates the initial StoryVersion as draft
+      const draftVersion = await tx.storyVersion.create({
+        data: {
+          title,
+          slug,
+          description,
+          theme,
+          components,
+          content,
+          status: "draft",
+          createdBy,
+          storyId: story.id,
+        },
+      });
+
+      // Links the draft to the story
+      const updatedStory = await tx.story.update({
+        where: { id: story.id },
+        data: {
+          currentDraftId: draftVersion.id,
+        },
+        include: {
+          currentDraft: true,
+        },
+      });
+
+      return updatedStory;
     });
 
-    return NextResponse.json(story, { status: 201 });
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
     if (
       error instanceof PrismaClientKnownRequestError &&
@@ -47,8 +98,14 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
+    if (error instanceof ConflictError) {
+      return NextResponse.json(
+        { message: "Slug already exists" },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
-      { message: "Internal server error" },
+      { message: "Internal server error", error },
       { status: 500 }
     );
   }

@@ -1,18 +1,29 @@
 "use client";
+import { useRef, useState } from "react";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
 
 const NewStoryPage = () => {
+  const [isDirty, setDirty] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const formRef = useRef<HTMLFormElement | null>(null);
+
   return (
     <>
       <DashboardHeader
         title="New Story"
         breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
-        onPublish={() => {}}
-        onSaveDraft={() => {}}
+        onSaveDraft={() => formRef.current?.requestSubmit()}
+        saveDisabled={!isDirty}
+        isSaving={isSubmitting}
       />
       <div className="px-6">
-        <CreateStoryForm onCancelNavigateTo="/admin/dashboard" />
+        <CreateStoryForm
+          setDirty={setDirty}
+          setIsSubmitting={setIsSubmitting}
+          ref={formRef}
+        />
       </div>
     </>
   );

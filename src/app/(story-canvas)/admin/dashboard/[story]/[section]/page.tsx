@@ -2,47 +2,73 @@
 
 import { useCmsStore } from "@/stores/cms-store";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
-import { SectionType } from "@prisma/client";
-import { JsonValue } from "@prisma/client/runtime/client";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditSectionPage = () => {
-  const { sections, selectedStory } = useCmsStore();
+  const {
+    sections,
+    selectedStory,
+    selectedSection,
+    selectSection,
+    updateSection,
+  } = useCmsStore();
   const { section: sectionSlug } = useParams();
   const router = useRouter();
+  const [formIsDirty, setFormIsDirty] = useState(false);
+  const [formIsSubmitting, setFormIsSubmitting] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const formRef = useRef<(() => void) | undefined>(undefined);
 
-  const [section, setSection] = useState<{
-    id: number;
-    name: string;
-    order: number;
-    type: SectionType;
-    content: JsonValue;
-  } | null>(null);
+  const handlePublishSection = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch(
+        `/api/section-versions/${selectedSection?.currentDraftId}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed publishing the Story");
+      }
+      const updatedSection = await res.json();
+      updateSection(updatedSection);
+    } catch (err) {
+      console.error("Failed to publish the section", err);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   useEffect(() => {
-    if (!sectionSlug) {
-      router.push("/admin/dashboard");
-      return;
+    if (!sectionSlug) return;
+    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
+    if (found) {
+      selectSection(found);
     }
+  }, [sections, sectionSlug]);
 
-    const found = sections.find((s) => s.slug === sectionSlug);
+  useEffect(() => {
+    if (!sectionSlug) return;
+    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
     if (!found) {
       router.push("/admin/dashboard");
-      return;
     }
-    const { id, name, order, type, content } = found;
-    setSection({
-      id,
-      name,
-      order,
-      type,
-      content,
-    });
-  }, [sectionSlug, sections, router]);
+  }, [sectionSlug]);
 
-  if (!section || !selectedStory) return null;
+  if (!selectedStory) return null;
+
+  const handleSaveDraft = async () => {
+    if (formRef.current) {
+      await formRef.current();
+    }
+  };
+
+  if (!selectedSection) return null;
 
   return (
     <>
@@ -51,17 +77,22 @@ const EditSectionPage = () => {
         breadcrumbs={[
           { label: "Dashboard", href: "/admin/dashboard" },
           {
-            label: selectedStory.title,
-            href: `/admin/dashboard/${selectedStory.slug}`,
+            label: selectedStory.currentDraft?.title ?? "Untitled",
+            href: `/admin/dashboard/${selectedStory.currentDraft?.slug}`,
           },
         ]}
-        onSaveDraft={() => {}}
-        onPublish={() => {}}
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublishSection}
+        saveDisabled={!formIsDirty}
+        isSaving={formIsSubmitting}
+        publishButtonLabel="Publish Section"
+        isPublishing={isPublishing}
       />
       <div className="px-6">
         <EditSectionForm
-          section={section}
-          onCancelNavigateTo={`/admin/dashboard/${selectedStory.slug}`}
+          formRef={formRef}
+          onDirtyChange={setFormIsDirty}
+          onSubmittingChange={setFormIsSubmitting}
         />
       </div>
     </>

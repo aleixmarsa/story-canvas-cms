@@ -5,7 +5,6 @@ import { Feather, ScrollText } from "lucide-react";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
 import { useCmsStore } from "@/stores/cms-store";
-
 import {
   Sidebar,
   SidebarContent,
@@ -81,8 +80,10 @@ export function DashboardSidebar({
                   {stories.map((story) => (
                     <SidebarMenuSubItem key={story.id}>
                       <SidebarMenuSubButton asChild>
-                        <Link href={`/admin/dashboard/${story.slug}`}>
-                          {story.title}
+                        <Link
+                          href={`/admin/dashboard/${story.currentDraft?.slug}`}
+                        >
+                          {story.currentDraft?.slug}
                         </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
