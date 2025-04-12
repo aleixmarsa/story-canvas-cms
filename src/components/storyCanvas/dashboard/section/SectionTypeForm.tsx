@@ -12,7 +12,9 @@ interface SectionFormProps<T extends SectionType> {
   type: T;
   defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
   onSubmitButtonLabel: string;
-  onSubmit: (data: z.infer<(typeof sectionSchemas)[T]["schema"]>) => void;
+  onSubmit: (
+    data: z.infer<(typeof sectionSchemas)[T]["schema"]>
+  ) => Promise<boolean>;
   externalError?: {
     field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
     message: string;
@@ -47,9 +49,15 @@ const SectionTypeForm = <T extends SectionType>({
 
   const internalSubmitHandler = async (data: FormData) => {
     // Calls the onSubmit function from the parent component
-    await onSubmit(data);
-    // Resets the form after submission to deactivate the dirty state
-    reset(data);
+    try {
+      const success = await onSubmit(data);
+      // Resets the form after submission to deactivate the dirty state
+      if (success) {
+        reset(data); // Només si ha anat bé
+      }
+    } catch (error) {
+      console.log("🚀 ~ internalSubmitHandler ~ error:", error);
+    }
   };
 
   useEffect(() => {

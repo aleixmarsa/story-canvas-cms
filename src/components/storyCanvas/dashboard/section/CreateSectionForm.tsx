@@ -66,7 +66,7 @@ const CreateSectionForm = ({
           field: "name",
           message: "This name is already in use",
         });
-        return;
+        return false;
       }
 
       if (!res.ok) {
@@ -78,8 +78,10 @@ const CreateSectionForm = ({
       addSection(newSection);
       setSelectedType(null);
       router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
+      return true;
     } catch (error) {
       console.error("Error creating section:", error);
+      return false;
     }
   };
 
