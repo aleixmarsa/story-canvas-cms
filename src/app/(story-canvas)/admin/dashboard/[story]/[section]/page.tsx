@@ -7,14 +7,43 @@ import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSect
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditSectionPage = () => {
-  const { sections, selectedStory, selectedSection, selectSection } =
-    useCmsStore();
+  const {
+    sections,
+    selectedStory,
+    selectedSection,
+    selectSection,
+    updateSection,
+  } = useCmsStore();
   const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formIsSubmitting, setFormIsSubmitting] = useState(false);
-
+  const [isPublishing, setIsPublishing] = useState(false);
   const formRef = useRef<(() => void) | undefined>(undefined);
+
+  const handlePublishSection = async () => {
+    setIsPublishing(true);
+    try {
+      const res = await fetch(
+        `/api/section-versions/${selectedSection?.currentDraftId}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed publishing the Story");
+      }
+      const updatedSection = await res.json();
+      updateSection(updatedSection);
+    } catch (err) {
+      console.error("Failed to publish the section", err);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   useEffect(() => {
     if (!sectionSlug) return;
     const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
@@ -53,10 +82,11 @@ const EditSectionPage = () => {
           },
         ]}
         onSaveDraft={handleSaveDraft}
-        onPublish={() => {}}
+        onPublish={handlePublishSection}
         saveDisabled={!formIsDirty}
         isSaving={formIsSubmitting}
         publishButtonLabel="Publish Section"
+        isPublishing={isPublishing}
       />
       <div className="px-6">
         <EditSectionForm
