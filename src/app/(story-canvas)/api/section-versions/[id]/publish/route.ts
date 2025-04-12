@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { slugify } from "@/lib/utils";
 
 // POST /api/section-versions/:id/publish
 // Publishes the given SectionVersion and creates a new draft copy
@@ -10,7 +11,6 @@ export async function POST(
 ) {
   const resolvedParams = await params;
   const versionId = Number(resolvedParams.id);
-
   if (isNaN(versionId)) {
     return NextResponse.json(
       { error: "Invalid section version ID" },
@@ -43,6 +43,7 @@ export async function POST(
     const draftCopy = await prisma.sectionVersion.create({
       data: {
         sectionId: original.sectionId,
+        slug: slugify(original.name),
         name: original.name,
         type: original.type,
         order: original.order,
