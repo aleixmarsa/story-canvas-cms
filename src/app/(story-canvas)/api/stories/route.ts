@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { storySchema } from "@/lib/validation/storySchema";
-
-class ConflictError extends Error {}
+import { storySchema } from "@/lib/validation/story-schemas";
+import { ConflictError } from "@/lib/errors";
 
 // Get all stories. Each story includes its current draft and published version
 export async function GET() {

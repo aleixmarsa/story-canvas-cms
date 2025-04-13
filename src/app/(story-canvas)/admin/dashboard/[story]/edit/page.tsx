@@ -1,13 +1,14 @@
 "use client";
 
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const EditStoryPage = () => {
-  const { stories, selectStory, selectedStory, updateStory } = useCmsStore();
+  const { stories, selectStory, selectedStory, updateStory } =
+    useDashboardStore();
   const { story: storySlug } = useParams();
   const router = useRouter();
   const [isDirty, setDirty] = useState(false);

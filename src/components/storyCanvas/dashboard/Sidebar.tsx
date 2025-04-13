@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Feather, ScrollText } from "lucide-react";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +23,7 @@ import {
 export function DashboardSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const { stories, setStories } = useCmsStore();
+  const { stories, setStories } = useDashboardStore();
 
   useEffect(() => {
     if (stories.length === 0) {

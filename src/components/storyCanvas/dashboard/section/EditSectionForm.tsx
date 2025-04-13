@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { z } from "zod";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
+import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
 import { SectionWithVersions } from "@/types/section";
 
@@ -21,9 +21,13 @@ const EditSectionForm = ({
   onSubmittingChange,
 }: EditSectionFormProps) => {
   const { updateSection, selectedStory, selectedSection, selectSection } =
-    useCmsStore();
+    useDashboardStore();
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
+  const [externalError, setExternalError] = useState<{
+    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     formRef.current = async () => {
@@ -42,12 +46,6 @@ const EditSectionForm = ({
     typeof content === "object" && content !== null ? content : {};
   const defaultValues = { name, order, createdBy, ...contentObject };
 
-  // Placeholder to store any field-level error
-  let externalError: {
-    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
-    message: string;
-  } | null = null;
-
   const submitHandler = async <T extends SectionType>(
     data: z.infer<(typeof sectionSchemas)[T]["schema"]>
   ) => {
@@ -65,6 +63,7 @@ const EditSectionForm = ({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             storyId: selectedStoryId,
+            sectionId: selectedSection.id,
             type,
             name,
             order,
@@ -75,10 +74,10 @@ const EditSectionForm = ({
       );
 
       if (res.status === 409) {
-        externalError = {
+        setExternalError({
           field: "name",
           message: "This name is already in use",
-        };
+        });
         return false;
       }
 

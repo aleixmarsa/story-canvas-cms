@@ -3,10 +3,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
-import { sectionSchemas } from "@/lib/validation/sectionSchemas";
+import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { Select } from "@/components/ui/select";
 import {
   SelectTrigger,
@@ -25,7 +25,7 @@ const CreateSectionForm = ({
   onSubmittingChange?: (submitting: boolean) => void;
 }) => {
   const [selectedType, setSelectedType] = useState<SectionType | null>(null);
-  const { addSection, selectedStory } = useCmsStore();
+  const { addSection, selectedStory } = useDashboardStore();
   const [externalError, setExternalError] = useState<{
     field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
     message: string;

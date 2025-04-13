@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { createSectionVersionSchema } from "@/lib/validation/sectionSchemas";
+import { createSectionVersionSchema } from "@/lib/validation/section-schemas";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
-
-class ConflictError extends Error {}
+import { ConflictError } from "@/lib/errors";
 
 // POST /api/sections
 // Create Section + initial Draft Version
@@ -82,6 +81,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
+    debugger;
     if (
       error instanceof PrismaClientKnownRequestError &&
       error.code === "P2002"

@@ -3,10 +3,10 @@
 import { forwardRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
+import { storySchema, StoryFormData } from "@/lib/validation/story-schemas";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRouter } from "next/navigation";
 import { StoryWithVersions } from "@/types/story";
 import FormErrorMessage from "../FormErrorMessage";
@@ -18,7 +18,7 @@ type CreateStoryFormProps = {
 
 const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
   ({ setDirty, setIsSubmitting }, ref) => {
-    const { addStory } = useCmsStore();
+    const { addStory } = useDashboardStore();
     const router = useRouter();
 
     const {

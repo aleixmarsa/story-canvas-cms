@@ -3,12 +3,12 @@
 import { useState, useEffect, forwardRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { storySchema, StoryFormData } from "@/lib/validation/storySchema";
+import { storySchema, StoryFormData } from "@/lib/validation/story-schemas";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import FormErrorMessage from "../FormErrorMessage";
 import { useRouter } from "next/navigation";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { StoryVersion } from "@prisma/client";
 
 type EditStoryFormProps = {
@@ -19,7 +19,7 @@ type EditStoryFormProps = {
 const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
   ({ setDirty, setIsSubmitting }, ref) => {
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const { updateStory, selectedStory, selectStory } = useCmsStore();
+    const { updateStory, selectedStory, selectStory } = useDashboardStore();
     const router = useRouter();
     const {
       register,

@@ -1,11 +1,11 @@
 "use client";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRef, useState } from "react";
 
 const NewSectionPage = () => {
-  const { selectedStory } = useCmsStore();
+  const { selectedStory } = useDashboardStore();
   const formRef = useRef<(() => void) | undefined>(undefined);
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formIsSubmitting, setFormIsSubmitting] = useState(false);

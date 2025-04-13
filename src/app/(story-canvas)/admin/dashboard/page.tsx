@@ -1,12 +1,12 @@
 "use client";
 
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/StoryDataTableColumns";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 
 const DashboardPage = () => {
-  const { stories } = useCmsStore();
+  const { stories } = useDashboardStore();
   return (
     <>
       <DashboardHeader

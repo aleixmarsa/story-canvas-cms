@@ -1,6 +1,6 @@
 "use client";
 
-import { useCmsStore } from "@/stores/cms-store";
+import { useDashboardStore } from "@/stores/dashboard-store";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
@@ -13,7 +13,7 @@ const EditSectionPage = () => {
     selectedSection,
     selectSection,
     updateSection,
-  } = useCmsStore();
+  } = useDashboardStore();
   const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);

@@ -5,7 +5,7 @@ This document outlines the current state and remaining tasks of the headless CMS
 ## ✅ Completed Features
 
 ### 🧠 Database Schema (Prisma)
-- `Story` and `StoryVersion` with version control (`draft`, `published`)
+- `Story` and `StoryVersion` with version control (`draft`, `published`)got 
 - `Section` and `SectionVersion` using the same versioning strategy
 - Bidirectional relations between entities and their versions (`currentDraft`, `publishedVersion`)
 - Metadata fields: `createdBy`, `lockedBy`, `lastEditedBy`, `publishedAt`
@@ -39,9 +39,15 @@ This document outlines the current state and remaining tasks of the headless CMS
 - Publish and save button for `StoryVersion` and `SectionVersion` UI
 - Display version status (`draft` / `published`/`changed`) with badges
 
+### 🛠️ Other Improvements
+- Add unit/API tests
+- Add Github Actions
 ---
 
 ## 🔜 Pending Features (TODO)
+
+### 🌏 General
+- 🔜 Authentication
 
 ### 🧩 Backend
 - 🔜 `GET /api/section-versions/:id` → fetch full version info for editing
@@ -54,12 +60,8 @@ This document outlines the current state and remaining tasks of the headless CMS
 - 🔜 Version history viewer per Story and Section
 
 ### 🛠️ Other Improvements
-- 🔜 Add unit/API tests
 - 🔜 Permission/lock control using `lockedBy`
 - 🔜 Story duplication interface
 - 🔜 Autosave mechanism for draft versions
 
----
-
-> This file is part of the TFG project and should be kept updated as features evolve.
 
