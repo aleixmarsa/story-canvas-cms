@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { storySchema, StoryFormData } from "@/lib/validation/story-schemas";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import FormErrorMessage from "../FormErrorMessage";
+import FormErrorMessage from "../../FormErrorMessage";
 import { useRouter } from "next/navigation";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { StoryVersion } from "@prisma/client";

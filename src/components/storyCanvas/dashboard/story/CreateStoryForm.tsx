@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRouter } from "next/navigation";
 import { StoryWithVersions } from "@/types/story";
-import FormErrorMessage from "../FormErrorMessage";
+import FormErrorMessage from "../../FormErrorMessage";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
