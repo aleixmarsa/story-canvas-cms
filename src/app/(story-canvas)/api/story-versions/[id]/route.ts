@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { storySchema } from "@/lib/validation/story-schemas";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-
-class ConflictError extends Error {}
+import { ConflictError } from "@/lib/errors";
 
 // PATCH /api/story-versions/:id
 // Updates editable content of a draft version
