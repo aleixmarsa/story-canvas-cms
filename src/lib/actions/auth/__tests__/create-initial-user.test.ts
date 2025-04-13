@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { createFirstUser } from "@/lib/actions/auth/create-first-user";
+import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
@@ -19,7 +19,7 @@ jest.mock("bcryptjs", () => ({
   hash: jest.fn().mockResolvedValue("hashed-password"),
 }));
 
-describe("createFirstUser", () => {
+describe("createInitialUser", () => {
   const validFormData = () => {
     const form = new FormData();
     form.set("email", "admin@example.com");
@@ -35,15 +35,15 @@ describe("createFirstUser", () => {
   it("returns error if input is invalid", async () => {
     const form = new FormData(); // no camps
 
-    const result = await createFirstUser(form);
+    const result = await createInitialUser(form);
     expect(result).toHaveProperty("error", "Invalid input");
   });
 
   it("returns error if user already exists", async () => {
     (prisma.user.count as jest.Mock).mockResolvedValue(1);
 
-    const result = await createFirstUser(validFormData());
-    expect(result).toHaveProperty("error", "User already exists");
+    const result = await createInitialUser(validFormData());
+    expect(result).toHaveProperty("error", "Initial user already exists");
   });
 
   it("creates user and returns success", async () => {
@@ -53,7 +53,7 @@ describe("createFirstUser", () => {
       email: "admin@example.com",
     });
 
-    const result = await createFirstUser(validFormData());
+    const result = await createInitialUser(validFormData());
 
     expect(result).toEqual({
       success: true,
@@ -78,7 +78,7 @@ describe("createFirstUser", () => {
       new Error("Database error")
     );
 
-    const result = await createFirstUser(validFormData());
+    const result = await createInitialUser(validFormData());
 
     expect(result).toHaveProperty("error", "Internal server error");
   });

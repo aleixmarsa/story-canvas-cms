@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createUserSchema } from "@/lib/validation/create-user-schema";
 
-export async function createFirstUser(formData: FormData) {
+export async function createInitialUser(formData: FormData) {
   try {
     const rawData = {
       email: formData.get("email"),
@@ -24,7 +24,7 @@ export async function createFirstUser(formData: FormData) {
 
     const existingCount = await prisma.user.count();
     if (existingCount > 0) {
-      return { error: "User already exists" };
+      return { error: "Initial user already exists" };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,7 +44,7 @@ export async function createFirstUser(formData: FormData) {
       },
     };
   } catch (error) {
-    console.error("Error creating first user:", error);
+    console.error("Error creating initial user:", error);
     return { error: "Internal server error" };
   }
 }
