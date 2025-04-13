@@ -1,10 +1,14 @@
 name: CI
 
 on:
+  # Triggers the workflow on push or pull request events to the main branch
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   ci-checks:
@@ -15,6 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+          
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
