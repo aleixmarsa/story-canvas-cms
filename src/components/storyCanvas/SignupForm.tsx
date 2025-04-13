@@ -19,6 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import FormErrorMessage from "./FormErrorMessage";
+import { Loader2 } from "lucide-react";
 
 export function SignupForm({
   className,
@@ -78,7 +80,7 @@ export function SignupForm({
                 {...register("email")}
               />
               {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+                <FormErrorMessage error={errors.email.message} />
               )}
             </div>
 
@@ -86,9 +88,7 @@ export function SignupForm({
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" {...register("password")} />
               {errors.password && (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
+                <FormErrorMessage error={errors.password.message} />
               )}
             </div>
 
@@ -100,21 +100,17 @@ export function SignupForm({
                 {...register("confirmPassword")}
               />
               {errors.confirmPassword && (
-                <p className="text-sm text-red-500">
-                  {errors.confirmPassword.message}
-                </p>
+                <FormErrorMessage error={errors.confirmPassword.message} />
               )}
             </div>
 
-            {serverError && (
-              <p className="text-sm text-red-500">{serverError}</p>
-            )}
+            {serverError && <FormErrorMessage error={serverError} />}
             {successMessage && (
               <p className="text-sm text-green-600">{successMessage}</p>
             )}
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create"}
+              {isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
             </Button>
           </form>
         </CardContent>
