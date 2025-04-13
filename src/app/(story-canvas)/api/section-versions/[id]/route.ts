@@ -4,6 +4,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { updateSectionVersionSchema } from "@/lib/validation/section-schemas";
 import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
+import { ConflictError } from "@/lib/errors";
 
 // PATCH /api/section-versions/:id
 // Updates editable content of a draft version
@@ -11,6 +12,7 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  debugger;
   const resolvedParams = await params;
   const versionId = Number(resolvedParams.id);
 
@@ -22,6 +24,7 @@ export async function PATCH(
   }
 
   const body = await req.json();
+  const { sectionId } = body;
   const parsed = updateSectionVersionSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -30,7 +33,22 @@ export async function PATCH(
 
   const { name, type, order, content, comment } = parsed.data;
 
+  const slug = slugify(name);
+
   try {
+    const conflicting = await prisma.sectionVersion.findFirst({
+      where: {
+        slug,
+        sectionId: {
+          not: sectionId,
+        },
+      },
+    });
+
+    if (conflicting) {
+      throw new ConflictError("Slug already exists");
+    }
+
     const updated = await prisma.sectionVersion.update({
       where: { id: versionId },
       data: {
@@ -58,7 +76,13 @@ export async function PATCH(
       error.code === "P2002"
     ) {
       return NextResponse.json(
-        { message: "Slug already exists in this section" },
+        { message: "Slug already exists" },
+        { status: 409 }
+      );
+    }
+    if (error instanceof ConflictError) {
+      return NextResponse.json(
+        { message: "Slug already exists" },
         { status: 409 }
       );
     }

@@ -5,11 +5,13 @@ import { PATCH } from "../route";
 import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { ConflictError } from "@/lib/errors";
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
   default: {
     sectionVersion: {
+      findFirst: jest.fn(),
       update: jest.fn(),
     },
     section: {
@@ -21,6 +23,7 @@ jest.mock("@/lib/prisma", () => ({
 describe("PATCH /api/section-versions/:id", () => {
   const validBody = {
     storyId: 1,
+    sectionId: 1,
     name: "Updated section",
     slug: "updated-section",
     type: "PARAGRAPH",
@@ -45,37 +48,32 @@ describe("PATCH /api/section-versions/:id", () => {
       method: "PATCH",
       body: JSON.stringify({}),
     });
-
     req.json = async () => ({});
 
     const res = await PATCH(req, { params: mockParams });
     expect(res.status).toBe(422);
   });
 
-  it("returns 409 if slug already exists", async () => {
+  it("returns 409 if slug already exists (ConflictError)", async () => {
     const req = new NextRequest("http://localhost", { method: "PATCH" });
     req.json = async () => validBody;
 
-    const error = new PrismaClientKnownRequestError(
-      "Unique constraint failed",
-      {
-        clientVersion: "test",
-        code: "P2002",
-      }
+    (prisma.sectionVersion.findFirst as jest.Mock).mockRejectedValue(
+      new ConflictError()
     );
-
-    (prisma.sectionVersion.update as jest.Mock).mockRejectedValue(error);
 
     const res = await PATCH(req, { params: mockParams });
     const json = await res.json();
 
     expect(res.status).toBe(409);
-    expect(json.message).toBe("Slug already exists in this section");
+    expect(json.message).toBe("Slug already exists");
   });
 
   it("returns 200 with updated section", async () => {
     const req = new NextRequest("http://localhost", { method: "PATCH" });
     req.json = async () => validBody;
+
+    (prisma.sectionVersion.findFirst as jest.Mock).mockResolvedValue(null);
 
     const mockUpdated = {
       id: 1,
@@ -100,10 +98,34 @@ describe("PATCH /api/section-versions/:id", () => {
     expect(json.publishedVersion).toBeDefined();
   });
 
+  it("returns 409 for Prisma P2002 error", async () => {
+    const req = new NextRequest("http://localhost", { method: "PATCH" });
+    req.json = async () => validBody;
+
+    (prisma.sectionVersion.findFirst as jest.Mock).mockResolvedValue(null);
+
+    const prismaError = new PrismaClientKnownRequestError(
+      "Unique constraint failed",
+      {
+        clientVersion: "test",
+        code: "P2002",
+      }
+    );
+
+    (prisma.sectionVersion.update as jest.Mock).mockRejectedValue(prismaError);
+
+    const res = await PATCH(req, { params: mockParams });
+    const json = await res.json();
+
+    expect(res.status).toBe(409);
+    expect(json.message).toBe("Slug already exists");
+  });
+
   it("returns 500 for unknown errors", async () => {
     const req = new NextRequest("http://localhost", { method: "PATCH" });
     req.json = async () => validBody;
 
+    (prisma.sectionVersion.findFirst as jest.Mock).mockResolvedValue(null);
     (prisma.sectionVersion.update as jest.Mock).mockRejectedValue(
       new Error("Unexpected error")
     );
