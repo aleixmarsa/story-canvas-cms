@@ -24,18 +24,18 @@ jobs:
         with:
           version: 10
           run_install: false
-          
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "pnpm"
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
       - name: Install dependencies
         run: pnpm install
+        
+      - name: Generate Prisma client
+        run: pnpm prisma generate
 
       - name: Run linter
         run: pnpm lint
