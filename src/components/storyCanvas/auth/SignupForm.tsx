@@ -7,8 +7,11 @@ import {
   CreateUserInput,
 } from "@/lib/validation/create-user-schema";
 import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import FormErrorMessage from "../FormErrorMessage";
 import {
   Card,
   CardContent,
@@ -16,16 +19,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import FormErrorMessage from "./FormErrorMessage";
 import { Loader2 } from "lucide-react";
 
-export function SignupForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export function SignupForm() {
   const {
     register,
     handleSubmit,
@@ -49,6 +45,11 @@ export function SignupForm({
 
     const result = await createInitialUser(formData);
 
+    if (!result) {
+      setServerError("Unknown error");
+      return;
+    }
+
     if ("error" in result) {
       setServerError(result.error || "An unknown error occurred");
     } else {
@@ -58,7 +59,7 @@ export function SignupForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={"flex flex-col gap-6"}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Welcome!</CardTitle>
