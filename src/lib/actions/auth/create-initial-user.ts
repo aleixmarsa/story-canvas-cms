@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createUserSchema } from "@/lib/validation/create-user-schema";
 
-export async function createInitialUser(formData: FormData) {
+export const createInitialUser = async (formData: FormData) => {
   try {
     const rawData = {
       email: formData.get("email"),
@@ -47,4 +47,4 @@ export async function createInitialUser(formData: FormData) {
     console.error("Error creating initial user:", error);
     return { error: "Internal server error" };
   }
-}
+};
