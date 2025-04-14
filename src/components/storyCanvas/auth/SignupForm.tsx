@@ -1,5 +1,4 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -30,7 +29,6 @@ export function SignupForm() {
   } = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
   });
-
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -77,6 +75,7 @@ export function SignupForm() {
               <Input
                 id="email"
                 type="email"
+                required
                 placeholder="m@example.com"
                 {...register("email")}
               />
