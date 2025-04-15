@@ -27,6 +27,24 @@ type SessionPayload = {
   expiresAt: Date;
 };
 
+export async function getSession() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session")?.value;
+  if (!session) {
+    return null;
+  }
+  const payload = await decrypt(session);
+  if (!payload) {
+    return null;
+  }
+  const { userId, expiresAt } = payload;
+  if (new Date(expiresAt) < new Date()) {
+    await deleteSession();
+    return null;
+  }
+  return userId;
+}
+
 export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })

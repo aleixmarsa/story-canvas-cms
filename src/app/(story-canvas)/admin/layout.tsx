@@ -8,11 +8,27 @@ export default async function AdminLayout({
 }) {
   const userCount = await prisma.user.count();
   const headerList = await headers();
-  const pathname = headerList.get("x-current-path");
 
-  if (userCount === 0 && pathname !== "/admin/create-initial-user") {
+  const pathname = headerList.get("x-current-path");
+  const userId = headerList.get("x-user-id");
+
+  const isLoggedIn = Boolean(userId);
+  const isDashboard = pathname === "/admin/dashboard";
+  const isInitialUserPage = pathname === "/admin/create-initial-user";
+  const isLoginPage = pathname === "/admin/login";
+
+  // Redirect to dashboard if user is logged in and not on dashboard
+  if (isLoggedIn && !isDashboard) {
+    redirect("/admin/dashboard");
+  }
+
+  // Redirect to create initial user page if no users exist and not on initial user page
+  if (!isLoggedIn && userCount === 0 && !isInitialUserPage) {
     redirect("/admin/create-initial-user");
-  } else if (userCount > 0 && pathname !== "/admin/login") {
+  }
+
+  // Redirect to login page if a user exists and not on login page
+  if (!isLoggedIn && userCount > 0 && !isLoginPage) {
     redirect("/admin/login");
   }
 
