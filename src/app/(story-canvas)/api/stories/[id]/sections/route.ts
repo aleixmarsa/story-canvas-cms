@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET /api/stories/:id/sections
-// Returns all sections for a specific story
+/**
+ * GET /api/stories/:id/sections
+ * Fetches all sections for a given story ID.
+ * @param req - The request object.
+ * @param params - The parameters object containing the story ID.
+ * @returns A JSON response with the sections or an error message.
+ * @throws 400 - Invalid story ID.
+ * @throws 500 - Internal server error.
+ */
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

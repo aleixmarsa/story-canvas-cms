@@ -4,19 +4,39 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { storySchema } from "@/lib/validation/story-schemas";
 import { ConflictError } from "@/lib/errors";
 
-// Get all stories. Each story includes its current draft and published version
+/**
+ * GET /api/stories
+ * Fetches all stories with their current draft and published version.
+ * @returns The list of stories with their current draft and published version.
+ * @throws 500 - Internal server error.
+ */
 export async function GET() {
-  const stories = await prisma.story.findMany({
-    include: {
-      currentDraft: true,
-      publishedVersion: true,
-    },
-  });
+  try {
+    const stories = await prisma.story.findMany({
+      include: {
+        currentDraft: true,
+        publishedVersion: true,
+      },
+    });
 
-  return NextResponse.json(stories);
+    return NextResponse.json(stories);
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Internal server error", error },
+      { status: 500 }
+    );
+  }
 }
 
-// Creates a new Story + initial draft version
+/**
+ * POST /api/stories
+ * Creates a new Story + initial draft version
+ * @param req - The request object.
+ * @returns The created story with the initial draft version.
+ * @throws 422 - Validation error.
+ * @throws 409 - Slug already exists.
+ * @throws 500 - Internal server error.
+ */
 export async function POST(req: NextRequest) {
   const body = await req.json();
 

@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// PATCH /api/sections/:id
-// Updates a Section metadata (only fields stored on Section, not the version)
+/**
+ * PATCH /api/sections/:id
+ * Updates a Section metadata (only fields stored on Section, not the version)
+ * @param req - The request object.
+ * @param params - The parameters object containing the section ID.
+ * @returns The updated section or an error response.
+ * @throws 400 - Invalid section ID.
+ * @throws 500 - Internal server error.
+ */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

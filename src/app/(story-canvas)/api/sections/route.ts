@@ -6,8 +6,17 @@ import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 import { ConflictError } from "@/lib/errors";
 
-// POST /api/sections
-// Create Section + initial Draft Version
+/**
+ * POST /api/sections
+ * Create Section + initial Draft Version
+ * @param req - The request object.
+ * @returns The created section with the initial draft version.
+ * @throws 422 - Validation error.
+ * @throws 409 - Slug already exists.
+ * @throws 500 - Internal server error.
+ * @throws 400 - Invalid request.
+ * @throws 404 - Section not found.
+ */
 export async function POST(req: NextRequest) {
   const body = await req.json();
 

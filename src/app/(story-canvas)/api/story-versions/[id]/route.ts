@@ -4,8 +4,17 @@ import { storySchema } from "@/lib/validation/story-schemas";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ConflictError } from "@/lib/errors";
 
-// PATCH /api/story-versions/:id
-// Updates editable content of a draft version
+/**
+ * PATCH /api/story-versions/:id
+ * Updates editable content of a draft version
+ * @param req - The request object.
+ * @param params - The parameters object containing the story version ID.
+ * @returns The updated story version or an error response.
+ * @throws 400 - Invalid story version ID.
+ * @throws 422 - Validation error.
+ * @throws 409 - Slug already exists.
+ * @throws 500 - Internal server error.
+ */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

@@ -6,8 +6,17 @@ import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 import { ConflictError } from "@/lib/errors";
 
-// PATCH /api/section-versions/:id
-// Updates editable content of a draft version
+/**
+ * PATCH /api/section-versions/:id
+ * Updates a section version by ID.
+ * @param req - The request object.
+ * @param params - The parameters object containing the section version ID.
+ * @returns The updated section version or an error response.
+ * @throws 400 - Invalid section version ID.
+ * @throws 422 - Validation error.
+ * @throws 409 - Slug already exists.
+ * @throws 500 - Internal server error.
+ */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

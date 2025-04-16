@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// POST /api/story-versions/:id/duplicate
-// Duplicates a story version and sets it as the new current draft
+/**
+ * POST /api/story-versions/:id/duplicate
+ * Duplicates the given story version and creates a new draft copy
+ * @param req - The request object.
+ * @param params - The parameters object containing the story version ID.
+ * @returns The updated story with the new draft copy.
+ * @throws 400 - Invalid story version ID.
+ * @throws 404 - Story version not found.
+ * @throws 500 - Internal server error.
+ */
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
