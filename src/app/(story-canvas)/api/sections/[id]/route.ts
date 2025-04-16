@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/withAuth";
 
 /**
  * PATCH /api/sections/:id
@@ -8,12 +9,17 @@ import prisma from "@/lib/prisma";
  * @param params - The parameters object containing the section ID.
  * @returns The updated section or an error response.
  * @throws 400 - Invalid section ID.
+ * @throws 401 - Unauthorized.
  * @throws 500 - Internal server error.
  */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Check if the user is authenticated if not return 401
+  const user = await requireAuth();
+  if (user instanceof NextResponse) return user;
+
   const resolvedParams = await params;
   const sectionId = Number(resolvedParams.id);
 

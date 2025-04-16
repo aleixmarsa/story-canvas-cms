@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { storySchema } from "@/lib/validation/story-schemas";
 import { ConflictError } from "@/lib/errors";
+import { requireAdmin } from "@/lib/auth/withAuth";
 
 /**
  * GET /api/stories
@@ -33,11 +34,17 @@ export async function GET() {
  * Creates a new Story + initial draft version
  * @param req - The request object.
  * @returns The created story with the initial draft version.
- * @throws 422 - Validation error.
+ * @throws 401 - Unauthorized.
+ * @throws 403 - Forbidden.
  * @throws 409 - Slug already exists.
+ * @throws 422 - Validation error.
  * @throws 500 - Internal server error.
  */
 export async function POST(req: NextRequest) {
+  // Check if the user is authenticated and is an admin if not return 401 or 403
+  const user = await requireAdmin();
+  if (user instanceof NextResponse) return user;
+
   const body = await req.json();
 
   // Validates input

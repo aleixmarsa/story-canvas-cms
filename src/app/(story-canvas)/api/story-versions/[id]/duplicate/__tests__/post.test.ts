@@ -2,8 +2,13 @@
  * @jest-environment node
  */
 import { POST } from "../route";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/auth/withAuth";
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAdmin: jest.fn().mockResolvedValue({ id: "mock-user-id" }),
+}));
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
@@ -20,6 +25,27 @@ jest.mock("@/lib/prisma", () => ({
 
 describe("POST /api/story-versions/:id/duplicate", () => {
   const mockParams = Promise.resolve({ id: "1" });
+
+  it("returns 401 if not authenticated", async () => {
+    (requireAdmin as jest.Mock).mockResolvedValueOnce(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
+
+    const res = await POST(new NextRequest("http://localhost"), {
+      params: mockParams,
+    });
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 403 if not admin", async () => {
+    (requireAdmin as jest.Mock).mockResolvedValueOnce(
+      NextResponse.json({ message: "Forbidden" }, { status: 403 })
+    );
+    const res = await POST(new NextRequest("http://localhost"), {
+      params: mockParams,
+    });
+    expect(res.status).toBe(403);
+  });
 
   it("returns 400 for invalid ID", async () => {
     const res = await POST(new NextRequest("http://localhost"), {

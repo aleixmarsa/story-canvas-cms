@@ -2,8 +2,13 @@
  * @jest-environment node
  */
 import { PATCH } from "../route";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/withAuth";
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn().mockResolvedValue({ id: "mock-user-id" }),
+}));
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
@@ -21,6 +26,18 @@ describe("PATCH /api/sections/:id", () => {
   };
 
   const mockParams = Promise.resolve({ id: "1" });
+
+  it("returns 401 if not authenticated", async () => {
+    (requireAuth as jest.Mock).mockResolvedValueOnce(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
+
+    const req = new NextRequest("http://localhost", { method: "PATCH" });
+    req.json = async () => validBody;
+
+    const res = await PATCH(req, { params: mockParams });
+    expect(res.status).toBe(401);
+  });
 
   it("returns 400 if section ID is invalid", async () => {
     const req = new NextRequest("http://localhost", { method: "PATCH" });

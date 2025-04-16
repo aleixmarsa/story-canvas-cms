@@ -1,4 +1,3 @@
-// lib/auth/withAuth.ts
 import { NextResponse } from "next/server";
 import { getSession } from "./session";
 import prisma from "@/lib/prisma";

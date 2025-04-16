@@ -2,10 +2,16 @@
  * @jest-environment node
  */
 import { PATCH } from "../route";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ConflictError } from "@/lib/errors";
+
+import { requireAuth } from "@/lib/auth/withAuth";
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn().mockResolvedValue({ id: "mock-user-id" }),
+}));
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
@@ -39,6 +45,16 @@ describe("PATCH /api/story-versions/:id", () => {
     req.json = async () => body;
     return req;
   };
+
+  it("returns 401 if not authenticated", async () => {
+    (requireAuth as jest.Mock).mockResolvedValueOnce(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
+
+    const req = makeRequest(validBody);
+    const res = await PATCH(req, { params: mockParams });
+    expect(res.status).toBe(401);
+  });
 
   it("returns 400 for invalid version ID", async () => {
     const req = makeRequest(validBody);

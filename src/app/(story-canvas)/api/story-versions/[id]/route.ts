@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { storySchema } from "@/lib/validation/story-schemas";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ConflictError } from "@/lib/errors";
+import { requireAuth } from "@/lib/auth/withAuth";
 
 /**
  * PATCH /api/story-versions/:id
@@ -11,6 +12,7 @@ import { ConflictError } from "@/lib/errors";
  * @param params - The parameters object containing the story version ID.
  * @returns The updated story version or an error response.
  * @throws 400 - Invalid story version ID.
+ * @throws 401 - Unauthorized.
  * @throws 422 - Validation error.
  * @throws 409 - Slug already exists.
  * @throws 500 - Internal server error.
@@ -19,6 +21,10 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Check if the user is authenticated if not return 401
+  const user = await requireAuth();
+  if (user instanceof NextResponse) return user;
+
   const resolvedParams = await params;
   const versionId = Number(resolvedParams.id);
   if (isNaN(versionId)) {
