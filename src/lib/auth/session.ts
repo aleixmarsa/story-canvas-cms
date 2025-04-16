@@ -1,6 +1,7 @@
 import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { sessionPayloadSchema } from "../validation/session-payload-schema";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -74,13 +75,22 @@ export async function encrypt(payload: SessionPayload) {
  * @param session - The session token to decrypt
  * @returns The decrypted session payload if valid, null otherwise
  */
+
 export async function decrypt(session: string | undefined = "") {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
-    return payload as SessionPayload;
+
+    const parsed = sessionPayloadSchema.safeParse(payload);
+    if (!parsed.success) {
+      console.error("Invalid session structure:", parsed.error);
+      return null;
+    }
+
+    return parsed.data;
   } catch (error) {
     console.log("Failed to verify session:", error);
+    return null;
   }
 }
