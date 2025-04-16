@@ -7,6 +7,14 @@ import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { ROUTES } from "@/lib/constants/dashboard";
 
+/**
+ *
+ * @param formData - FormData object containing the email and password
+ * @param formData.get("email") - The email of the user
+ * @param formData.get("password") - The password of the user
+ * @param formData.get("confirmPassword") - The password confirmation (not used in this function)
+ * @returns - A promise that resolves to an object containing the result of the login attempt
+ */
 export const login = async (formData: FormData) => {
   const rawData = {
     email: formData.get("email"),
@@ -38,6 +46,10 @@ export const login = async (formData: FormData) => {
   redirect(ROUTES.dashboard);
 };
 
+/**
+ * Logs out the user by deleting the session and redirecting to the login page.
+ * @returns - A promise that resolves when the logout is complete
+ */
 export async function logout() {
   await deleteSession();
   redirect(ROUTES.login);
