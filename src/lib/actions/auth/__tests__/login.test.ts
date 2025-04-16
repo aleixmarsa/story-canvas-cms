@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/auth/session";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
@@ -84,7 +85,7 @@ describe("login", () => {
     await login(form);
 
     expect(createSession).toHaveBeenCalledWith("user-1");
-    expect(redirect).toHaveBeenCalledWith("/admin/dashboard");
+    expect(redirect).toHaveBeenCalledWith(ROUTES.dashboard);
   });
 });
 
@@ -93,6 +94,6 @@ describe("logout", () => {
     await logout();
 
     expect(deleteSession).toHaveBeenCalled();
-    expect(redirect).toHaveBeenCalledWith("/admin/login");
+    expect(redirect).toHaveBeenCalledWith(ROUTES.login);
   });
 });

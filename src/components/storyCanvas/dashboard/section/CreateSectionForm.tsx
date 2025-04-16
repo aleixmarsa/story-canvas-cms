@@ -14,6 +14,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 const CreateSectionForm = ({
   onDirtyChange,
@@ -74,10 +75,9 @@ const CreateSectionForm = ({
       }
 
       const newSection = await res.json();
-      console.log("New section created:", newSection);
       addSection(newSection);
       setSelectedType(null);
-      router.push(`/admin/dashboard/${selectedStory.currentDraft?.slug}`);
+      router.push(`${ROUTES.dashboard}/${selectedStory.currentDraft?.slug}`);
       return true;
     } catch (error) {
       console.error("Error creating section:", error);

@@ -7,6 +7,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
 import { SectionWithVersions } from "@/types/section";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -69,7 +70,7 @@ const StoryPage = () => {
       <DashboardHeader
         title={`${title} Sections`}
         addHref={`${slug}/new-section`}
-        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
         addButtonLabel="New Section"
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
@@ -80,7 +81,7 @@ const StoryPage = () => {
           columns={columns}
           data={sections}
           getEditLink={(row) =>
-            `/admin/dashboard/${slug}/${row.currentDraft?.slug}`
+            `${ROUTES.dashboard}/${slug}/${row.currentDraft?.slug}`
           }
         />
       </div>

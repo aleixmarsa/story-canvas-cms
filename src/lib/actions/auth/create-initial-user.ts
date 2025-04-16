@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createUserSchema } from "@/lib/validation/create-user-schema";
+import { createSession } from "@/lib/auth/session";
 
 export const createInitialUser = async (formData: FormData) => {
   try {
@@ -35,6 +36,8 @@ export const createInitialUser = async (formData: FormData) => {
         role: "ADMIN",
       },
     });
+
+    await createSession(user.id);
 
     return {
       success: true,

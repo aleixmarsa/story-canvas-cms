@@ -19,22 +19,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/constants/dashboard";
 
-export function SignupForm() {
+const SignupForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
   });
   const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const onSubmit = async (data: CreateUserInput) => {
     setServerError(null);
-    setSuccessMessage(null);
 
     const formData = new FormData();
     formData.set("email", data.email);
@@ -51,8 +51,7 @@ export function SignupForm() {
     if ("error" in result) {
       setServerError(result.error || "An unknown error occurred");
     } else {
-      setSuccessMessage("User created successfully!");
-      reset();
+      router.push(ROUTES.dashboard);
     }
   };
 
@@ -105,10 +104,6 @@ export function SignupForm() {
             </div>
 
             {serverError && <FormErrorMessage error={serverError} />}
-            {successMessage && (
-              <p className="text-sm text-green-600">{successMessage}</p>
-            )}
-
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
             </Button>
@@ -117,4 +112,6 @@ export function SignupForm() {
       </Card>
     </div>
   );
-}
+};
+
+export default SignupForm;

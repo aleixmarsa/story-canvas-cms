@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { loginSchema } from "@/lib/validation/login-schema";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 export const login = async (formData: FormData) => {
   const rawData = {
@@ -34,10 +35,10 @@ export const login = async (formData: FormData) => {
   }
 
   await createSession(user.id);
-  redirect("/admin/dashboard");
+  redirect(ROUTES.dashboard);
 };
 
 export async function logout() {
   await deleteSession();
-  redirect("/admin/login");
+  redirect(ROUTES.login);
 }

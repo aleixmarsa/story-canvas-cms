@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 const NewStoryPage = () => {
   const [isDirty, setDirty] = useState(false);
@@ -13,7 +14,7 @@ const NewStoryPage = () => {
     <>
       <DashboardHeader
         title="New Story"
-        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}
         isSaving={isSubmitting}

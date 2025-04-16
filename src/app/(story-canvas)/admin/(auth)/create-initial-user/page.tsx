@@ -1,4 +1,4 @@
-import { SignupForm } from "@/components/storyCanvas/auth/SignupForm";
+import SignupForm from "@/components/storyCanvas/auth/SignupForm";
 
 const CreateInitialUserPage = () => {
   return (

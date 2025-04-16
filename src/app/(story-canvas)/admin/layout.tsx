@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
+import { ROUTES } from "@/lib/constants/dashboard";
+
 export default async function AdminLayout({
   children,
 }: {
@@ -13,23 +15,23 @@ export default async function AdminLayout({
   const userId = headerList.get("x-user-id");
 
   const isLoggedIn = Boolean(userId);
-  const isDashboard = pathname === "/admin/dashboard";
-  const isInitialUserPage = pathname === "/admin/create-initial-user";
-  const isLoginPage = pathname === "/admin/login";
+  const isDashboard = pathname === ROUTES.dashboard;
+  const isInitialUserPage = pathname === ROUTES.createInitalUser;
+  const isLoginPage = pathname === ROUTES.login;
 
   // Redirect to dashboard if user is logged in and not on dashboard
   if (isLoggedIn && !isDashboard) {
-    redirect("/admin/dashboard");
+    redirect(ROUTES.dashboard);
   }
 
   // Redirect to create initial user page if no users exist and not on initial user page
   if (!isLoggedIn && userCount === 0 && !isInitialUserPage) {
-    redirect("/admin/create-initial-user");
+    redirect(ROUTES.createInitalUser);
   }
 
   // Redirect to login page if a user exists and not on login page
   if (!isLoggedIn && userCount > 0 && !isLoginPage) {
-    redirect("/admin/login");
+    redirect(ROUTES.login);
   }
 
   return <>{children}</>;

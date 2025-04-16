@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./lib/auth/session";
+import { ROUTES } from "./lib/constants/dashboard";
 
-const protectedRoutes = ["/admin/dashboard"];
-const publicRoutes = ["/admin", "/admin/login", "/admin/create-initial-user"];
+const protectedRoutes = [ROUTES.dashboard];
+const publicRoutes = [ROUTES.admin, ROUTES.login, ROUTES.createInitalUser];
 
 // Configure this middleware to run only on /admin routes
 export const config = {
@@ -19,11 +20,11 @@ export async function middleware(request: NextRequest) {
 
   // If the route is protected and the user is not authenticated, redirect to login
   if (isProtectedRoute && !session) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return NextResponse.redirect(new URL(ROUTES.login, request.url));
   }
   // If the route is public and the user is authenticated, redirect to dashboard
   if (isPublicRoute && session) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
   }
 
   /**
