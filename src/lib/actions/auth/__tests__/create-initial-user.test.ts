@@ -5,6 +5,11 @@ import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
+jest.mock("@/lib/auth/session", () => ({
+  __esModule: true,
+  createSession: jest.fn(),
+}));
+
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
   default: {
