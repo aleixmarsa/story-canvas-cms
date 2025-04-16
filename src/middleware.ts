@@ -40,6 +40,8 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set("x-current-path", pathname);
   if (session) {
     requestHeaders.set("x-user-id", session);
+  } else {
+    requestHeaders.delete("x-user-id");
   }
   return NextResponse.next({
     request: {
