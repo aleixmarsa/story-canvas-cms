@@ -20,6 +20,11 @@ enum SectionType {
   VIDEO
 }
 
+enum Role {
+  ADMIN
+  EDITOR
+}
+
 model Story {
   id Int @id @default(autoincrement())
 
@@ -127,4 +132,13 @@ model SectionVersion {
   publishedOf    Section? @relation("SectionPublishedVersion")
 
   @@index([sectionId, status])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -47,12 +47,18 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.21.2
         version: 8.21.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      bcryptjs:
+        specifier: ^3.0.2
+        version: 3.0.2
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      jose:
+        specifier: ^6.0.10
+        version: 6.0.10
       lucide-react:
         specifier: ^0.483.0
         version: 0.483.0(react@19.0.0)
@@ -1761,6 +1767,10 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
+  bcryptjs@3.0.2:
+    resolution: {integrity: sha512-k38b3XOZKv60C4E2hVsXTolJWfkGRMbILBIe2IBITXciy5bOsTKot5kDrf3ZfufQtQOUN5mXceUEpU1rTl9Uog==}
+    hasBin: true
+
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
 
@@ -2795,6 +2805,9 @@ packages:
   jiti@2.4.2:
     resolution: {integrity: sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==}
     hasBin: true
+
+  jose@6.0.10:
+    resolution: {integrity: sha512-skIAxZqcMkOrSwjJvplIPYrlXGpxTPnro2/QWTDCxAdWQrSTV5/KqspMWmi5WAx5+ULswASJiZ0a+1B/Lxt9cw==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -5651,6 +5664,8 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
+  bcryptjs@3.0.2: {}
+
   brace-expansion@1.1.11:
     dependencies:
       balanced-match: 1.0.2
@@ -7048,6 +7063,8 @@ snapshots:
       - ts-node
 
   jiti@2.4.2: {}
+
+  jose@6.0.10: {}
 
   js-tokens@4.0.0: {}
 

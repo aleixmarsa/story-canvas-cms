@@ -19,6 +19,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 export function DashboardSidebar({
   ...props
@@ -47,7 +48,7 @@ export function DashboardSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link href="/admin/dashboard">
+            <Link href={ROUTES.dashboard}>
               <SidebarMenuButton
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
@@ -69,7 +70,7 @@ export function DashboardSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={"Stories"}>
-                <Link href="/admin/dashboard" className="font-medium">
+                <Link href={ROUTES.dashboard} className="font-medium">
                   <ScrollText className="h-4 w-4" />
                   Stories
                 </Link>
@@ -81,7 +82,7 @@ export function DashboardSidebar({
                     <SidebarMenuSubItem key={story.id}>
                       <SidebarMenuSubButton asChild>
                         <Link
-                          href={`/admin/dashboard/${story.currentDraft?.slug}`}
+                          href={`/${ROUTES.dashboard}/${story.currentDraft?.slug}`}
                         >
                           {story.currentDraft?.slug}
                         </Link>

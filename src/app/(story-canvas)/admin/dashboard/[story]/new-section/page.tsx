@@ -3,6 +3,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRef, useState } from "react";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 const NewSectionPage = () => {
   const { selectedStory } = useDashboardStore();
@@ -22,10 +23,10 @@ const NewSectionPage = () => {
       <DashboardHeader
         title="New Section"
         breadcrumbs={[
-          { label: "Dashboard", href: "/admin/dashboard" },
+          { label: "Dashboard", href: ROUTES.dashboard },
           {
             label: selectedStory.currentDraft?.title ?? "Untitled",
-            href: `/admin/dashboard/${selectedStory.currentDraft?.slug}`,
+            href: `${ROUTES.dashboard}/${selectedStory.currentDraft?.slug}`,
           },
         ]}
         onSaveDraft={handleSaveDraft}

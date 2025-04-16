@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 const EditSectionPage = () => {
   const {
@@ -56,7 +57,7 @@ const EditSectionPage = () => {
     if (!sectionSlug) return;
     const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
     if (!found) {
-      router.push("/admin/dashboard");
+      router.push(ROUTES.dashboard);
     }
   }, [sectionSlug]);
 
@@ -75,10 +76,10 @@ const EditSectionPage = () => {
       <DashboardHeader
         title="Edit Section"
         breadcrumbs={[
-          { label: "Dashboard", href: "/admin/dashboard" },
+          { label: "Dashboard", href: ROUTES.dashboard },
           {
             label: selectedStory.currentDraft?.title ?? "Untitled",
-            href: `/admin/dashboard/${selectedStory.currentDraft?.slug}`,
+            href: `${ROUTES.dashboard}/${selectedStory.currentDraft?.slug}`,
           },
         ]}
         onSaveDraft={handleSaveDraft}

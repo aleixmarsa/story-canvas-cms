@@ -5,14 +5,29 @@ import { updateSectionVersionSchema } from "@/lib/validation/section-schemas";
 import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 import { ConflictError } from "@/lib/errors";
+import { requireAuth } from "@/lib/auth/withAuth";
 
-// PATCH /api/section-versions/:id
-// Updates editable content of a draft version
+/**
+ * PATCH /api/section-versions/:id
+ * This endpoint requires authentication.
+ * Updates a section version by ID.
+ * @param req - The request object.
+ * @param params - The parameters object containing the section version ID.
+ * @returns The updated section version or an error response.
+ * @throws 400 - Invalid section version ID.
+ * @throws 401 - Unauthorized.
+ * @throws 422 - Validation error.
+ * @throws 409 - Slug already exists.
+ * @throws 500 - Internal server error.
+ */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  debugger;
+  // Check if the user is authenticated if not return 401
+  const user = await requireAuth();
+  if (user instanceof NextResponse) return user;
+
   const resolvedParams = await params;
   const versionId = Number(resolvedParams.id);
 

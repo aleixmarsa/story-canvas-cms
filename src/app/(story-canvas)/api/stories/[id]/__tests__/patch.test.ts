@@ -6,6 +6,10 @@ import { NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn().mockResolvedValue({ id: "mock-user-id" }),
+}));
+
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
   default: {

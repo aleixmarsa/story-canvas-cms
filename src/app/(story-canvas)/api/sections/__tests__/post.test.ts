@@ -2,9 +2,14 @@
  * @jest-environment node
  */
 import { POST } from "../route";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
+import { requireAdmin } from "@/lib/auth/withAuth";
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAdmin: jest.fn().mockResolvedValue({ id: "mock-user-id" }),
+}));
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
@@ -22,6 +27,30 @@ describe("POST /api/sections", () => {
     content: { text: "Intro" },
     createdBy: "user123",
   };
+
+  it("returns 401 if not authenticated", async () => {
+    (requireAdmin as jest.Mock).mockResolvedValueOnce(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
+
+    const req = new NextRequest("http://localhost", { method: "POST" });
+    req.json = async () => validBody;
+
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 403 if is not an ADMIN", async () => {
+    (requireAdmin as jest.Mock).mockResolvedValueOnce(
+      NextResponse.json({ message: "Forbidden" }, { status: 403 })
+    );
+
+    const req = new NextRequest("http://localhost", { method: "POST" });
+    req.json = async () => validBody;
+
+    const res = await POST(req);
+    expect(res.status).toBe(403);
+  });
 
   it("returns 422 when body is invalid", async () => {
     const req = new NextRequest("http://localhost", {

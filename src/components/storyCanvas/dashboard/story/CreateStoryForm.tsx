@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRouter } from "next/navigation";
 import { StoryWithVersions } from "@/types/story";
-import FormErrorMessage from "../FormErrorMessage";
+import FormErrorMessage from "../../FormErrorMessage";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -67,7 +68,7 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
         const newStory: StoryWithVersions = await res.json();
         addStory(newStory);
         reset();
-        router.push(`/admin/dashboard/${newStory.currentDraft?.slug}`);
+        router.push(`${ROUTES.dashboard}/${newStory.currentDraft?.slug}`);
       } catch (err) {
         console.error("Failed to create story", err);
       }

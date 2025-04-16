@@ -8,6 +8,7 @@ import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
 import { SectionWithVersions } from "@/types/section";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;
@@ -95,7 +96,7 @@ const EditSectionForm = ({
         selectedSection?.currentDraft?.name
       ) {
         router.replace(
-          `/admin/dashboard/${selectedStory.currentDraft?.id}/${updatedSection?.currentDraft?.slug}`
+          `${ROUTES.dashboard}/${selectedStory.currentDraft?.id}/${updatedSection?.currentDraft?.slug}`
         );
       }
       updateSection(updatedSection);

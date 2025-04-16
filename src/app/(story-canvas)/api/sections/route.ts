@@ -5,12 +5,27 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 import { ConflictError } from "@/lib/errors";
+import { requireAdmin } from "@/lib/auth/withAuth";
 
-// POST /api/sections
-// Create Section + initial Draft Version
+/**
+ * POST /api/sections
+ * Create Section + initial Draft Version
+ * @param req - The request object.
+ * @returns The created section with the initial draft version.
+ * @throws 401 - Unauthorized.
+ * @throws 403 - Forbidden.
+ * @throws 409 - Slug already exists.
+ * @throws 422 - Validation error.
+ * @throws 500 - Internal server error.
+ * @throws 400 - Invalid request.
+ * @throws 404 - Section not found.
+ */
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  // Check if the user is authenticated and is an admin if not return 401 or 403
+  const user = await requireAdmin();
+  if (user instanceof NextResponse) return user;
 
+  const body = await req.json();
   // Validates input
   const parsed = createSectionVersionSchema.safeParse(body);
 

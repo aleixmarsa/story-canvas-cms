@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
+import { ROUTES } from "@/lib/constants/dashboard";
 
 const EditStoryPage = () => {
   const { stories, selectStory, selectedStory, updateStory } =
@@ -52,7 +53,7 @@ const EditStoryPage = () => {
     if (!storySlug || stories.length === 0) return;
     const found = stories.find((s) => s.currentDraft?.slug === storySlug);
     if (!found) {
-      router.push("/admin/dashboard");
+      router.push(ROUTES.dashboard);
     }
   }, [storySlug]);
 
@@ -62,7 +63,7 @@ const EditStoryPage = () => {
     <>
       <DashboardHeader
         title="Edit Story"
-        breadcrumbs={[{ label: "Dashboard", href: "/admin/dashboard" }]}
+        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
         onPublish={handlePublishStory}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}

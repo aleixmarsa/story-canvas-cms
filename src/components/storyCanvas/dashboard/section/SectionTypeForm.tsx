@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import FormErrorMessage from "../FormErrorMessage";
+import FormErrorMessage from "../../FormErrorMessage";
 
 interface SectionFormProps<T extends SectionType> {
   type: T;

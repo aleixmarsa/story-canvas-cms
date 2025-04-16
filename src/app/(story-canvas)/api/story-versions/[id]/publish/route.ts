@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth/withAuth";
 
-// POST /api/story-versions/:id/publish
-// Publishes the given version and creates a new draft copy
+/**
+ * POST /api/story-versions/:id/publish
+ * Publishes the given version and creates a new draft copy
+ * @param req - The request object.
+ * @param params - The parameters object containing the story version ID.
+ * @returns The updated story with the published version and new draft copy.
+ * @throws 400 - Invalid story version ID.
+ * @throws 401 - Unauthorized.
+ * @throws 404 - Story version not found.
+ * @throws 500 - Internal server error.
+ */
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Check if the user is authenticated if not return 401
+  const user = await requireAuth();
+  if (user instanceof NextResponse) return user;
+
   const resolvedParams = await params;
   const versionId = Number(resolvedParams.id);
   if (isNaN(versionId)) {
