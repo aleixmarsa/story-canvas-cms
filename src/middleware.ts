@@ -13,6 +13,10 @@ function isPublic(pathname: string): boolean {
   );
 }
 
+function isAdminOnly(pathname: string): boolean {
+  return pathname.startsWith(ROUTES.users);
+}
+
 // Configure this middleware to run only on /admin routes
 export const config = {
   matcher: "/admin/:path*",
@@ -23,12 +27,17 @@ export async function middleware(request: NextRequest) {
 
   const session = await getSession();
 
-  // If the route is protected and the user is not authenticated, redirect to login
+  // Protected routes + no session -> redirect to login
   if (isProtected(pathname) && !session) {
     return NextResponse.redirect(new URL(ROUTES.login, request.url));
   }
-  // If the route is public and the user is authenticated, redirect to dashboard
+  // Public routes + session -> redirect to dashboard
   if (isPublic(pathname) && session) {
+    return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
+  }
+
+  // Admin only routes + no ADMIN user -> redirect to dashboard
+  if (isAdminOnly(pathname) && session?.role !== "ADMIN") {
     return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
   }
 
@@ -44,7 +53,7 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-current-path", pathname);
   if (session) {
-    requestHeaders.set("x-user-id", session);
+    requestHeaders.set("x-user-id", session.userId);
   } else {
     requestHeaders.delete("x-user-id");
   }

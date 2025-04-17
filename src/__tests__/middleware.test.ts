@@ -4,6 +4,7 @@
 import { middleware } from "@/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { ROUTES } from "@/lib/constants/dashboard";
+import { SessionPayload } from "@/lib/validation/session-payload-schema";
 
 jest.mock("@/lib/auth/session", () => ({
   getSession: jest.fn(),
@@ -32,6 +33,12 @@ describe("middleware", () => {
     jest.clearAllMocks();
   });
 
+  const validSession: SessionPayload = {
+    userId: "mock-user-id",
+    role: "ADMIN",
+    expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+  };
+
   it("redirects to /admin/login if route is protected and no session", async () => {
     (getSession as jest.Mock).mockResolvedValue(null);
 
@@ -43,7 +50,7 @@ describe("middleware", () => {
   });
 
   it("redirects to /admin/dashboard if public route and session exists", async () => {
-    (getSession as jest.Mock).mockResolvedValue("mock-user-id");
+    (getSession as jest.Mock).mockResolvedValue(validSession);
 
     const req = mockRequest(ROUTES.login);
     const res = await middleware(req);
@@ -53,14 +60,14 @@ describe("middleware", () => {
   });
 
   it("allows access if route is protected and session exists", async () => {
-    (getSession as jest.Mock).mockResolvedValue("mock-user-id");
+    (getSession as jest.Mock).mockResolvedValue(validSession);
 
     const req = mockRequest(ROUTES.dashboard);
     const res = await middleware(req);
 
     expect(res?.status).toBe(200);
     expect(res?.headers.get("x-middleware-request-x-user-id")).toBe(
-      "mock-user-id"
+      validSession.userId
     );
   });
 
