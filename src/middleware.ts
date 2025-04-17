@@ -3,8 +3,15 @@ import type { NextRequest } from "next/server";
 import { getSession } from "./lib/auth/session";
 import { ROUTES } from "./lib/constants/dashboard";
 
-const protectedRoutes = [ROUTES.dashboard];
-const publicRoutes = [ROUTES.admin, ROUTES.login, ROUTES.createInitalUser];
+function isProtected(pathname: string): boolean {
+  return pathname.startsWith(ROUTES.dashboard);
+}
+
+function isPublic(pathname: string): boolean {
+  return [ROUTES.admin, ROUTES.login, ROUTES.createInitalUser].includes(
+    pathname
+  );
+}
 
 // Configure this middleware to run only on /admin routes
 export const config = {
@@ -13,17 +20,15 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(pathname);
-  const isPublicRoute = publicRoutes.includes(pathname);
 
   const session = await getSession();
 
   // If the route is protected and the user is not authenticated, redirect to login
-  if (isProtectedRoute && !session) {
+  if (isProtected(pathname) && !session) {
     return NextResponse.redirect(new URL(ROUTES.login, request.url));
   }
   // If the route is public and the user is authenticated, redirect to dashboard
-  if (isPublicRoute && session) {
+  if (isPublic(pathname) && session) {
     return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
   }
 
