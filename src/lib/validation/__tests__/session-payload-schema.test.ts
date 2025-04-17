@@ -4,6 +4,7 @@ describe("sessionPayloadSchema", () => {
   it("validates correct input", () => {
     const result = sessionPayloadSchema.safeParse({
       userId: "12345",
+      role: "ADMIN",
       expiresAt: new Date(),
     });
     expect(result.success).toBe(true);

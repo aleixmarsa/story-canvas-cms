@@ -42,7 +42,7 @@ export const login = async (formData: FormData) => {
     };
   }
 
-  await createSession(user.id);
+  await createSession(user.id, user.role);
   redirect(ROUTES.dashboard);
 };
 

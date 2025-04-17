@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Feather, ScrollText } from "lucide-react";
+import { Feather, ScrollText, User2 } from "lucide-react";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
 import { useDashboardStore } from "@/stores/dashboard-store";
@@ -20,10 +20,14 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/lib/constants/dashboard";
+import { Role } from "@prisma/client";
 
 export function DashboardSidebar({
+  userRole,
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: {
+  userRole: Role;
+} & React.ComponentProps<typeof Sidebar>) {
   const { stories, setStories } = useDashboardStore();
 
   useEffect(() => {
@@ -82,7 +86,7 @@ export function DashboardSidebar({
                     <SidebarMenuSubItem key={story.id}>
                       <SidebarMenuSubButton asChild>
                         <Link
-                          href={`/${ROUTES.dashboard}/${story.currentDraft?.slug}`}
+                          href={`${ROUTES.dashboard}/${story.currentDraft?.slug}`}
                         >
                           {story.currentDraft?.slug}
                         </Link>
@@ -92,6 +96,16 @@ export function DashboardSidebar({
                 </SidebarMenuSub>
               )}
             </SidebarMenuItem>
+            {userRole === Role.ADMIN && (
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Users">
+                  <Link href={ROUTES.users} className="font-medium">
+                    <User2 className="h-4 w-4" />
+                    Users
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

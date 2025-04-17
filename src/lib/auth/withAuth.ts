@@ -1,3 +1,4 @@
+import "server-only";
 import { NextResponse } from "next/server";
 import { getSession } from "./session";
 import prisma from "@/lib/prisma";
@@ -7,10 +8,12 @@ import prisma from "@/lib/prisma";
  * * @returns - The user object if authenticated, or a 401 Unauthorized response.
  */
 export async function requireAuth() {
-  const userId = await getSession();
-  if (!userId) {
+  const userSession = await getSession();
+  if (!userSession) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const userId = userSession.userId;
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) {

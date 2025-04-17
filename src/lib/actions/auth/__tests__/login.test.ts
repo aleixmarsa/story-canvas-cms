@@ -76,6 +76,7 @@ describe("login", () => {
   it("creates session and redirects on valid login", async () => {
     (prisma.user.findUnique as jest.Mock).mockResolvedValue({
       id: "user-1",
+      role: "ADMIN",
       email: "user@example.com",
       password: "hashed-password",
     });
@@ -84,7 +85,7 @@ describe("login", () => {
     const form = mockFormData("user@example.com", "correctpass");
     await login(form);
 
-    expect(createSession).toHaveBeenCalledWith("user-1");
+    expect(createSession).toHaveBeenCalledWith("user-1", "ADMIN");
     expect(redirect).toHaveBeenCalledWith(ROUTES.dashboard);
   });
 });
