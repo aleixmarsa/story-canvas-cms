@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
+import { createInitialUser } from "@/lib/actions/auth/createInitialUser";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 

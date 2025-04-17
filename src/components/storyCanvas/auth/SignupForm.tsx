@@ -5,7 +5,7 @@ import {
   createUserSchema,
   CreateUserInput,
 } from "@/lib/validation/create-user-schema";
-import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
+import { createInitialUser } from "@/lib/actions/auth/createInitialUser";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

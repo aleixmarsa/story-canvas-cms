@@ -37,7 +37,7 @@ export const createInitialUser = async (formData: FormData) => {
       },
     });
 
-    await createSession(user.id);
+    await createSession(user.id, user.role);
 
     return {
       success: true,
