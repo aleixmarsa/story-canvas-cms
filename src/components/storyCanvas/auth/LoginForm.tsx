@@ -16,6 +16,7 @@ import { LoginInput, loginSchema } from "@/lib/validation/login-schema";
 import { login } from "@/lib/actions/auth/login";
 import FormErrorMessage from "../FormErrorMessage";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export function LoginForm() {
   const {
@@ -26,11 +27,9 @@ export function LoginForm() {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
   });
-  const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const onSubmit = async (data: LoginInput) => {
-    setServerError(null);
     setSuccessMessage(null);
 
     const formData = new FormData();
@@ -40,14 +39,13 @@ export function LoginForm() {
     const result = await login(formData);
 
     if (!result) {
-      setServerError("Unknown error");
+      toast.error("An unknown error occurred");
       return;
     }
 
     if ("error" in result) {
-      setServerError(result.error || "An unknown error occurred");
+      toast.error(result.error || "An unknown error occurred");
     } else {
-      setSuccessMessage("User created successfully!");
       reset();
     }
   };
@@ -94,7 +92,6 @@ export function LoginForm() {
                 <FormErrorMessage error={errors.password.message} />
               )}
             </div>
-            {serverError && <FormErrorMessage error={serverError} />}
             {successMessage && (
               <p className="text-sm text-green-600">{successMessage}</p>
             )}
