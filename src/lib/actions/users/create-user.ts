@@ -37,7 +37,7 @@ export const createUser = async (formData: FormData) => {
     });
 
     if (existing) {
-      return { error: "Email already in use" };
+      return { error: "Email already in use", type: "email" };
     }
 
     const hashed = await bcrypt.hash(password, 10);
@@ -59,7 +59,6 @@ export const createUser = async (formData: FormData) => {
       },
     };
   } catch (err) {
-    console.error("Failed to create user:", err);
-    return { error: "Internal server error" };
+    return { error: "Internal server error", details: err };
   }
 };
