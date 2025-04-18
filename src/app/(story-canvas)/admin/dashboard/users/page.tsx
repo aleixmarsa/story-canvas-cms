@@ -7,7 +7,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/UserDataTableColumns";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 
-export default async function UsersPage() {
+const UsersPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
@@ -25,12 +25,14 @@ export default async function UsersPage() {
       <DashboardHeader
         title="Users"
         breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-        addHref={""}
-        addButtonLabel={""}
+        addHref={`${ROUTES.users}/new`}
+        addButtonLabel="New User"
       />
       <div className="px-6">
         <DataTable columns={columns} data={users} />
       </div>
     </>
   );
-}
+};
+
+export default UsersPage;
