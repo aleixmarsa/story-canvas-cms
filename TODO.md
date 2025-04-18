@@ -4,13 +4,28 @@ This document outlines the current state and remaining tasks of the headless CMS
 
 ## ✅ Completed Features
 
+### 🌏 General
+- Authentication
+- Admin setup flow
+- Route protection middleware
+- Role-based access control (admin/editor)
+
 ### 🧠 Database Schema (Prisma)
-- `Story` and `StoryVersion` with version control (`draft`, `published`)got 
+- `User` model with `role` (`admin`, `editor`)
+- `Story` and `StoryVersion` with version control (`draft`, `published`)
 - `Section` and `SectionVersion` using the same versioning strategy
 - Bidirectional relations between entities and their versions (`currentDraft`, `publishedVersion`)
 - Metadata fields: `createdBy`, `lockedBy`, `lastEditedBy`, `publishedAt`
 
 ### 🧩 Backend (API Routes)
+
+#### `Auth`
+- `POST /api/auth/login` → authenticate user
+- Middleware verifies session for protected routes
+
+#### `User`
+- `POST /api/users` → create a new user (admin only)
+- `GET /api/users` → list all users (admin only)
 
 #### `Story`
 - `POST /api/stories` → create a new story + initial draft version
@@ -31,23 +46,24 @@ This document outlines the current state and remaining tasks of the headless CMS
 ### 🖼️ Frontend (Dashboard)
 - Story list using `DataTable`
 - StoryVersion creation/edit form (title, slug, createdBy, etc.)
+- SectionVersion edit form with dynamic field rendering
 - Zod validation integrated with `react-hook-form`
 - Zustand store for `stories`, `sections`, `selectedStory`, `selectedSection`
 - Navigation by slug and state-driven rendering
 - Reusable UI components: `DashboardHeader`, `Sidebar`, `FormButtons`, `FormErrorMessage`
-- Edit Section page with schema-aware dynamic forms
+- Version status (`draft` / `published`/`changed`) with badges
 - Publish and save button for `StoryVersion` and `SectionVersion` UI
-- Display version status (`draft` / `published`/`changed`) with badges
+- User management panel (list + create user form)
+- Toast notifications for all forms
 
 ### 🛠️ Other Improvements
-- Add unit/API tests
-- Add Github Actions
+- Unit/API tests (middleware, auth, entities)
+- GitHub Actions CI pipeline
+- Tags and changelog management
+
 ---
 
 ## 🔜 Pending Features (TODO)
-
-### 🌏 General
-- 🔜 Authentication
 
 ### 🧩 Backend
 - 🔜 `GET /api/section-versions/:id` → fetch full version info for editing
@@ -63,5 +79,5 @@ This document outlines the current state and remaining tasks of the headless CMS
 - 🔜 Permission/lock control using `lockedBy`
 - 🔜 Story duplication interface
 - 🔜 Autosave mechanism for draft versions
-
+- 🔜 Add first E2E tests with Playwright
 
