@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function AdminLayout({
   children,
@@ -33,5 +34,10 @@ export default async function AdminLayout({
     redirect(ROUTES.login);
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  );
 }
