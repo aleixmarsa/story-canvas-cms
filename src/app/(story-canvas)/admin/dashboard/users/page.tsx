@@ -1,47 +1,36 @@
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { getCurrentUser } from "@/lib/dal/auth";
+import { getAllUsers } from "@/lib/dal/user";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
+import { Role } from "@prisma/client";
+import { ROUTES } from "@/lib/constants/storyCanvas";
+import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
+import { columns } from "@/components/storyCanvas/dashboard/DataTable/UserDataTableColumns";
+import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 
 export default async function UsersPage() {
   const user = await getCurrentUser();
 
-  if (!user || user.role !== "ADMIN") {
-    redirect("/admin/dashboard");
+  if (!user) {
+    redirect(ROUTES.login);
   }
 
-  const users = await prisma.user.findMany({
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-      createdAt: true,
-    },
-  });
+  if (user.role !== Role.ADMIN) {
+    redirect(ROUTES.dashboard);
+  }
+
+  const users = await getAllUsers();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Users</h1>
-      <table className="w-full border-collapse border border-gray-300 text-sm">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2 text-left">Email</th>
-            <th className="border p-2 text-left">Role</th>
-            <th className="border p-2 text-left">Created At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td className="border p-2">{user.email}</td>
-              <td className="border p-2">{user.role}</td>
-              <td className="border p-2">
-                {new Date(user.createdAt).toLocaleDateString()}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <DashboardHeader
+        title="Users"
+        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+        addHref={""}
+        addButtonLabel={""}
+      />
+      <div className="px-6">
+        <DataTable columns={columns} data={users} />
+      </div>
+    </>
   );
 }
