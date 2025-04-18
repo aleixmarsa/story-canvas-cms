@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createUserSchema } from "@/lib/validation/create-user-schema";
 import { createSession } from "@/lib/auth/session";
+import { Role } from "@prisma/client";
 
 export const createInitialUser = async (formData: FormData) => {
   try {
@@ -33,7 +34,7 @@ export const createInitialUser = async (formData: FormData) => {
       data: {
         email,
         password: hashedPassword,
-        role: "ADMIN",
+        role: Role.ADMIN,
       },
     });
 

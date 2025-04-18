@@ -4,6 +4,7 @@
 import { createInitialUser } from "@/lib/actions/auth/createInitialUser";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { Role } from "@prisma/client";
 
 jest.mock("@/lib/auth/session", () => ({
   __esModule: true,
@@ -73,7 +74,7 @@ describe("createInitialUser", () => {
       data: {
         email: "admin@example.com",
         password: "hashed-password",
-        role: "ADMIN",
+        role: Role.ADMIN,
       },
     });
   });

@@ -2,6 +2,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { getSession } from "./session";
 import prisma from "@/lib/prisma";
+import { Role } from "@prisma/client";
 
 /**
  * * Middleware function to check if the user is authenticated.
@@ -31,7 +32,7 @@ export async function requireAdmin() {
   const user = await requireAuth();
   if (user instanceof NextResponse) return user;
 
-  if (user.role !== "ADMIN") {
+  if (user.role !== Role.ADMIN) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
