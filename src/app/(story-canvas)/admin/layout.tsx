@@ -15,12 +15,11 @@ export default async function AdminLayout({
   const userId = headerList.get("x-user-id");
 
   const isLoggedIn = Boolean(userId);
-  const isDashboard = pathname === ROUTES.dashboard;
   const isInitialUserPage = pathname === ROUTES.createInitalUser;
   const isLoginPage = pathname === ROUTES.login;
 
-  // Redirect to dashboard if user is logged in and not on dashboard
-  if (isLoggedIn && !isDashboard) {
+  // Redirect to dashboard if user is logged in and on initial user page or login page
+  if (isLoggedIn && (isInitialUserPage || isLoginPage)) {
     redirect(ROUTES.dashboard);
   }
 
