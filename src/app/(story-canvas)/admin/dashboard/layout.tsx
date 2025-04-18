@@ -1,6 +1,6 @@
 import { DashboardSidebar } from "@/components/storyCanvas/dashboard/Sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { getCurrentUser } from "@/lib/dal/auth";
 import { Role } from "@prisma/client";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
