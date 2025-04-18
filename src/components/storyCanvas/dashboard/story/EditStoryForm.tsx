@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, forwardRef } from "react";
+import { useEffect, forwardRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { storySchema, StoryFormData } from "@/lib/validation/story-schemas";
@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { StoryVersion } from "@prisma/client";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 type EditStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -19,7 +20,6 @@ type EditStoryFormProps = {
 
 const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
   ({ setDirty, setIsSubmitting }, ref) => {
-    const [submitError, setSubmitError] = useState<string | null>(null);
     const { updateStory, selectedStory, selectStory } = useDashboardStore();
     const router = useRouter();
     const {
@@ -58,9 +58,8 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
     }, [isSubmitting, setIsSubmitting]);
 
     const onSubmit = async (data: StoryFormData) => {
-      setSubmitError(null);
       try {
-        //Add the story ID to the data
+        // Add the story ID to the data
         const res = await fetch(
           `/api/story-versions/${selectedStory?.currentDraftId}`,
           {
@@ -69,6 +68,11 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
             body: JSON.stringify(data),
           }
         );
+
+        if (!res) {
+          throw new Error("Failed to update story");
+          return;
+        }
 
         if (res.status === 409) {
           setError("slug", {
@@ -100,12 +104,15 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           updateStory(updatedStory);
           selectStory(updatedStory);
         }
-
+        toast.success("Story updated successfully");
         // Reset the form with the updated data to reset the dirty state
         reset(data);
       } catch (err) {
-        console.error(err);
-        setSubmitError("Failed to update story. Please try again.");
+        if (err instanceof Error) {
+          toast.error(err.message);
+        } else {
+          toast.error("An unknown error occurred while udpating the story");
+        }
       }
     };
 
@@ -134,8 +141,6 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           <Input id="slug" {...register("slug" as const)} />
           {errors.slug && <FormErrorMessage error={errors.slug.message} />}
         </div>
-
-        {submitError && <FormErrorMessage error={submitError} textRight />}
       </form>
     );
   }
