@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { loginSchema } from "@/lib/validation/login-schema";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 /**
  *

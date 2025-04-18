@@ -3,8 +3,9 @@
  */
 import { middleware } from "@/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 import { SessionPayload } from "@/lib/validation/session-payload-schema";
+import { Role } from "@prisma/client";
 
 jest.mock("@/lib/auth/session", () => ({
   getSession: jest.fn(),
@@ -35,7 +36,7 @@ describe("middleware", () => {
 
   const validSession: SessionPayload = {
     userId: "mock-user-id",
-    role: "ADMIN",
+    role: Role.ADMIN,
     expiresAt: new Date(Date.now() + 1000 * 60 * 60),
   };
 

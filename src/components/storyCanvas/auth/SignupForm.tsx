@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const SignupForm = () => {
   const {

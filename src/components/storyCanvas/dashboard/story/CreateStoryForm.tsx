@@ -10,7 +10,7 @@ import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRouter } from "next/navigation";
 import { StoryWithVersions } from "@/types/story";
 import FormErrorMessage from "../../FormErrorMessage";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;

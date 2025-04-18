@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./lib/auth/session";
-import { ROUTES } from "./lib/constants/dashboard";
+import { ROUTES } from "./lib/constants/storyCanvas";
+import { Role } from "@prisma/client";
 
 function isProtected(pathname: string): boolean {
   return pathname.startsWith(ROUTES.dashboard);
@@ -37,7 +38,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Admin only routes + no ADMIN user -> redirect to dashboard
-  if (isAdminOnly(pathname) && session?.role !== "ADMIN") {
+  if (isAdminOnly(pathname) && session?.role !== Role.ADMIN) {
     return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
   }
 

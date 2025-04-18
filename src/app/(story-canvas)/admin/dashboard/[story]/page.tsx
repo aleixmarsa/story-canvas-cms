@@ -7,7 +7,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
 import { SectionWithVersions } from "@/types/section";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();

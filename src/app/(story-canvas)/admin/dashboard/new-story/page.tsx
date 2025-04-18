@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const NewStoryPage = () => {
   const [isDirty, setDirty] = useState(false);
