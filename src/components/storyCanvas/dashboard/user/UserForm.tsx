@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import FormErrorMessage from "../../FormErrorMessage";
 import { ROUTES } from "@/lib/constants/storyCanvas";
-import { createUser } from "@/lib/actions/auth/create-user";
+import { createUser } from "@/lib/actions/users/create-user";
 import { Role } from "@prisma/client";
 
 type UserFormProps = {

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { createUser } from "@/lib/actions/auth/create-user";
+import { createUser } from "@/lib/actions/users/create-user";
 import prisma from "@/lib/prisma";
 import { verifySession } from "@/lib/dal/auth";
 import { Role } from "@prisma/client";

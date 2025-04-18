@@ -4,8 +4,7 @@ import { redirect } from "next/navigation";
 import { Role } from "@prisma/client";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import { columns } from "@/components/storyCanvas/dashboard/DataTable/UserDataTableColumns";
-import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
+import { UsersTableWrapper } from "@/components/storyCanvas/dashboard/user/UsersTableWrapper";
 
 const UsersPage = async () => {
   const user = await getCurrentUser();
@@ -28,9 +27,7 @@ const UsersPage = async () => {
         addHref={`${ROUTES.users}/new`}
         addButtonLabel="New User"
       />
-      <div className="px-6">
-        <DataTable columns={columns} data={users} />
-      </div>
+      <UsersTableWrapper users={users} />
     </>
   );
 };
