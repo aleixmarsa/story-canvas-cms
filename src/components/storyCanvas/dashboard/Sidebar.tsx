@@ -21,12 +21,13 @@ import {
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { Role } from "@prisma/client";
+import { CurrentUser } from "@/types/auth";
 
 export function DashboardSidebar({
-  userRole,
+  user,
   ...props
 }: {
-  userRole: Role;
+  user: CurrentUser | null;
 } & React.ComponentProps<typeof Sidebar>) {
   const { stories, setStories } = useDashboardStore();
 
@@ -40,12 +41,6 @@ export function DashboardSidebar({
       fetchStories();
     }
   }, [stories.length, setStories]);
-
-  const user = {
-    name: "Aleix",
-    email: "aleix.marsa@gmail.com",
-    avatar: "AM",
-  };
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -96,7 +91,7 @@ export function DashboardSidebar({
                 </SidebarMenuSub>
               )}
             </SidebarMenuItem>
-            {userRole === Role.ADMIN && (
+            {user?.role === Role.ADMIN && (
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Users">
                   <Link href={ROUTES.users} className="font-medium">
@@ -110,7 +105,14 @@ export function DashboardSidebar({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        {user ? (
+          <NavUser user={user} />
+        ) : (
+          <Link href={ROUTES.login} className="font-medium">
+            <User2 className="h-4 w-4" />
+            Login
+          </Link>
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
