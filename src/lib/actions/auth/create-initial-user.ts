@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { createUserSchema } from "@/lib/validation/create-user-schema";
+import { createInitialUserSchema } from "@/lib/validation/create-initial-user-schema";
 import { createSession } from "@/lib/auth/session";
 import { Role } from "@prisma/client";
 
@@ -14,7 +14,7 @@ export const createInitialUser = async (formData: FormData) => {
       confirmPassword: formData.get("confirmPassword"),
     };
 
-    const parsed = createUserSchema.safeParse(rawData);
+    const parsed = createInitialUserSchema.safeParse(rawData);
     if (!parsed.success) {
       return {
         error: "Invalid input",

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { createInitialUser } from "@/lib/actions/auth/createInitialUser";
+import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
@@ -39,7 +39,7 @@ describe("createInitialUser", () => {
   });
 
   it("returns error if input is invalid", async () => {
-    const form = new FormData(); // no camps
+    const form = new FormData();
 
     const result = await createInitialUser(form);
     expect(result).toHaveProperty("error", "Invalid input");
