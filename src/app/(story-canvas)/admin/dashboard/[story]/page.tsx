@@ -8,6 +8,7 @@ import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
 import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -58,8 +59,15 @@ const StoryPage = () => {
       }
       const updatedStory = await res.json();
       updateStory(updatedStory);
+      toast.success("Story published successfully", {
+        description: `Your story is now live!`,
+      });
     } catch (err) {
-      console.error("Failed to publish the story", err);
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unknown error occurred while publishing the story");
+      }
     } finally {
       setIsPublishing(false);
     }
