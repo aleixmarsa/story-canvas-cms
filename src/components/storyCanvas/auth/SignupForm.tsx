@@ -6,7 +6,6 @@ import {
   CreateInitialUserInput,
 } from "@/lib/validation/create-initial-user-schema";
 import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +20,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 const SignupForm = () => {
   const {
@@ -30,12 +30,9 @@ const SignupForm = () => {
   } = useForm<CreateInitialUserInput>({
     resolver: zodResolver(createInitialUserSchema),
   });
-  const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
 
   const onSubmit = async (data: CreateInitialUserInput) => {
-    setServerError(null);
-
     const formData = new FormData();
     formData.set("email", data.email);
     formData.set("password", data.password);
@@ -44,12 +41,12 @@ const SignupForm = () => {
     const result = await createInitialUser(formData);
 
     if (!result) {
-      setServerError("Unknown error");
+      toast.error("An unknown error occurred");
       return;
     }
 
     if ("error" in result) {
-      setServerError(result.error || "An unknown error occurred");
+      toast.error(result.error || "An unknown error occurred");
     } else {
       router.push(ROUTES.dashboard);
     }
@@ -102,8 +99,6 @@ const SignupForm = () => {
                 <FormErrorMessage error={errors.confirmPassword.message} />
               )}
             </div>
-
-            {serverError && <FormErrorMessage error={serverError} />}
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
             </Button>
