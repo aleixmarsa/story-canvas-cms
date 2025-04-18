@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { StoryWithVersions } from "@/types/story";
 import FormErrorMessage from "../../FormErrorMessage";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -60,17 +61,23 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           });
           return;
         }
-
-        if (!res.ok) {
+        if (!res || !res.ok) {
           throw new Error("Failed to create story");
         }
 
         const newStory: StoryWithVersions = await res.json();
         addStory(newStory);
         reset();
+        toast.success("Story created successfully", {
+          description: "You can now start editing your story.",
+        });
         router.push(`${ROUTES.dashboard}/${newStory.currentDraft?.slug}`);
       } catch (err) {
-        console.error("Failed to create story", err);
+        if (err instanceof Error) {
+          toast.error(err.message);
+        } else {
+          toast.error("An unknown error occurred while creating the story");
+        }
       }
     };
 
