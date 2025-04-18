@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 const EditSectionPage = () => {
   const {
@@ -33,13 +34,20 @@ const EditSectionPage = () => {
         }
       );
 
-      if (!res.ok) {
-        throw new Error("Failed publishing the Story");
+      if (!res || !res.ok) {
+        throw new Error("Failed publishing the section");
       }
       const updatedSection = await res.json();
       updateSection(updatedSection);
+      toast.success("Section published successfully", {
+        description: `Your section is now live!`,
+      });
     } catch (err) {
-      console.error("Failed to publish the section", err);
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unknown error occurred while publishing the section");
+      }
     } finally {
       setIsPublishing(false);
     }
