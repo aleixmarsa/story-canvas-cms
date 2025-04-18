@@ -71,7 +71,6 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
 
         if (!res) {
           throw new Error("Failed to update story");
-          return;
         }
 
         if (res.status === 409) {
