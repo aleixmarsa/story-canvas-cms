@@ -15,6 +15,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 const CreateSectionForm = ({
   onDirtyChange,
@@ -62,6 +63,10 @@ const CreateSectionForm = ({
         }),
       });
 
+      if (!res) {
+        throw new Error("Failed to create section");
+      }
+
       if (res.status === 409) {
         setExternalError({
           field: "name",
@@ -77,10 +82,15 @@ const CreateSectionForm = ({
       const newSection = await res.json();
       addSection(newSection);
       setSelectedType(null);
+      toast.success("Section created successfully");
       router.push(`${ROUTES.dashboard}/${selectedStory.currentDraft?.slug}`);
       return true;
-    } catch (error) {
-      console.error("Error creating section:", error);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unknown error occurred while creating the story");
+      }
       return false;
     }
   };
