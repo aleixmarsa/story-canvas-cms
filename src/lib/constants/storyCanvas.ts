@@ -4,4 +4,5 @@ export const ROUTES = {
   users: "/admin/dashboard/users",
   createInitalUser: "/admin/create-initial-user",
   login: "/admin/login",
+  error: "/admin/error",
 };

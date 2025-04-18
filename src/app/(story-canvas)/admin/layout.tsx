@@ -1,15 +1,15 @@
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { Toaster } from "@/components/ui/sonner";
+import { countAllUsers } from "@/lib/dal/user";
+import { checkDbConnection } from "@/lib/db";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const userCount = await prisma.user.count();
   const headerList = await headers();
 
   const pathname = headerList.get("x-current-path");
@@ -18,6 +18,19 @@ export default async function AdminLayout({
   const isLoggedIn = Boolean(userId);
   const isInitialUserPage = pathname === ROUTES.createInitalUser;
   const isLoginPage = pathname === ROUTES.login;
+  const isErrorPage = pathname === ROUTES.error;
+
+  // Check if the database connection is successful
+  const isDbUp = await checkDbConnection();
+  if (!isDbUp && !isErrorPage) {
+    redirect(ROUTES.error);
+  }
+
+  // Fetch the number of users
+  const countResult = await countAllUsers();
+  if ("error" in countResult) {
+    redirect(ROUTES.error);
+  }
 
   // Redirect to dashboard if user is logged in and on initial user page or login page
   if (isLoggedIn && (isInitialUserPage || isLoginPage)) {
@@ -25,12 +38,12 @@ export default async function AdminLayout({
   }
 
   // Redirect to create initial user page if no users exist and not on initial user page
-  if (!isLoggedIn && userCount === 0 && !isInitialUserPage) {
+  if (!isLoggedIn && countResult.numberOfUsers === 0 && !isInitialUserPage) {
     redirect(ROUTES.createInitalUser);
   }
 
   // Redirect to login page if a user exists and not on login page
-  if (!isLoggedIn && userCount > 0 && !isLoginPage) {
+  if (!isLoggedIn && countResult.numberOfUsers > 0 && !isLoginPage) {
     redirect(ROUTES.login);
   }
 
