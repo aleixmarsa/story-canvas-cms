@@ -9,7 +9,13 @@ import { CurrentUser } from "@/types/auth";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { toast } from "sonner";
 
-export function UsersTableWrapper({ users }: { users: CurrentUser[] }) {
+export function UsersTableWrapper({
+  users,
+  currentUser,
+}: {
+  users: CurrentUser[];
+  currentUser: CurrentUser;
+}) {
   const {
     users: zustandUsers,
     setUsers,
@@ -22,8 +28,6 @@ export function UsersTableWrapper({ users }: { users: CurrentUser[] }) {
   }, [users, setUsers]);
 
   const handleDelete = async (user: CurrentUser) => {
-    // const res = await deleteUser(user.id);
-
     //Delete user from the store
     deleteUserFromStore(user.id);
 
@@ -56,12 +60,15 @@ export function UsersTableWrapper({ users }: { users: CurrentUser[] }) {
       <DataTable
         columns={columns}
         data={zustandUsers}
-        renderDeleteButton={(user) => (
-          <DeleteUserDialog
-            userEmail={user.email}
-            onConfirm={() => handleDelete(user)}
-          />
-        )}
+        renderDeleteButton={(user) => {
+          if (user.id === currentUser.id) return <></>;
+          return (
+            <DeleteUserDialog
+              userEmail={user.email}
+              onConfirm={() => handleDelete(user)}
+            />
+          );
+        }}
       />
     </div>
   );

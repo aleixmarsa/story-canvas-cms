@@ -7,13 +7,13 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import { UsersTableWrapper } from "@/components/storyCanvas/dashboard/user/UsersTableWrapper";
 
 const UsersPage = async () => {
-  const user = await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
-  if (!user) {
+  if (!currentUser) {
     redirect(ROUTES.login);
   }
 
-  if (user.role !== Role.ADMIN) {
+  if (currentUser.role !== Role.ADMIN) {
     redirect(ROUTES.dashboard);
   }
 
@@ -27,7 +27,7 @@ const UsersPage = async () => {
         addHref={`${ROUTES.users}/new`}
         addButtonLabel="New User"
       />
-      <UsersTableWrapper users={users} />
+      <UsersTableWrapper currentUser={currentUser} users={users} />
     </>
   );
 };
