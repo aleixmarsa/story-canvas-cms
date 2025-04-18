@@ -34,3 +34,19 @@ export const getAllUsers = async (): Promise<UserForTable[]> => {
     redirect(ROUTES.dashboard);
   }
 };
+
+export const countAllUsers = async (): Promise<
+  { numberOfUsers: number } | { error: string }
+> => {
+  try {
+    const userCount = await prisma.user.count();
+    return {
+      numberOfUsers: userCount,
+    };
+  } catch (error) {
+    console.log("🚀 ~ countAllUsers ~ error:", error);
+    return {
+      error: "Error in Database",
+    };
+  }
+};

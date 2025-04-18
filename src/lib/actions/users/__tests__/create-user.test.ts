@@ -82,7 +82,7 @@ describe("createUser", () => {
     });
 
     const res = await createUser(formData);
-    expect(res).toEqual({ error: "Email already in use" });
+    expect(res).toEqual({ error: "Email already in use", type: "email" });
   });
 
   it("creates user successfully", async () => {
@@ -125,6 +125,9 @@ describe("createUser", () => {
     });
 
     const res = await createUser(formData);
-    expect(res).toEqual({ error: "Internal server error" });
+    expect(res).toEqual({
+      details: "Error: DB exploded",
+      error: "Internal server error",
+    });
   });
 });

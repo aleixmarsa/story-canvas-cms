@@ -21,6 +21,7 @@ import FormErrorMessage from "../../FormErrorMessage";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { createUser } from "@/lib/actions/users/create-user";
 import { Role } from "@prisma/client";
+import { toast } from "sonner";
 
 type UserFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -64,7 +65,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
 
       const result = await createUser(formData);
 
-      if (!result || "error" in result) {
+      if (!result || ("error" in result && result.type === "email")) {
         setError("email", {
           type: "manual",
           message: result?.error || "Unknown error",
@@ -72,7 +73,13 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
         return;
       }
 
+      if (result && "error" in result) {
+        toast.error(result.error);
+        return;
+      }
+
       reset();
+      toast.success("User created successfully");
       router.push(`${ROUTES.dashboard}/users`);
     };
     return (

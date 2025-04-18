@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 const EditStoryPage = () => {
   const { stories, selectStory, selectedStory, updateStory } =
@@ -29,13 +30,20 @@ const EditStoryPage = () => {
         }
       );
 
-      if (!res.ok) {
+      if (!res || !res.ok) {
         throw new Error("Failed publishing the Story");
       }
       const updatedStory = await res.json();
       updateStory(updatedStory);
+      toast.success("Story published successfully", {
+        description: `Your story is now live!`,
+      });
     } catch (err) {
-      console.error("Failed to publish the story", err);
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unknown error occurred while publishing the story");
+      }
     } finally {
       setIsPublishing(false);
     }
