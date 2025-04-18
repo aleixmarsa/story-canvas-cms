@@ -9,6 +9,7 @@ import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
 import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { toast } from "sonner";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;
@@ -74,6 +75,10 @@ const EditSectionForm = ({
         }
       );
 
+      if (!res) {
+        throw new Error("Failed to update section");
+      }
+
       if (res.status === 409) {
         setExternalError({
           field: "name",
@@ -88,7 +93,7 @@ const EditSectionForm = ({
 
       const updatedSection: SectionWithVersions = await res.json();
       if (!updatedSection) {
-        throw new Error("Failed to update story");
+        throw new Error("Failed to update section");
       }
       // Update the URL if the name has changed
       if (
@@ -101,9 +106,14 @@ const EditSectionForm = ({
       }
       updateSection(updatedSection);
       selectSection(updatedSection);
+      toast.success("Section updated successfully");
       return true;
-    } catch (error) {
-      console.error("Error updating section:", error);
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unknown error occurred while udpating the section");
+      }
       return false;
     }
   };
