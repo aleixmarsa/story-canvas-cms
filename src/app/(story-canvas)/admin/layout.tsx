@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function AdminLayout({
   children,
@@ -15,12 +16,11 @@ export default async function AdminLayout({
   const userId = headerList.get("x-user-id");
 
   const isLoggedIn = Boolean(userId);
-  const isDashboard = pathname === ROUTES.dashboard;
   const isInitialUserPage = pathname === ROUTES.createInitalUser;
   const isLoginPage = pathname === ROUTES.login;
 
-  // Redirect to dashboard if user is logged in and not on dashboard
-  if (isLoggedIn && !isDashboard) {
+  // Redirect to dashboard if user is logged in and on initial user page or login page
+  if (isLoggedIn && (isInitialUserPage || isLoginPage)) {
     redirect(ROUTES.dashboard);
   }
 
@@ -34,5 +34,10 @@ export default async function AdminLayout({
     redirect(ROUTES.login);
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  );
 }

@@ -17,6 +17,7 @@ interface DataTableProps<TData, TValue> {
   getRowLink?: (row: TData) => string;
   getEditLink?: (row: TData) => string;
   onDelete?: (row: TData) => void;
+  renderDeleteButton?: (row: TData) => React.ReactNode;
 }
 
 const DataTable = <TData, TValue>({
@@ -26,6 +27,7 @@ const DataTable = <TData, TValue>({
   getRowLink,
   getEditLink,
   onDelete,
+  renderDeleteButton,
 }: DataTableProps<TData, TValue>) => {
   const router = useRouter();
 
@@ -98,15 +100,17 @@ const DataTable = <TData, TValue>({
                     <Pencil className="w-4 h-4" />
                   </Link>
                 )}
-                {onDelete && (
-                  <button
-                    type="button"
-                    onClick={() => onDelete(rowData)}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash className="w-4 h-4" />
-                  </button>
-                )}
+                {renderDeleteButton
+                  ? renderDeleteButton(rowData)
+                  : onDelete && (
+                      <button
+                        type="button"
+                        onClick={() => onDelete(rowData)}
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>
+                    )}
               </div>
             </div>
           );

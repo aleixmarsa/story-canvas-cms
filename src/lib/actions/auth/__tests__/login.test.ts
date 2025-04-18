@@ -6,7 +6,8 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/auth/session";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
+import { Role } from "@prisma/client";
 
 jest.mock("@/lib/prisma", () => ({
   __esModule: true,
@@ -76,6 +77,7 @@ describe("login", () => {
   it("creates session and redirects on valid login", async () => {
     (prisma.user.findUnique as jest.Mock).mockResolvedValue({
       id: "user-1",
+      role: Role.ADMIN,
       email: "user@example.com",
       password: "hashed-password",
     });
@@ -84,7 +86,7 @@ describe("login", () => {
     const form = mockFormData("user@example.com", "correctpass");
     await login(form);
 
-    expect(createSession).toHaveBeenCalledWith("user-1");
+    expect(createSession).toHaveBeenCalledWith("user-1", Role.ADMIN);
     expect(redirect).toHaveBeenCalledWith(ROUTES.dashboard);
   });
 });

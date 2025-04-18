@@ -3,7 +3,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRef, useState } from "react";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const NewSectionPage = () => {
   const { selectedStory } = useDashboardStore();

@@ -2,9 +2,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  createUserSchema,
-  CreateUserInput,
-} from "@/lib/validation/create-user-schema";
+  createInitialUserSchema,
+  CreateInitialUserInput,
+} from "@/lib/validation/create-initial-user-schema";
 import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,20 +20,20 @@ import {
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const SignupForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+  } = useForm<CreateInitialUserInput>({
+    resolver: zodResolver(createInitialUserSchema),
   });
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
 
-  const onSubmit = async (data: CreateUserInput) => {
+  const onSubmit = async (data: CreateInitialUserInput) => {
     setServerError(null);
 
     const formData = new FormData();

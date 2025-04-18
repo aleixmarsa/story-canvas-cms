@@ -10,7 +10,7 @@ import FormErrorMessage from "../../FormErrorMessage";
 import { useRouter } from "next/navigation";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { StoryVersion } from "@prisma/client";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 type EditStoryFormProps = {
   setDirty?: (dirty: boolean) => void;

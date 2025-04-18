@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./lib/auth/session";
-import { ROUTES } from "./lib/constants/dashboard";
+import { ROUTES } from "./lib/constants/storyCanvas";
+import { Role } from "@prisma/client";
 
 function isProtected(pathname: string): boolean {
   return pathname.startsWith(ROUTES.dashboard);
@@ -11,6 +12,10 @@ function isPublic(pathname: string): boolean {
   return [ROUTES.admin, ROUTES.login, ROUTES.createInitalUser].includes(
     pathname
   );
+}
+
+function isAdminOnly(pathname: string): boolean {
+  return pathname.startsWith(ROUTES.users);
 }
 
 // Configure this middleware to run only on /admin routes
@@ -23,12 +28,17 @@ export async function middleware(request: NextRequest) {
 
   const session = await getSession();
 
-  // If the route is protected and the user is not authenticated, redirect to login
+  // Protected routes + no session -> redirect to login
   if (isProtected(pathname) && !session) {
     return NextResponse.redirect(new URL(ROUTES.login, request.url));
   }
-  // If the route is public and the user is authenticated, redirect to dashboard
+  // Public routes + session -> redirect to dashboard
   if (isPublic(pathname) && session) {
+    return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
+  }
+
+  // Admin only routes + no ADMIN user -> redirect to dashboard
+  if (isAdminOnly(pathname) && session?.role !== Role.ADMIN) {
     return NextResponse.redirect(new URL(ROUTES.dashboard, request.url));
   }
 
@@ -44,7 +54,7 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-current-path", pathname);
   if (session) {
-    requestHeaders.set("x-user-id", session);
+    requestHeaders.set("x-user-id", session.userId);
   } else {
     requestHeaders.delete("x-user-id");
   }

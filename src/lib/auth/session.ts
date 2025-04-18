@@ -1,7 +1,11 @@
 import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { sessionPayloadSchema } from "../validation/session-payload-schema";
+import {
+  sessionPayloadSchema,
+  SessionPayload,
+} from "../validation/session-payload-schema";
+import { Role } from "@prisma/client";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -11,9 +15,9 @@ const encodedKey = new TextEncoder().encode(secretKey);
  * @param userId - The ID of the user to create a session for
  * @returns A signed JWT session token
  */
-export async function createSession(userId: string) {
+export async function createSession(userId: string, role: Role) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ userId, expiresAt });
+  const session = await encrypt({ userId, expiresAt, role });
   const cookieStore = await cookies();
 
   cookieStore.set("session", session, {
@@ -31,14 +35,9 @@ export async function deleteSession() {
   cookieStore.delete("session");
 }
 
-type SessionPayload = {
-  userId: string;
-  expiresAt: Date;
-};
-
 /**
  * Retrieves the session from cookies and verifies it.
- * @returns The user ID if the session is valid, null otherwise
+ * @returns The user ID and role if the session is valid, null otherwise
  */
 export async function getSession() {
   const cookieStore = await cookies();
@@ -50,12 +49,12 @@ export async function getSession() {
   if (!payload) {
     return null;
   }
-  const { userId, expiresAt } = payload;
+  const { userId, role, expiresAt } = payload;
   if (new Date(expiresAt) < new Date()) {
     await deleteSession();
     return null;
   }
-  return userId;
+  return { userId, role };
 }
 /**
  * Encrypts the session payload using JWT.

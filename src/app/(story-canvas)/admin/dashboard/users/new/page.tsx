@@ -1,10 +1,10 @@
 "use client";
 import { useRef, useState } from "react";
-import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import CreateStoryForm from "@/components/storyCanvas/dashboard/story/CreateStoryForm";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
+import { UserForm } from "@/components/storyCanvas/dashboard/user/UserForm";
 
-const NewStoryPage = () => {
+const CreateUserPage = () => {
   const [isDirty, setDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -13,14 +13,17 @@ const NewStoryPage = () => {
   return (
     <>
       <DashboardHeader
-        title="New Story"
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+        title="New User"
+        breadcrumbs={[
+          { label: "Dashboard", href: ROUTES.dashboard },
+          { label: "Users", href: `${ROUTES.dashboard}/users` },
+        ]}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
       />
       <div className="px-6">
-        <CreateStoryForm
+        <UserForm
           setDirty={setDirty}
           setIsSubmitting={setIsSubmitting}
           ref={formRef}
@@ -30,4 +33,4 @@ const NewStoryPage = () => {
   );
 };
 
-export default NewStoryPage;
+export default CreateUserPage;

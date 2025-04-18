@@ -4,6 +4,7 @@
 import { createInitialUser } from "@/lib/actions/auth/create-initial-user";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { Role } from "@prisma/client";
 
 jest.mock("@/lib/auth/session", () => ({
   __esModule: true,
@@ -38,7 +39,7 @@ describe("createInitialUser", () => {
   });
 
   it("returns error if input is invalid", async () => {
-    const form = new FormData(); // no camps
+    const form = new FormData();
 
     const result = await createInitialUser(form);
     expect(result).toHaveProperty("error", "Invalid input");
@@ -73,7 +74,7 @@ describe("createInitialUser", () => {
       data: {
         email: "admin@example.com",
         password: "hashed-password",
-        role: "ADMIN",
+        role: Role.ADMIN,
       },
     });
   });

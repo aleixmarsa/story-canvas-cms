@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { loginSchema } from "@/lib/validation/login-schema";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { ROUTES } from "@/lib/constants/dashboard";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 /**
  *
@@ -13,7 +13,7 @@ import { ROUTES } from "@/lib/constants/dashboard";
  * @param formData.get("email") - The email of the user
  * @param formData.get("password") - The password of the user
  * @param formData.get("confirmPassword") - The password confirmation (not used in this function)
- * @returns - A promise that resolves to an object containing the result of the login attempt
+ * @returns {Promise<void>} - A promise that resolves when the login is complete or rejects with an error
  */
 export const login = async (formData: FormData) => {
   const rawData = {
@@ -42,7 +42,7 @@ export const login = async (formData: FormData) => {
     };
   }
 
-  await createSession(user.id);
+  await createSession(user.id, user.role);
   redirect(ROUTES.dashboard);
 };
 
