@@ -13,7 +13,7 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
  * @param formData.get("email") - The email of the user
  * @param formData.get("password") - The password of the user
  * @param formData.get("confirmPassword") - The password confirmation (not used in this function)
- * @returns - A promise that resolves to an object containing the result of the login attempt
+ * @returns {Promise<void>} - A promise that resolves when the login is complete or rejects with an error
  */
 export const login = async (formData: FormData) => {
   const rawData = {
