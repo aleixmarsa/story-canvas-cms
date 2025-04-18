@@ -59,6 +59,6 @@ export const createUser = async (formData: FormData) => {
       },
     };
   } catch (err) {
-    return { error: "Internal server error", details: err };
+    return { error: "Internal server error", details: String(err) };
   }
 };
