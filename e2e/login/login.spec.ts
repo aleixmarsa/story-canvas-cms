@@ -1,12 +1,15 @@
 import { test, expect } from "@playwright/test";
-import { ROUTES } from "../src/lib/constants/storyCanvas";
+import { ROUTES } from "../../src/lib/constants/storyCanvas";
 
-test.describe("Login form", () => {
+// Reset storage state for this file to avoid being authenticated
+test.use({ storageState: { cookies: [], origins: [] } });
+
+test.describe("Login process", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(ROUTES.login);
-    await page.getByTestId("login-form-title").isVisible();
+    await expect(page.getByTestId("login-form-title")).toBeVisible();
   });
-  test("shows validation errors with empty form", async ({ page }) => {
+  test("should show validation errors with empty form", async ({ page }) => {
     // Clicks the login button without filling the form
     await page.getByRole("button", { name: "Login" }).click();
 
@@ -15,7 +18,7 @@ test.describe("Login form", () => {
     await expect(page.getByText(/password/i)).toBeVisible();
   });
 
-  test("shows error with invalid credentials", async ({ page }) => {
+  test("should show error with invalid credentials", async ({ page }) => {
     //Fills the form with invalid credentials
     await page.getByTestId("login-form-email-input").fill("admin@cms.test");
     await page.getByTestId("login-form-password-input").fill("wrong-password");
@@ -26,7 +29,7 @@ test.describe("Login form", () => {
     await page.getByText("Invalid email or password");
   });
 
-  test("logs in successfully with correct credentials", async ({ page }) => {
+  test("should login successfully with valid credentials", async ({ page }) => {
     //Fills the form with valid credentials
     await page.getByTestId("login-form-email-input").fill("admin@cms.com");
     await page.getByTestId("login-form-password-input").fill("securepassword");

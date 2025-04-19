@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { ROUTES } from "../src/lib/constants/storyCanvas";
+import { ROUTES } from "../../src/lib/constants/storyCanvas";
+
+// Reset storage state for this file to avoid being authenticated
+test.use({ storageState: { cookies: [], origins: [] } });
 
 const adminRoutes = [
   ROUTES.admin,
@@ -9,7 +12,7 @@ const adminRoutes = [
   ROUTES.error,
 ];
 
-test.describe("Redirection to initial user creation", () => {
+test.describe("Redirect to login page when user is not authenticated", () => {
   for (const route of adminRoutes) {
     test(`should redirect ${route} to /admin/login when a user exists`, async ({
       page,
