@@ -104,7 +104,12 @@ export function LoginForm() {
               <p className="text-sm text-green-600">{successMessage}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+              data-testid="login-form-submit-button"
+            >
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Login"}
             </Button>
           </form>
