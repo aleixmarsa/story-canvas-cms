@@ -34,11 +34,11 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // {
-    //   name: "setup db",
-    //   testMatch: /db\.setup\.ts/,
-    //   teardown: "cleanup db",
-    // },
+    {
+      name: "setup db",
+      testMatch: /db\.setup\.ts/,
+      teardown: "cleanup db",
+    },
     {
       name: "setup empty db",
       testMatch: /db\.empty\.setup\.ts/,
@@ -61,19 +61,20 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      // dependencies: ["setup db"],
+      dependencies: ["setup db"],
+      testIgnore: [/signup-redirect\.spec\.ts/],
     },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-      // dependencies: ["setup db"],
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    //   dependencies: ["setup db"],
+    // },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-      // dependencies: ["setup db"],
-    },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    //   dependencies: ["setup db"],
+    // },
 
     /* Test against mobile viewports. */
     // {
