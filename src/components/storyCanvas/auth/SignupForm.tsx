@@ -79,7 +79,10 @@ const SignupForm = () => {
                 data-testid="signup-form-email-input"
               />
               {errors.email && (
-                <FormErrorMessage error={errors.email.message} />
+                <FormErrorMessage
+                  error={errors.email.message}
+                  data-testid="signup-form-email-error"
+                />
               )}
             </div>
 
@@ -92,7 +95,10 @@ const SignupForm = () => {
                 data-testid="signup-form-password-input"
               />
               {errors.password && (
-                <FormErrorMessage error={errors.password.message} />
+                <FormErrorMessage
+                  error={errors.password.message}
+                  data-testid="signup-form-password-error"
+                />
               )}
             </div>
 
@@ -105,10 +111,18 @@ const SignupForm = () => {
                 data-testid="signup-form-confirm-password-input"
               />
               {errors.confirmPassword && (
-                <FormErrorMessage error={errors.confirmPassword.message} />
+                <FormErrorMessage
+                  error={errors.confirmPassword.message}
+                  data-testid="signup-form-confirm-password-error"
+                />
               )}
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+              data-testid="signup-form-submit-button"
+            >
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
             </Button>
           </form>
