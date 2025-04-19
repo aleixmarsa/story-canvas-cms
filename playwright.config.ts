@@ -40,14 +40,21 @@ export default defineConfig({
       teardown: "cleanup db",
     },
     {
+      name: "auth setup",
+      testMatch: /auth\.setup\.ts/,
+      dependencies: ["setup db"],
+    },
+    {
       name: "cleanup db",
       testMatch: /db\.teardown\.ts/,
     },
-
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-      dependencies: ["setup db"],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./playwright/.auth/user.json",
+      },
+      dependencies: ["setup db", "auth setup"],
     },
     // {
     //   name: "firefox",
