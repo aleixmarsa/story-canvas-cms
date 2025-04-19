@@ -40,29 +40,14 @@ export default defineConfig({
       teardown: "cleanup db",
     },
     {
-      name: "setup empty db",
-      testMatch: /db\.empty\.setup\.ts/,
-      teardown: "cleanup db",
-    },
-    {
       name: "cleanup db",
       testMatch: /db\.teardown\.ts/,
     },
-    // {
-    //   name: "signup test",
-    //   testMatch: /signup\.spec\.ts/,
-    //   dependencies: ["setup empty db"],
-    // },
-    {
-      name: "signup redirect",
-      testMatch: /signup-redirect\.spec\.ts/,
-      dependencies: ["setup empty db"],
-    },
+
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
       dependencies: ["setup db"],
-      testIgnore: [/signup-redirect\.spec\.ts/],
     },
     // {
     //   name: "firefox",
