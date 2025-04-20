@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { slugify } from "../src/lib/utils";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,7 @@ async function main() {
     },
   });
 
-  // Seed 1: Story to test the list
+  // Story to test the list
   const listStory = await prisma.story.create({ data: {} });
   const listVersion = await prisma.storyVersion.create({
     data: {
@@ -33,7 +34,7 @@ async function main() {
     data: { currentDraftId: listVersion.id },
   });
 
-  // Seed 2: Story to test editing
+  // Story to test editing
   const editableStory = await prisma.story.create({ data: {} });
   const editableVersion = await prisma.storyVersion.create({
     data: {
@@ -52,7 +53,7 @@ async function main() {
     data: { currentDraftId: editableVersion.id },
   });
 
-  // Seed 3: Story to test deletion
+  //  Story to test deletion
   const deletableStory = await prisma.story.create({ data: {} });
   const deletableVersion = await prisma.storyVersion.create({
     data: {
@@ -71,7 +72,78 @@ async function main() {
     data: { currentDraftId: deletableVersion.id },
   });
 
-  console.log("✅ Seeded: user + 3 stories (list, edit, delete)");
+  // Section for list test
+  const listSection = await prisma.section.create({
+    data: {
+      storyId: listStory.id,
+    },
+  });
+  const listSectionVersion = await prisma.sectionVersion.create({
+    data: {
+      name: "Section visible in list",
+      slug: slugify("Section visible in list"),
+      createdBy: admin.email,
+      type: "TITLE",
+      order: 1,
+      content: { text: "Section for listing" },
+      status: "draft",
+      sectionId: listSection.id,
+    },
+  });
+  await prisma.section.update({
+    where: { id: listSection.id },
+    data: { currentDraftId: listSectionVersion.id },
+  });
+
+  // Section for edit test
+  const editSection = await prisma.section.create({
+    data: {
+      storyId: listStory.id,
+    },
+  });
+  const editSectionVersion = await prisma.sectionVersion.create({
+    data: {
+      name: "Section to edit",
+      slug: slugify("Section to edit"),
+      createdBy: admin.email,
+      type: "TITLE",
+      order: 1,
+      content: { text: "Editable content" },
+      status: "draft",
+      sectionId: editSection.id,
+    },
+  });
+  await prisma.section.update({
+    where: { id: editSection.id },
+    data: { currentDraftId: editSectionVersion.id },
+  });
+
+  // Section for delete test
+  const deleteSection = await prisma.section.create({
+    data: {
+      storyId: listStory.id,
+    },
+  });
+  const deleteSectionVersion = await prisma.sectionVersion.create({
+    data: {
+      name: "Section to delete",
+      slug: slugify("Section to delete"),
+      createdBy: admin.email,
+      type: "IMAGE",
+      order: 1,
+      content: { text: "Section to delete" },
+      status: "draft",
+      sectionId: deleteSection.id,
+    },
+  });
+  await prisma.section.update({
+    where: { id: deleteSection.id },
+    data: { currentDraftId: deleteSectionVersion.id },
+  });
+
+  console.log(
+    "✅ Seeded: user + 3 stories (list, edit, delete) + 3 sections (list, edit, delete)"
+  );
 }
 
 main()
