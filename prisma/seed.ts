@@ -20,7 +20,7 @@ async function main() {
     data: {
       title: "Sample Story Title",
       slug: "sample-story",
-      createdBy: admin.id,
+      createdBy: admin.email,
       description: "A demo story created from seed",
       status: "draft",
       storyId: story.id,
