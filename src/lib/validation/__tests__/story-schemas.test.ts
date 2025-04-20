@@ -7,8 +7,8 @@ describe("storySchema", () => {
       slug: "a-great-story",
       createdBy: "user123",
       description: "Optional description",
-      theme: { color: "blue" },
-      components: ["text", "image"],
+      theme: {},
+      components: [],
       content: { sections: [] },
       storyId: 42,
     });
