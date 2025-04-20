@@ -49,11 +49,11 @@ export const columns = (
     enableHiding: false,
     cell: ({ row }) => {
       const user = row.original;
+      if (user.id === currentUserId) return <></>;
       return (
         <RowActionsMenu
           item={user}
           renderDeleteButton={(user) => {
-            if (user.id === currentUserId) return <></>;
             return (
               <DeleteUserDialog
                 userEmail={user.email}
