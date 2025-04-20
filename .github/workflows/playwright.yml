@@ -28,7 +28,7 @@ jobs:
       DATABASE_URL: postgres://postgres:password@localhost:5432/cms_test_db
       SESSION_SECRET: my-very-secret-key
       NODE_ENV: test
-      
+
     steps:
     - uses: actions/checkout@v4
 
@@ -43,7 +43,7 @@ jobs:
       run: pnpm prisma generate
 
     - name: Install Playwright Browsers
-      run: pnpm exec playwright install --with-deps
+      run: pnpm exec playwright install chromium --with-deps
 
     - name: Run Playwright tests
       run: pnpm test:e2e
