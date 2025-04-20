@@ -10,7 +10,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
       <DashboardSidebar user={user} />
       <SidebarInset>
         <div className="flex-1">
-          <div className="space-y-6">{children}</div>
+          <div className="space-y-6 h-full">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>
