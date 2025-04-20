@@ -7,8 +7,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import RowActionsMenu from "./RowActionsMenu";
+import DeleteDialog from "../DeleteDialog";
+import { CurrentUser } from "@/types/auth";
+import { Role } from "@prisma/client";
 
-export const columns: ColumnDef<StoryWithVersions>[] = [
+export const columns = (
+  currentUser: CurrentUser,
+  handleDelete: (story: StoryWithVersions) => Promise<void>
+): ColumnDef<StoryWithVersions>[] => [
   {
     id: "title",
     header: ({ column }) => {
@@ -87,7 +93,18 @@ export const columns: ColumnDef<StoryWithVersions>[] = [
         <RowActionsMenu
           item={story}
           editHref={`${ROUTES.stories}/${story.currentDraft?.slug}/edit`}
-          onDelete={() => console.log("Delete story", story.id)}
+          renderDeleteButton={(story) => {
+            if (currentUser.role !== Role.ADMIN) return null;
+            return (
+              <div onClick={(e) => e.stopPropagation()}>
+                <DeleteDialog
+                  onConfirm={() => handleDelete(story)}
+                  dialogTitle="Delete story"
+                  itemName={story.currentDraft?.title ?? "(untitled)"}
+                />
+              </div>
+            );
+          }}
         />
       );
     },

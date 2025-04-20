@@ -28,8 +28,12 @@ const RowActionsMenu = <T,>({
 }: RowActionsMenuProps<T>) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        <Button
+          variant="ghost"
+          className="h-8 w-8 p-0"
+          onClick={(e) => e.stopPropagation()}
+        >
           <span className="sr-only">Open row actions</span>
           <MoreHorizontal />
         </Button>
@@ -51,7 +55,12 @@ const RowActionsMenu = <T,>({
         {renderDeleteButton
           ? renderDeleteButton(item)
           : onDelete && (
-              <DropdownMenuItem onClick={onDelete}>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+              >
                 <Trash className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
