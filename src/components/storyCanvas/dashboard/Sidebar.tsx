@@ -20,7 +20,6 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/lib/constants/storyCanvas";
-import { Role } from "@prisma/client";
 import { CurrentUser } from "@/types/auth";
 
 export function DashboardSidebar({
@@ -91,16 +90,14 @@ export function DashboardSidebar({
                 </SidebarMenuSub>
               )}
             </SidebarMenuItem>
-            {user?.role === Role.ADMIN && (
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Users">
-                  <Link href={ROUTES.users} className="font-medium">
-                    <User2 className="h-4 w-4" />
-                    Users
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )}
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Users">
+                <Link href={ROUTES.users} className="font-medium">
+                  <User2 className="h-4 w-4" />
+                  Users
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

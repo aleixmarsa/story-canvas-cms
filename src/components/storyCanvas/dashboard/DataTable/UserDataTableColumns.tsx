@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import RowActionsMenu from "./RowActionsMenu";
 import { ArrowUpDown } from "lucide-react";
 import { DeleteUserDialog } from "../user/DeleteUserDialog";
+import { Role } from "@prisma/client";
+import { CurrentUser } from "@/types/auth";
 
 export const columns = (
-  currentUserId: string,
+  currentUser: CurrentUser,
   handleDelete: (user: UserForTable) => Promise<void>
 ): ColumnDef<UserForTable>[] => [
   {
@@ -49,7 +51,8 @@ export const columns = (
     enableHiding: false,
     cell: ({ row }) => {
       const user = row.original;
-      if (user.id === currentUserId) return <></>;
+      if (user.id === currentUser.id || currentUser.role !== Role.ADMIN)
+        return <></>;
       return (
         <RowActionsMenu
           item={user}

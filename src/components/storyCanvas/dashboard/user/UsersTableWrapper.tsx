@@ -57,7 +57,7 @@ export function UsersTableWrapper({
   return (
     <div className="px-6">
       <DataTable
-        columns={columns(currentUser.id, handleDelete)}
+        columns={columns(currentUser, handleDelete)}
         data={zustandUsers}
         filterConfig={{
           columnKey: "email",
