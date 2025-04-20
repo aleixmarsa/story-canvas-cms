@@ -59,6 +59,10 @@ export function UsersTableWrapper({
       <DataTable
         columns={columns(currentUser.id, handleDelete)}
         data={zustandUsers}
+        filterConfig={{
+          columnKey: "email",
+          placeholder: "Search by Email...",
+        }}
       />
     </div>
   );
