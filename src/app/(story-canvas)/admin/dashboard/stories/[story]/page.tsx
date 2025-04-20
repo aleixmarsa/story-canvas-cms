@@ -9,6 +9,7 @@ import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDat
 import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { deleteSection } from "@/lib/actions/sections/delete-section";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -21,6 +22,8 @@ const StoryPage = () => {
     selectStory,
     selectSection,
     updateStory,
+    addSection,
+    deleteSection: deleteSectionFromStore,
   } = useDashboardStore();
 
   useEffect(() => {
@@ -73,6 +76,34 @@ const StoryPage = () => {
     }
   };
 
+  const handleDelete = async (section: SectionWithVersions) => {
+    //Delete section from the store
+    deleteSectionFromStore(section.id);
+
+    toast.success("Section has been removed", {
+      description: `${section.currentDraft?.name} has been removed.`,
+      action: {
+        label: "Undo",
+        onClick: () => {
+          // Add the story back to the store
+          addSection(section);
+          toast.dismiss();
+          toast.success("Section has been restored", {
+            description: `${section.currentDraft?.name} has been restored.`,
+          });
+        },
+      },
+      onAutoClose: async () => {
+        // Delete user from the database when the toast is closed
+        const res = await deleteSection(section.id);
+        if (!res.success) {
+          toast.error("Failed to delete user");
+          addSection(section);
+        }
+      },
+    });
+  };
+
   return (
     <>
       <DashboardHeader
@@ -89,7 +120,7 @@ const StoryPage = () => {
       />
       <div className="px-6">
         <DataTable
-          columns={columns(slug)}
+          columns={columns(slug, handleDelete)}
           data={sections}
           filterConfig={{
             columnKey: "name",

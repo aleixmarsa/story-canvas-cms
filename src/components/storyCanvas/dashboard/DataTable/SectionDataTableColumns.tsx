@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import RowActionsMenu from "./RowActionsMenu";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import DeleteDialog from "../DeleteDialog";
 
 export const columns = (
-  storySlug: string
+  storySlug: string,
+  handleDelete: (story: SectionWithVersions) => Promise<void>
 ): ColumnDef<SectionWithVersions>[] => [
   {
     id: "name",
@@ -92,7 +94,17 @@ export const columns = (
         <RowActionsMenu
           item={section}
           editHref={`${ROUTES.stories}/${storySlug}/${section.currentDraft?.slug}`}
-          onDelete={() => console.log("Delete story", section.id)}
+          renderDeleteButton={(section) => {
+            return (
+              <div onClick={(e) => e.stopPropagation()}>
+                <DeleteDialog
+                  onConfirm={() => handleDelete(section)}
+                  dialogTitle="Delete section"
+                  itemName={section.currentDraft?.name ?? "(untitled)"}
+                />
+              </div>
+            );
+          }}
         />
       );
     },

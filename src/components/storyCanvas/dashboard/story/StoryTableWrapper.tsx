@@ -9,11 +9,7 @@ import { StoryWithVersions } from "@/types/story";
 import { deleteStory } from "@/lib/actions/stories/delete-story";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
-export function StoryTableWrapper({
-  currentUser,
-}: {
-  currentUser: CurrentUser;
-}) {
+const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
   const {
     stories,
     deleteStory: deleteStoryFromStore,
@@ -61,4 +57,6 @@ export function StoryTableWrapper({
       />
     </div>
   );
-}
+};
+
+export default StoryTableWrapper;

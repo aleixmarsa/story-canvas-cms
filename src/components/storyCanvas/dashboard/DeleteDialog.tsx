@@ -23,9 +23,13 @@ const DeleteDialog = ({ onConfirm, dialogTitle, itemName }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" onClick={(e) => e.stopPropagation()}>
-          <span className="flex items-center gap-2">
-            <Trash className="mr-2 h-4 w-4" />
+        <Button
+          variant="ghost"
+          onClick={(e) => e.stopPropagation()}
+          className="px-2 w-full justify-start"
+        >
+          <span className="flex items-center justify-start gap-2">
+            <Trash className="h-4 w-4" />
             Delete
           </span>
         </Button>

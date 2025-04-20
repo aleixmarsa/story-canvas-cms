@@ -44,10 +44,16 @@ const RowActionsMenu = <T,>({
         {editHref && (
           <Link href={editHref} passHref>
             <DropdownMenuItem asChild>
-              <span className="flex items-center gap-2">
-                <Pencil className="h-4 w-4" />
-                Edit
-              </span>
+              <Button
+                variant="ghost"
+                onClick={(e) => e.stopPropagation()}
+                className="px-2 w-full justify-start"
+              >
+                <span className="flex items-center justify-start gap-2">
+                  <Pencil className="h-4 w-4" />
+                  Edit
+                </span>
+              </Button>
             </DropdownMenuItem>
           </Link>
         )}
@@ -55,14 +61,20 @@ const RowActionsMenu = <T,>({
         {renderDeleteButton
           ? renderDeleteButton(item)
           : onDelete && (
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete();
-                }}
-              >
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
+              <DropdownMenuItem asChild>
+                <Button
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                  }}
+                  className="px-2 w-full justify-start"
+                >
+                  <span className="flex items-center justify-start gap-2">
+                    <Trash className="h-4 w-4" />
+                    Delete
+                  </span>
+                </Button>
               </DropdownMenuItem>
             )}
 

@@ -11,14 +11,24 @@ const StoriesPage = async () => {
     redirect(ROUTES.login);
   }
 
+  const isAdmin = currentUser.role === "ADMIN";
+
   return (
     <>
-      <DashboardHeader
-        title="Stories"
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-        addHref={`${ROUTES.stories}/new`}
-        addButtonLabel="New Story"
-      />
+      {isAdmin && (
+        <DashboardHeader
+          title="Stories"
+          breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+          addHref={`${ROUTES.stories}/new`}
+          addButtonLabel="New Story"
+        />
+      )}
+      {!isAdmin && (
+        <DashboardHeader
+          title="Stories"
+          breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+        />
+      )}
       <StoryTableWrapper currentUser={currentUser} />
     </>
   );
