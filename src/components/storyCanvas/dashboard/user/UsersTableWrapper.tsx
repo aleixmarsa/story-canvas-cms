@@ -8,13 +8,13 @@ import { CurrentUser } from "@/types/auth";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { toast } from "sonner";
 
-export function UsersTableWrapper({
+const UsersTableWrapper = ({
   users,
   currentUser,
 }: {
   users: CurrentUser[];
   currentUser: CurrentUser;
-}) {
+}) => {
   const {
     users: zustandUsers,
     setUsers,
@@ -66,4 +66,6 @@ export function UsersTableWrapper({
       />
     </div>
   );
-}
+};
+
+export default UsersTableWrapper;

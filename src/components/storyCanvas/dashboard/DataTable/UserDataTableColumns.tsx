@@ -5,7 +5,7 @@ import { UserForTable } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import RowActionsMenu from "./RowActionsMenu";
 import { ArrowUpDown } from "lucide-react";
-import { DeleteUserDialog } from "../user/DeleteUserDialog";
+import DeleteDialog from "../DeleteDialog";
 import { Role } from "@prisma/client";
 import { CurrentUser } from "@/types/auth";
 
@@ -58,9 +58,10 @@ export const columns = (
           item={user}
           renderDeleteButton={(user) => {
             return (
-              <DeleteUserDialog
-                userEmail={user.email}
+              <DeleteDialog
                 onConfirm={() => handleDelete(user)}
+                dialogTitle="Delete user"
+                itemName={user.email}
               />
             );
           }}

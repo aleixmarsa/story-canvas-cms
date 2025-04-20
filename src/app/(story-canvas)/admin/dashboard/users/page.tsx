@@ -3,7 +3,7 @@ import { getAllUsers } from "@/lib/dal/user";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import { UsersTableWrapper } from "@/components/storyCanvas/dashboard/user/UsersTableWrapper";
+import UsersTableWrapper from "@/components/storyCanvas/dashboard/user/UsersTableWrapper";
 import { Role } from "@prisma/client";
 
 const UsersPage = async () => {
