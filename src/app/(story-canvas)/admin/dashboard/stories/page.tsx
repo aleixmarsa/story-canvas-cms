@@ -3,15 +3,17 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { getCurrentUser } from "@/lib/dal/auth";
 import StoryTableWrapper from "@/components/storyCanvas/dashboard/story/StoryTableWrapper";
 import { redirect } from "next/navigation";
+import { Role } from "@prisma/client";
 
 const StoriesPage = async () => {
   const currentUser = await getCurrentUser();
+  console.log("🚀 ~ StoriesPage ~ currentUser:", currentUser);
 
   if (!currentUser) {
     redirect(ROUTES.login);
   }
 
-  const isAdmin = currentUser.role === "ADMIN";
+  const isAdmin = currentUser.role === Role.ADMIN;
 
   return (
     <>
@@ -19,7 +21,7 @@ const StoriesPage = async () => {
         <DashboardHeader
           title="Stories"
           breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-          addHref={`${ROUTES.stories}/new`}
+          addHref={ROUTES.newStory}
           addButtonLabel="New Story"
         />
       )}

@@ -104,7 +104,13 @@ const DashboardHeader = ({
         {addButtonLabel &&
           (addHref || onAddClick) &&
           (addHref ? (
-            <Button asChild variant="outline" size="sm" className="text-sm">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="text-sm"
+              data-testid="header-add-button"
+            >
               <Link href={addHref}>
                 <Plus className="w-4 h-4 mr-1" />
                 {addButtonLabel}
@@ -125,6 +131,7 @@ const DashboardHeader = ({
                 onClick={onSaveDraft}
                 size="sm"
                 disabled={saveDisabled}
+                data-testid="header-save-button"
               >
                 {isSaving ? (
                   <Loader2 className="animate-spin" />

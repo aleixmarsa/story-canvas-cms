@@ -28,7 +28,11 @@ const RowActionsMenu = <T,>({
 }: RowActionsMenuProps<T>) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+      <DropdownMenuTrigger
+        asChild
+        onClick={(e) => e.stopPropagation()}
+        data-testid="row-actions-menu"
+      >
         <Button
           variant="ghost"
           className="h-8 w-8 p-0"
@@ -48,6 +52,7 @@ const RowActionsMenu = <T,>({
                 variant="ghost"
                 onClick={(e) => e.stopPropagation()}
                 className="px-2 w-full justify-start"
+                data-testid="action-edit-button"
               >
                 <span className="flex items-center justify-start gap-2">
                   <Pencil className="h-4 w-4" />
@@ -69,6 +74,7 @@ const RowActionsMenu = <T,>({
                     onDelete();
                   }}
                   className="px-2 w-full justify-start"
+                  data-testid="action-delete-button"
                 >
                   <span className="flex items-center justify-start gap-2">
                     <Trash className="h-4 w-4" />

@@ -27,6 +27,7 @@ const DeleteDialog = ({ onConfirm, dialogTitle, itemName }: Props) => {
           variant="ghost"
           onClick={(e) => e.stopPropagation()}
           className="px-2 w-full justify-start"
+          data-testid="delete-dialog-trigger"
         >
           <span className="flex items-center justify-start gap-2">
             <Trash className="h-4 w-4" />
@@ -36,15 +37,25 @@ const DeleteDialog = ({ onConfirm, dialogTitle, itemName }: Props) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{dialogTitle}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle data-testid="delete-dialog-title">
+            {dialogTitle}
+          </DialogTitle>
+          <DialogDescription data-testid="delete-dialog-description">
             Are you sure you want to delete <strong>{itemName}</strong>? This
             action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button
+              variant="outline"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              data-testid="delete-dialog-cancel-button"
+            >
+              Cancel
+            </Button>
           </DialogClose>
           <DialogClose asChild>
             <Button
@@ -52,6 +63,7 @@ const DeleteDialog = ({ onConfirm, dialogTitle, itemName }: Props) => {
               onClick={() => {
                 onConfirm();
               }}
+              data-testid="delete-dialog-confirm-button"
             >
               Delete
             </Button>
