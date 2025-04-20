@@ -55,11 +55,13 @@ This document outlines the current state and remaining tasks of the headless CMS
 - Publish and save button for `StoryVersion` and `SectionVersion` UI
 - User management panel (list + create user form)
 - Toast notifications for all forms
+- Full CRUD UI with role-based access
 
 ### 🛠️ Other Improvements
 - Unit/API tests (middleware, auth, entities)
 - GitHub Actions CI pipeline
 - Tags and changelog management
+- Add first E2E tests with Playwright
 
 ---
 
@@ -69,7 +71,6 @@ This document outlines the current state and remaining tasks of the headless CMS
 - 🔜 `GET /api/section-versions/:id` → fetch full version info for editing
 
 ### 🖼️ Frontend
-- 🔜 Full CRUD UI for sections
 - 🔜 Live preview system (e.g., `/preview/[slug]`)
 - 🔜 Confirmation dialogs before publish
 - 🔜 Support version `comment` field when publishing or duplicating
@@ -79,5 +80,4 @@ This document outlines the current state and remaining tasks of the headless CMS
 - 🔜 Permission/lock control using `lockedBy`
 - 🔜 Story duplication interface
 - 🔜 Autosave mechanism for draft versions
-- 🔜 Add first E2E tests with Playwright
 
