@@ -16,7 +16,7 @@ const CreateUserPage = () => {
         title="New User"
         breadcrumbs={[
           { label: "Dashboard", href: ROUTES.dashboard },
-          { label: "Users", href: `${ROUTES.dashboard}/users` },
+          { label: "Users", href: ROUTES.users },
         ]}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}

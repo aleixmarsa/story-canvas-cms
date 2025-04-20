@@ -71,7 +71,10 @@ const EditStoryPage = () => {
     <>
       <DashboardHeader
         title="Edit Story"
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+        breadcrumbs={[
+          { label: "Dashboard", href: ROUTES.dashboard },
+          { label: "Stories", href: ROUTES.stories },
+        ]}
         onPublish={handlePublishStory}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}

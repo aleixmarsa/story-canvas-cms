@@ -101,7 +101,7 @@ const EditSectionForm = ({
         selectedSection?.currentDraft?.name
       ) {
         router.replace(
-          `${ROUTES.dashboard}/${selectedStory.currentDraft?.id}/${updatedSection?.currentDraft?.slug}`
+          `${ROUTES.stories}/${selectedStory.currentDraft?.slug}/${updatedSection?.currentDraft?.slug}`
         );
       }
       updateSection(updatedSection);

@@ -11,13 +11,20 @@ const DashboardPage = () => {
   return (
     <>
       <DashboardHeader
-        title="Dashboard"
-        breadcrumbs={[]}
+        title="Stories"
+        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
         addHref={`${ROUTES.stories}/new`}
         addButtonLabel="New Story"
       />
       <div className="px-6">
-        <h1>DASHBOARD</h1>
+        <DataTable
+          columns={columns}
+          data={stories}
+          getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
+          getEditLink={(row) =>
+            `${ROUTES.stories}/${row.currentDraft?.slug}/edit`
+          }
+        />
       </div>
     </>
   );

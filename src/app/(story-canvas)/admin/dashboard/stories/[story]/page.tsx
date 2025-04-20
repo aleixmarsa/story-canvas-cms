@@ -89,7 +89,7 @@ const StoryPage = () => {
           columns={columns}
           data={sections}
           getEditLink={(row) =>
-            `${ROUTES.dashboard}/${slug}/${row.currentDraft?.slug}`
+            `${ROUTES.stories}/${slug}/${row.currentDraft?.slug}`
           }
         />
       </div>

@@ -83,7 +83,7 @@ const CreateSectionForm = ({
       addSection(newSection);
       setSelectedType(null);
       toast.success("Section created successfully");
-      router.push(`${ROUTES.dashboard}/${selectedStory.currentDraft?.slug}`);
+      router.push(`${ROUTES.stories}/${selectedStory.currentDraft?.slug}`);
       return true;
     } catch (err) {
       if (err instanceof Error) {

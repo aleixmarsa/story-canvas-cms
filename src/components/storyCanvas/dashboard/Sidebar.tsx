@@ -69,7 +69,7 @@ export function DashboardSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={"Stories"}>
-                <Link href={ROUTES.dashboard} className="font-medium">
+                <Link href={ROUTES.stories} className="font-medium">
                   <ScrollText className="h-4 w-4" />
                   Stories
                 </Link>
@@ -81,7 +81,7 @@ export function DashboardSidebar({
                     <SidebarMenuSubItem key={story.id}>
                       <SidebarMenuSubButton asChild>
                         <Link
-                          href={`${ROUTES.dashboard}/${story.currentDraft?.slug}`}
+                          href={`${ROUTES.stories}/${story.currentDraft?.slug}`}
                         >
                           {story.currentDraft?.slug}
                         </Link>

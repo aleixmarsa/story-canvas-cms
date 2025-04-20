@@ -87,7 +87,7 @@ const EditSectionPage = () => {
           { label: "Dashboard", href: ROUTES.dashboard },
           {
             label: selectedStory.currentDraft?.title ?? "Untitled",
-            href: `${ROUTES.dashboard}/${selectedStory.currentDraft?.slug}`,
+            href: `${ROUTES.stories}/${selectedStory.currentDraft?.slug}`,
           },
         ]}
         onSaveDraft={handleSaveDraft}

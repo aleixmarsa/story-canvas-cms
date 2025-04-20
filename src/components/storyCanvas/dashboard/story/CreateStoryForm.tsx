@@ -71,7 +71,7 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
         toast.success("Story created successfully", {
           description: "You can now start editing your story.",
         });
-        router.push(`${ROUTES.dashboard}/${newStory.currentDraft?.slug}`);
+        router.push(`${ROUTES.stories}/${newStory.currentDraft?.slug}`);
       } catch (err) {
         if (err instanceof Error) {
           toast.error(err.message);

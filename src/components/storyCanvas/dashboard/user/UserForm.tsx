@@ -80,7 +80,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
 
       reset();
       toast.success("User created successfully");
-      router.push(`${ROUTES.dashboard}/users`);
+      router.push(ROUTES.users);
     };
     return (
       <form

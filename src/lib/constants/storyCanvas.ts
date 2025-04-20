@@ -1,6 +1,7 @@
 export const ROUTES = {
   admin: "/admin",
   dashboard: "/admin/dashboard",
+  stories: "/admin/dashboard/stories",
   users: "/admin/dashboard/users",
   createInitalUser: "/admin/create-initial-user",
   login: "/admin/login",
