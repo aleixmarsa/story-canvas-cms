@@ -56,7 +56,9 @@ const SignupForm = () => {
     <div className={"flex flex-col gap-6"}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome!</CardTitle>
+          <CardTitle className="text-2xl" data-testid="signup-form-title">
+            Welcome!
+          </CardTitle>
           <CardDescription className="text-sm">
             Create the first user to get started with the StoryCanvas CMS.
           </CardDescription>
@@ -74,17 +76,29 @@ const SignupForm = () => {
                 required
                 placeholder="m@example.com"
                 {...register("email")}
+                data-testid="signup-form-email-input"
               />
               {errors.email && (
-                <FormErrorMessage error={errors.email.message} />
+                <FormErrorMessage
+                  error={errors.email.message}
+                  data-testid="signup-form-email-error"
+                />
               )}
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" {...register("password")} />
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+                data-testid="signup-form-password-input"
+              />
               {errors.password && (
-                <FormErrorMessage error={errors.password.message} />
+                <FormErrorMessage
+                  error={errors.password.message}
+                  data-testid="signup-form-password-error"
+                />
               )}
             </div>
 
@@ -94,12 +108,21 @@ const SignupForm = () => {
                 id="confirmPassword"
                 type="password"
                 {...register("confirmPassword")}
+                data-testid="signup-form-confirm-password-input"
               />
               {errors.confirmPassword && (
-                <FormErrorMessage error={errors.confirmPassword.message} />
+                <FormErrorMessage
+                  error={errors.confirmPassword.message}
+                  data-testid="signup-form-confirm-password-error"
+                />
               )}
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+              data-testid="signup-form-submit-button"
+            >
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Create"}
             </Button>
           </form>

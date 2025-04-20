@@ -54,7 +54,9 @@ export function LoginForm() {
     <div className={"flex flex-col gap-6"}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl" data-testid="login-form-title">
+            Login
+          </CardTitle>
           <CardDescription>
             Log in to access the StoryCanvas dashboard.
           </CardDescription>
@@ -72,6 +74,7 @@ export function LoginForm() {
                 required
                 placeholder="m@example.com"
                 {...register("email")}
+                data-testid="login-form-email-input"
               />
               {errors.email && (
                 <FormErrorMessage error={errors.email.message} />
@@ -87,7 +90,12 @@ export function LoginForm() {
                     Forgot your password?
                   </a> */}
               </div>
-              <Input id="password" type="password" {...register("password")} />
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+                data-testid="login-form-password-input"
+              />
               {errors.password && (
                 <FormErrorMessage error={errors.password.message} />
               )}
@@ -96,7 +104,12 @@ export function LoginForm() {
               <p className="text-sm text-green-600">{successMessage}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting}
+              data-testid="login-form-submit-button"
+            >
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Login"}
             </Button>
           </form>

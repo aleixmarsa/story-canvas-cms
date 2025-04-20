@@ -23,13 +23,13 @@ export default async function AdminLayout({
   // Check if the database connection is successful
   const isDbUp = await checkDbConnection();
   if (!isDbUp && !isErrorPage) {
-    redirect(ROUTES.error);
+    redirect(`${ROUTES.error}?type=db`);
   }
 
   // Fetch the number of users
   const countResult = await countAllUsers();
-  if ("error" in countResult) {
-    redirect(ROUTES.error);
+  if ("error" in countResult && !isErrorPage) {
+    redirect(`${ROUTES.error}?type=count`);
   }
 
   // Redirect to dashboard if user is logged in and on initial user page or login page
@@ -38,12 +38,22 @@ export default async function AdminLayout({
   }
 
   // Redirect to create initial user page if no users exist and not on initial user page
-  if (!isLoggedIn && countResult.numberOfUsers === 0 && !isInitialUserPage) {
+  if (
+    !isLoggedIn &&
+    "numberOfUsers" in countResult &&
+    countResult.numberOfUsers === 0 &&
+    !isInitialUserPage
+  ) {
     redirect(ROUTES.createInitalUser);
   }
 
   // Redirect to login page if a user exists and not on login page
-  if (!isLoggedIn && countResult.numberOfUsers > 0 && !isLoginPage) {
+  if (
+    !isLoggedIn &&
+    "numberOfUsers" in countResult &&
+    countResult.numberOfUsers > 0 &&
+    !isLoginPage
+  ) {
     redirect(ROUTES.login);
   }
 
