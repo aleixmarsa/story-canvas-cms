@@ -15,26 +15,30 @@ import { Trash } from "lucide-react";
 
 type Props = {
   onConfirm: () => void;
-  userEmail: string;
+  dialogTitle: string;
+  itemName: string;
 };
 
-export const DeleteUserDialog = ({ onConfirm, userEmail }: Props) => {
+const DeleteDialog = ({ onConfirm, dialogTitle, itemName }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
-          size="icon"
-          className="text-red-500 hover:text-red-600"
+          onClick={(e) => e.stopPropagation()}
+          className="px-2 w-full justify-start"
         >
-          <Trash className="h-4 w-4" />
+          <span className="flex items-center justify-start gap-2">
+            <Trash className="h-4 w-4" />
+            Delete
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete user</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete <strong>{userEmail}</strong>? This
+            Are you sure you want to delete <strong>{itemName}</strong>? This
             action cannot be undone.
           </DialogDescription>
         </DialogHeader>
@@ -57,3 +61,5 @@ export const DeleteUserDialog = ({ onConfirm, userEmail }: Props) => {
     </Dialog>
   );
 };
+
+export default DeleteDialog;

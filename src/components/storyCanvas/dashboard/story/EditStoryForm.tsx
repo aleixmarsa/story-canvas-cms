@@ -91,7 +91,7 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
         }
         // Update the URL if the slug has changed
         if (data.slug !== selectedStory?.currentDraft?.slug) {
-          router.replace(`${ROUTES.dashboard}/${data.slug}/edit`);
+          router.replace(`${ROUTES.stories}/${data.slug}/edit`);
         }
 
         // Update the story in the store

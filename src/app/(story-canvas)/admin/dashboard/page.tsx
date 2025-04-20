@@ -1,30 +1,43 @@
-"use client";
-
-import { useDashboardStore } from "@/stores/dashboard-store";
-import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
-import { columns } from "@/components/storyCanvas/dashboard/DataTable/StoryDataTableColumns";
+import Link from "next/link";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const DashboardPage = () => {
-  const { stories } = useDashboardStore();
   return (
     <>
-      <DashboardHeader
-        title="Stories"
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-        addHref={`${ROUTES.dashboard}/new-story`}
-        addButtonLabel="New Story"
-      />
-      <div className="px-6">
-        <DataTable
-          columns={columns}
-          data={stories}
-          getRowLink={(row) => `${ROUTES.dashboard}/${row.currentDraft?.slug}`}
-          getEditLink={(row) =>
-            `${ROUTES.dashboard}/${row.currentDraft?.slug}/edit`
-          }
-        />
+      <DashboardHeader title="Dashboard" breadcrumbs={[]} />
+      <div className=" px-6 space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold">Welcome to the dashboard</h1>
+          <p className="text-muted-foreground">
+            Manage your content and users. Choose a section to get started.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3">
+          <Link href={ROUTES.stories}>
+            <Card className="hover:bg-muted/50 h-full transition-shadow cursor-pointer">
+              <CardContent className="p-6">
+                <CardTitle>Stories</CardTitle>
+                <p className="text-muted-foreground mt-2">
+                  View and manage all your stories.
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href={ROUTES.users}>
+            <Card className="hover:bg-muted/50 h-full transition-shadow cursor-pointer">
+              <CardContent className="p-6">
+                <CardTitle>Users</CardTitle>
+                <p className="text-muted-foreground mt-2">
+                  View and manage registered users.
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
       </div>
     </>
   );
