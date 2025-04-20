@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
+test.describe.configure({ mode: "serial" });
+
 test.describe("Edit story", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(ROUTES.stories);
@@ -14,6 +16,27 @@ test.describe("Edit story", () => {
     await page.waitForURL(
       new RegExp("/admin/dashboard/stories/story-edit/edit")
     );
+  });
+
+  test("should show validation errors on empty form", async ({ page }) => {
+    // Empty the form
+    await page.getByTestId("edit-story-title-input").fill("");
+    await page.getByTestId("edit-story-createdBy-input").fill("");
+    await page.getByTestId("edit-story-slug-input").fill("t");
+    await page.getByTestId("header-save-button").click();
+
+    await expect(page.getByText("Title is required")).toBeVisible();
+    await expect(page.getByText("Author is required")).toBeVisible();
+    await expect(
+      page.getByText("String must contain at least 3 character(s)")
+    ).toBeVisible();
+  });
+
+  test("should show error if slug is already in use", async ({ page }) => {
+    // Use the slug that exists in the database
+    await page.getByLabel("Slug (URL)").fill("story-list");
+    await page.getByTestId("header-save-button").click();
+    await expect(page.getByText("This slug is already in use")).toBeVisible();
   });
 
   test("should allow updating story title and slug", async ({ page }) => {
@@ -43,25 +66,5 @@ test.describe("Edit story", () => {
     await expect(
       page.getByRole("cell", { name: "story-edited-test" })
     ).toBeVisible();
-  });
-
-  test("should show validation errors on empty form", async ({ page }) => {
-    // Empty the form
-    await page.getByTestId("edit-story-title-input").fill("");
-    await page.getByTestId("edit-story-createdBy-input").fill("");
-    await page.getByTestId("edit-story-slug-input").fill("t");
-    await page.getByTestId("header-save-button").click();
-
-    await expect(page.getByText("Title is required")).toBeVisible();
-    await expect(page.getByText("Author is required")).toBeVisible();
-    await expect(
-      page.getByText("String must contain at least 3 character(s)")
-    ).toBeVisible();
-  });
-  test("should show error if slug is already in use", async ({ page }) => {
-    // Use the slug that exists in the database
-    await page.getByLabel("Slug (URL)").fill("story-list");
-    await page.getByTestId("header-save-button").click();
-    await expect(page.getByText("This slug is already in use")).toBeVisible();
   });
 });

@@ -13,9 +13,7 @@ test.describe("Create story form", () => {
     const uniqueSlug = `test-story-${Date.now()}`;
 
     await page.getByTestId("create-story-title-input").fill("Test Story");
-    await page
-      .getByTestId("create-story-createdBy-input")
-      .fill("playwright-e2e");
+    await page.getByTestId("create-story-createdBy-input").fill("creator");
     await page.getByTestId("create-story-slug-input").fill(uniqueSlug);
     await page.getByTestId("header-save-button").click();
 
@@ -28,9 +26,7 @@ test.describe("Create story form", () => {
     await page
       .getByTestId("create-story-title-input")
       .fill("Duplicate slug test");
-    await page
-      .getByTestId("create-story-createdBy-input")
-      .fill("playwright-e2e");
+    await page.getByTestId("create-story-createdBy-input").fill("creator");
     await page.getByTestId("create-story-slug-input").fill("story-list");
 
     await page.getByTestId("header-save-button").click();

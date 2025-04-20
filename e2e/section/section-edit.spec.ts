@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
+test.describe.configure({ mode: "serial" });
+
 test.describe("Edit section", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${ROUTES.stories}/story-list`);
@@ -14,6 +16,29 @@ test.describe("Edit section", () => {
     await page.waitForURL(
       new RegExp("/admin/dashboard/stories/story-list/section-to-edit")
     );
+  });
+
+  test("should show validation errors on empty form", async ({ page }) => {
+    // Empty the form
+    await page.getByTestId("create-section-name-input").fill("");
+    await page.getByTestId("create-section-createdBy-input").fill("");
+    await page.getByTestId("create-section-order-input").fill("");
+    await page.getByTestId("create-section-text-input").fill("");
+    await page.getByTestId("header-save-button").click();
+
+    await expect(page.getByText("Name is required")).toBeVisible();
+    await expect(page.getByText("Author is required")).toBeVisible();
+    await expect(page.getByText("Expected number")).toBeVisible();
+    await expect(page.getByText("Title cannot be empty")).toBeVisible();
+  });
+
+  test("should show error if name is already in use", async ({ page }) => {
+    // Use the slug that exists in the database
+    await page
+      .getByTestId("create-section-name-input")
+      .fill("Section visible in list");
+    await page.getByTestId("header-save-button").click();
+    await expect(page.getByText("This name is already in use")).toBeVisible();
   });
 
   test("should allow updating section title and slug", async ({ page }) => {
@@ -49,28 +74,5 @@ test.describe("Edit section", () => {
     await page.goto(`${ROUTES.stories}/story-list`);
     await expect(page.getByText("Section edited via test")).toBeVisible();
     await expect(page.getByText("Section to edit")).not.toBeVisible();
-  });
-
-  test("should show validation errors on empty form", async ({ page }) => {
-    // Empty the form
-    await page.getByTestId("create-section-name-input").fill("");
-    await page.getByTestId("create-section-createdBy-input").fill("");
-    await page.getByTestId("create-section-order-input").fill("");
-    await page.getByTestId("create-section-text-input").fill("");
-    await page.getByTestId("header-save-button").click();
-
-    await expect(page.getByText("Name is required")).toBeVisible();
-    await expect(page.getByText("Author is required")).toBeVisible();
-    await expect(page.getByText("Expected number")).toBeVisible();
-    await expect(page.getByText("Title cannot be empty")).toBeVisible();
-  });
-
-  test("should show error if name is already in use", async ({ page }) => {
-    // Use the slug that exists in the database
-    await page
-      .getByTestId("create-section-name-input")
-      .fill("Section visible in list");
-    await page.getByTestId("header-save-button").click();
-    await expect(page.getByText("This name is already in use")).toBeVisible();
   });
 });
