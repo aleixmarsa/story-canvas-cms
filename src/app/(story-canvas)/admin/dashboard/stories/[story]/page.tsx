@@ -78,7 +78,10 @@ const StoryPage = () => {
       <DashboardHeader
         title={`${title} Sections`}
         addHref={`${slug}/new-section`}
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+        breadcrumbs={[
+          { label: "Dashboard", href: ROUTES.dashboard },
+          { label: "Stories", href: ROUTES.stories },
+        ]}
         addButtonLabel="New Section"
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
@@ -86,11 +89,12 @@ const StoryPage = () => {
       />
       <div className="px-6">
         <DataTable
-          columns={columns}
+          columns={columns(slug)}
           data={sections}
-          getEditLink={(row) =>
-            `${ROUTES.stories}/${slug}/${row.currentDraft?.slug}`
-          }
+          filterConfig={{
+            columnKey: "name",
+            placeholder: "Search by Name...",
+          }}
         />
       </div>
     </>

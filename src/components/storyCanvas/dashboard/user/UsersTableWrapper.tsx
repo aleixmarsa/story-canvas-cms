@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { deleteUser } from "@/lib/actions/users/delete-user";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/UserDataTableColumns";
-import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
-import { DeleteUserDialog } from "./DeleteUserDialog";
+import DataTable from "../DataTable/DataTable";
 import { CurrentUser } from "@/types/auth";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { toast } from "sonner";
@@ -58,17 +57,8 @@ export function UsersTableWrapper({
   return (
     <div className="px-6">
       <DataTable
-        columns={columns}
+        columns={columns(currentUser.id, handleDelete)}
         data={zustandUsers}
-        renderDeleteButton={(user) => {
-          if (user.id === currentUser.id) return <></>;
-          return (
-            <DeleteUserDialog
-              userEmail={user.email}
-              onConfirm={() => handleDelete(user)}
-            />
-          );
-        }}
       />
     </div>
   );

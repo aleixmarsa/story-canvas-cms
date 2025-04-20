@@ -4,14 +4,33 @@ import { ColumnDef } from "@tanstack/react-table";
 import { SectionWithVersions } from "@/types/section";
 import { Badge } from "@/components/ui/badge";
 import { StoryStatus } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import RowActionsMenu from "./RowActionsMenu";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
-export const columns: ColumnDef<SectionWithVersions>[] = [
+export const columns = (
+  storySlug: string
+): ColumnDef<SectionWithVersions>[] => [
   {
-    header: "Name",
+    id: "name",
+    enableHiding: false,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown />
+        </Button>
+      );
+    },
     accessorFn: (row) => row.currentDraft?.name ?? "(untitled)",
   },
   {
     header: "Status",
+    enableHiding: false,
     accessorFn: (row) => {
       if (!row.publishedAt) return StoryStatus.draft;
       if (!row.currentDraft) return StoryStatus.published;
@@ -62,6 +81,20 @@ export const columns: ColumnDef<SectionWithVersions>[] = [
         month: "short",
         year: "numeric",
       });
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const section = row.original;
+      return (
+        <RowActionsMenu
+          item={section}
+          editHref={`${ROUTES.stories}/${storySlug}/${section.currentDraft?.slug}`}
+          onDelete={() => console.log("Delete story", section.id)}
+        />
+      );
     },
   },
 ];

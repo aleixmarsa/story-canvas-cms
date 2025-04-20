@@ -22,12 +22,11 @@ export const DeleteUserDialog = ({ onConfirm, userEmail }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-red-500 hover:text-red-600"
-        >
-          <Trash className="h-4 w-4" />
+        <Button variant="ghost">
+          <span className="flex items-center gap-2">
+            <Trash className="mr-2 h-4 w-4" />
+            Delete
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent>

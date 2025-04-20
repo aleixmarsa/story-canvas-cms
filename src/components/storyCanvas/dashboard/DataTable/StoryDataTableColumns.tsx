@@ -1,14 +1,29 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { StoryWithVersions } from "@/types/story";
 import { StoryStatus } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { ROUTES } from "@/lib/constants/storyCanvas";
+import RowActionsMenu from "./RowActionsMenu";
 
 export const columns: ColumnDef<StoryWithVersions>[] = [
   {
-    header: "Title",
+    id: "title",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Title
+          <ArrowUpDown />
+        </Button>
+      );
+    },
     accessorFn: (row) => row.currentDraft?.title ?? "(untitled)",
+    enableHiding: false,
   },
   {
     header: "Status",
@@ -39,25 +54,42 @@ export const columns: ColumnDef<StoryWithVersions>[] = [
         </Badge>
       );
     },
+    enableHiding: false,
+  },
+  {
+    header: "Slug",
+    accessorFn: (row) => row.currentDraft?.slug ?? "-",
+    enableHiding: false,
   },
   {
     header: "Author",
     accessorFn: (row) => row.currentDraft?.createdBy ?? "-",
   },
+
   {
-    header: "Slug",
-    accessorFn: (row) => row.currentDraft?.slug ?? "-",
-  },
-  {
-    header: "Date",
-    accessorFn: (row) => row.createdAt,
+    header: "Updated At",
+    accessorFn: (row) => row.updatedAt,
     cell: ({ row }) => {
-      const date = new Date(row.getValue("Date"));
+      const date = new Date(row.getValue("Updated At"));
       return date.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
       });
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const story = row.original;
+      return (
+        <RowActionsMenu
+          item={story}
+          editHref={`${ROUTES.stories}/${story.currentDraft?.slug}/edit`}
+          onDelete={() => console.log("Delete story", story.id)}
+        />
+      );
     },
   },
 ];
