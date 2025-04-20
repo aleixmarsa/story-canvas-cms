@@ -28,7 +28,11 @@ const RowActionsMenu = <T,>({
 }: RowActionsMenuProps<T>) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+      <DropdownMenuTrigger
+        asChild
+        onClick={(e) => e.stopPropagation()}
+        data-testid="row-actions-menu"
+      >
         <Button
           variant="ghost"
           className="h-8 w-8 p-0"
@@ -42,20 +46,17 @@ const RowActionsMenu = <T,>({
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
         {editHref && (
-          <Link href={editHref} passHref>
-            <DropdownMenuItem asChild>
-              <Button
-                variant="ghost"
-                onClick={(e) => e.stopPropagation()}
-                className="px-2 w-full justify-start"
-              >
-                <span className="flex items-center justify-start gap-2">
-                  <Pencil className="h-4 w-4" />
-                  Edit
-                </span>
-              </Button>
-            </DropdownMenuItem>
-          </Link>
+          <DropdownMenuItem asChild>
+            <Link
+              href={editHref}
+              className="flex items-center gap-2 px-2 py-1.5 w-full text-sm hover:bg-muted cursor-pointer font-medium"
+              data-testid="action-edit-button"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Pencil className="h-4 w-4" color="black" />
+              Edit
+            </Link>
+          </DropdownMenuItem>
         )}
 
         {renderDeleteButton
@@ -69,9 +70,10 @@ const RowActionsMenu = <T,>({
                     onDelete();
                   }}
                   className="px-2 w-full justify-start"
+                  data-testid="action-delete-button"
                 >
                   <span className="flex items-center justify-start gap-2">
-                    <Trash className="h-4 w-4" />
+                    <Trash className="h-4 w-4" color="black" />
                     Delete
                   </span>
                 </Button>

@@ -72,7 +72,7 @@ export function LoginForm() {
                 id="email"
                 type="email"
                 required
-                placeholder="m@example.com"
+                placeholder="cms@example.com"
                 {...register("email")}
                 data-testid="login-form-email-input"
               />

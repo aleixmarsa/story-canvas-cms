@@ -74,7 +74,7 @@ const SignupForm = () => {
                 id="email"
                 type="email"
                 required
-                placeholder="m@example.com"
+                placeholder="cms@example.com"
                 {...register("email")}
                 data-testid="signup-form-email-input"
               />

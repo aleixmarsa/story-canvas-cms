@@ -123,13 +123,21 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
       >
         <div>
           <Label htmlFor="title">Title</Label>
-          <Input id="title" {...register("title" as const)} />
+          <Input
+            id="title"
+            {...register("title" as const)}
+            data-testid="edit-story-title-input"
+          />
           {errors.title && <FormErrorMessage error={errors.title.message} />}
         </div>
 
         <div>
           <Label htmlFor="createdBy">Created By</Label>
-          <Input id="createdBy" {...register("createdBy" as const)} />
+          <Input
+            id="createdBy"
+            {...register("createdBy" as const)}
+            data-testid="edit-story-createdBy-input"
+          />
           {errors.createdBy && (
             <FormErrorMessage error={errors.createdBy.message} />
           )}
@@ -137,7 +145,11 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
 
         <div>
           <Label htmlFor="slug">Slug (URL)</Label>
-          <Input id="slug" {...register("slug" as const)} />
+          <Input
+            id="slug"
+            {...register("slug" as const)}
+            data-testid="edit-story-slug-input"
+          />
           {errors.slug && <FormErrorMessage error={errors.slug.message} />}
         </div>
       </form>

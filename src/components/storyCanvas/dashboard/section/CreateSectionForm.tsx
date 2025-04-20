@@ -107,7 +107,7 @@ const CreateSectionForm = ({
     <div className="space-y-4 max-w-lg">
       <div className="space-y-2">
         <Select onValueChange={handleTypeSelect}>
-          <SelectTrigger>
+          <SelectTrigger data-testid="section-type-select">
             <SelectValue placeholder="Select section type" />
           </SelectTrigger>
           <SelectContent>

@@ -16,7 +16,7 @@ const DashboardPage = () => {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3">
-          <Link href={ROUTES.stories}>
+          <Link href={ROUTES.stories} data-testid="dashboard-stories-cards">
             <Card className="hover:bg-muted/50 h-full transition-shadow cursor-pointer">
               <CardContent className="p-6">
                 <CardTitle>Stories</CardTitle>
@@ -27,7 +27,7 @@ const DashboardPage = () => {
             </Card>
           </Link>
 
-          <Link href={ROUTES.users}>
+          <Link href={ROUTES.users} data-testid="dashboard-users-cards">
             <Card className="hover:bg-muted/50 h-full transition-shadow cursor-pointer">
               <CardContent className="p-6">
                 <CardTitle>Users</CardTitle>

@@ -92,6 +92,7 @@ const SectionTypeForm = <T extends SectionType>({
             id={id}
             placeholder={config.placeholder}
             {...register(key)}
+            data-testid={`create-section-${key}-input`}
           />
         );
         break;
@@ -102,6 +103,7 @@ const SectionTypeForm = <T extends SectionType>({
             type="number"
             placeholder={config.placeholder}
             {...register(key, { valueAsNumber: true })}
+            data-testid={`create-section-${key}-input`}
           />
         );
         break;
@@ -114,6 +116,7 @@ const SectionTypeForm = <T extends SectionType>({
             type={config.type}
             placeholder={config.placeholder}
             {...register(key)}
+            data-testid={`create-section-${key}-input`}
           />
         );
     }
