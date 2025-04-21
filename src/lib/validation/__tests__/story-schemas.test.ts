@@ -46,6 +46,7 @@ describe("storySchema", () => {
       title: "Another title",
       slug: "another-title",
       createdBy: "user1",
+      storyId: 1,
     });
     expect(result.success).toBe(true);
   });
