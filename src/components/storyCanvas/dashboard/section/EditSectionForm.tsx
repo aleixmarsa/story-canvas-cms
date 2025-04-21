@@ -9,7 +9,7 @@ import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
-import { updateSectionVersion } from "@/lib/actions/section-version/update-section-verstion";
+import { updateSectionVersion } from "@/lib/actions/section-version/update-section-version";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;

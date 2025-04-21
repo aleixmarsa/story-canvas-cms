@@ -2,9 +2,9 @@
 
 import {
   checkSectionSlugConflict,
-  updateSectionVersionById,
   getSectionWithVersions,
 } from "@/lib/dal/sections";
+import { updateSectionVersionById } from "@/lib/dal/section-versions";
 import { verifySession } from "@/lib/dal/auth";
 import { updateSectionVersionSchema } from "@/lib/validation/section-schemas";
 import { ConflictError } from "@/lib/errors";

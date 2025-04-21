@@ -60,7 +60,6 @@ const CreateSectionForm = ({
       formData.set("type", selectedType);
 
       const result = await createSection(formData);
-      console.log("🚀 ~ result:", result.section);
 
       if ("error" in result) {
         if (result.type === "slug") {

@@ -8,7 +8,7 @@ const NewStoryPage = () => {
   const [isDirty, setDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const formRef = useRef<HTMLFormElement | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <>

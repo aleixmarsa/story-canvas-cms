@@ -7,6 +7,7 @@ import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSect
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { publishSection } from "@/lib/actions/section-version/publish-section-version";
 
 const EditSectionPage = () => {
   const {
@@ -26,19 +27,17 @@ const EditSectionPage = () => {
   const handlePublishSection = async () => {
     setIsPublishing(true);
     try {
-      const res = await fetch(
-        `/api/section-versions/${selectedSection?.currentDraftId}/publish`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (!res || !res.ok) {
-        throw new Error("Failed publishing the section");
+      if (!selectedSection?.currentDraftId) {
+        throw new Error("Missing section ID");
       }
-      const updatedSection = await res.json();
-      updateSection(updatedSection);
+
+      const result = await publishSection(selectedSection.currentDraftId);
+
+      if ("error" in result) {
+        throw new Error(result.error);
+      }
+
+      updateSection(result.section);
       toast.success("Section published successfully", {
         description: `Your section is now live!`,
       });
