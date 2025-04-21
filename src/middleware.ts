@@ -15,7 +15,7 @@ function isPublic(pathname: string): boolean {
 }
 
 function isAdminOnly(pathname: string): boolean {
-  return [ROUTES.newUser].includes(pathname);
+  return [ROUTES.newUser, ROUTES.newStory].includes(pathname);
 }
 
 // Configure this middleware to run only on /admin routes

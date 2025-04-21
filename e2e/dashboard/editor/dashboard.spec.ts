@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
-test.use({ storageState: "playwright/.auth/admin.json" });
+test.use({ storageState: "playwright/.auth/editor.json" });
 
-test.describe("Dashboard homepage (admin)", () => {
+test.describe("Dashboard homepage (editor)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(ROUTES.dashboard);
   });

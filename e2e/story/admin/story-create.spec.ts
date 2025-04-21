@@ -3,7 +3,7 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
-test.describe("Create story form", () => {
+test.describe("Create story form (admin)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(ROUTES.stories);
     await page.getByTestId("header-add-button").click();

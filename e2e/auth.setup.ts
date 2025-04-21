@@ -26,7 +26,7 @@ setup("authenticate as editor", async ({ page }) => {
   await expect(page.getByTestId("login-form-title")).toBeVisible();
 
   //Fills the form with valid credentials
-  await page.getByTestId("login-form-email-input").fill("admin@cms.com");
+  await page.getByTestId("login-form-email-input").fill("editor@cms.com");
   await page.getByTestId("login-form-password-input").fill("securepassword");
   await page.getByRole("button", { name: "Login" }).click();
 

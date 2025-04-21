@@ -39,7 +39,7 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const { sectionId } = body;
+  const { sectionId, storyId } = body;
   const parsed = updateSectionVersionSchema.safeParse(body);
 
   if (!parsed.success) {
@@ -54,8 +54,11 @@ export async function PATCH(
     const conflicting = await prisma.sectionVersion.findFirst({
       where: {
         slug,
-        sectionId: {
-          not: sectionId,
+        section: {
+          storyId,
+          id: {
+            not: sectionId,
+          },
         },
       },
     });

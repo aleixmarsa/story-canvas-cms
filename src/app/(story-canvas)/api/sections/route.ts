@@ -5,7 +5,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { SectionType } from "@prisma/client";
 import { slugify } from "@/lib/utils";
 import { ConflictError } from "@/lib/errors";
-import { requireAdmin } from "@/lib/auth/withAuth";
+import { requireAuth } from "@/lib/auth/withAuth";
 
 /**
  * POST /api/sections
@@ -22,7 +22,7 @@ import { requireAdmin } from "@/lib/auth/withAuth";
  */
 export async function POST(req: NextRequest) {
   // Check if the user is authenticated and is an admin if not return 401 or 403
-  const user = await requireAdmin();
+  const user = await requireAuth();
   if (user instanceof NextResponse) return user;
 
   const body = await req.json();
@@ -56,8 +56,11 @@ export async function POST(req: NextRequest) {
       const conflicting = await tx.sectionVersion.findFirst({
         where: {
           slug,
-          sectionId: {
-            not: section.id,
+          section: {
+            storyId,
+            id: {
+              not: section.id,
+            },
           },
         },
       });
