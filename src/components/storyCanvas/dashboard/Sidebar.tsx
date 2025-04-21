@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { CurrentUser } from "@/types/auth";
+import { logout } from "@/lib/actions/auth/login";
+import { LogOut } from "lucide-react";
 
 export function DashboardSidebar({
   user,
@@ -40,6 +42,10 @@ export function DashboardSidebar({
       fetchStories();
     }
   }, [stories.length, setStories]);
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -105,10 +111,13 @@ export function DashboardSidebar({
         {user ? (
           <NavUser user={user} />
         ) : (
-          <Link href={ROUTES.login} className="font-medium">
-            <User2 className="h-4 w-4" />
-            Login
-          </Link>
+          <div
+            className="flex items-center gap-2 px-1 py-1.5 text-left text-sm  cursor-pointer"
+            onClick={handleLogout}
+          >
+            <LogOut />
+            Log out
+          </div>
         )}
       </SidebarFooter>
       <SidebarRail />
