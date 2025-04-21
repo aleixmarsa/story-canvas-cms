@@ -1,10 +1,12 @@
 /**
  * @jest-environment node
  */
-import { createStory } from "@/lib/actions/stories/create-story";
+import { deleteStory } from "@/lib/actions/stories/delete-story";
 import { verifySession } from "@/lib/dal/auth";
-import { createStoryWithDraft } from "@/lib/dal/stories";
-import { ConflictError } from "@/lib/errors";
+import {
+  getStoryWithSectionsAndVersions,
+  deleteStoryAndRelated,
+} from "@/lib/dal/stories";
 import { Role } from "@prisma/client";
 
 jest.mock("@/lib/dal/auth", () => ({
@@ -12,133 +14,50 @@ jest.mock("@/lib/dal/auth", () => ({
 }));
 
 jest.mock("@/lib/dal/stories", () => ({
-  createStoryWithDraft: jest.fn(),
+  getStoryWithSectionsAndVersions: jest.fn(),
+  deleteStoryAndRelated: jest.fn(),
 }));
 
 const mockVerifySession = verifySession as jest.Mock;
-const mockCreateStoryWithDraft = createStoryWithDraft as jest.Mock;
+const mockGetStory = getStoryWithSectionsAndVersions as jest.Mock;
+const mockDeleteStory = deleteStoryAndRelated as jest.Mock;
 
-const createFormData = (data: Record<string, string>) => {
-  const formData = new FormData();
-  Object.entries(data).forEach(([key, value]) => {
-    formData.set(key, value);
-  });
-  return formData;
-};
-
-describe("createStory", () => {
+describe("deleteStory", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("returns error on invalid input", async () => {
-    const formData = createFormData({
-      title: "",
-      slug: "",
-      description: "",
-      theme: "",
-      components: "",
-      content: "",
-      createdBy: "",
-    });
+  it("returns error if user is not admin", async () => {
+    mockVerifySession.mockResolvedValue({ id: "123", role: "EDITOR" });
 
-    const res = await createStory(formData);
-    expect(res.error).toBe("Invalid input");
-    expect(res.details).toBeDefined();
-  });
-
-  it("returns error if session is not admin", async () => {
-    mockVerifySession.mockResolvedValue({ id: "user", role: Role.EDITOR });
-
-    const formData = createFormData({
-      title: "My Story",
-      slug: "my-story",
-      description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
-      createdBy: "admin",
-    });
-
-    const res = await createStory(formData);
+    const res = await deleteStory(1);
     expect(res).toEqual({ error: "Unauthorized" });
   });
 
-  it("returns slug conflict error", async () => {
+  it("returns error if story is not found", async () => {
     mockVerifySession.mockResolvedValue({ id: "admin", role: Role.ADMIN });
-    mockCreateStoryWithDraft.mockRejectedValue(
-      new ConflictError("Slug already exists")
-    );
+    mockGetStory.mockResolvedValue(null);
 
-    const formData = createFormData({
-      title: "My Story",
-      slug: "my-story",
-      description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
-      createdBy: "admin",
-    });
-
-    const res = await createStory(formData);
-    expect(res).toEqual({
-      error: "Slug already exists",
-      type: "slug",
-    });
+    const res = await deleteStory(1);
+    expect(res).toEqual({ error: "Story not found" });
   });
 
-  it("creates story successfully", async () => {
+  it("deletes story successfully", async () => {
     mockVerifySession.mockResolvedValue({ id: "admin", role: Role.ADMIN });
+    mockGetStory.mockResolvedValue({ id: 1, title: "Test Story" });
+    mockDeleteStory.mockResolvedValue(undefined);
 
-    const fakeStory = {
-      id: 1,
-      currentDraftId: 10,
-      currentDraft: {
-        id: 10,
-        title: "My Story",
-        slug: "my-story",
-        createdBy: "admin",
-        content: {},
-        components: [],
-        theme: {},
-        status: "draft",
-      },
-    };
-
-    mockCreateStoryWithDraft.mockResolvedValue(fakeStory);
-
-    const formData = createFormData({
-      title: "My Story",
-      slug: "my-story",
-      description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
-      createdBy: "admin",
-    });
-
-    const res = await createStory(formData);
-    expect(res).toEqual({
-      success: true,
-      story: fakeStory,
-    });
+    const res = await deleteStory(1);
+    expect(res).toEqual({ success: true });
+    expect(mockDeleteStory).toHaveBeenCalledWith(1);
   });
 
-  it("returns internal error on unexpected exception", async () => {
+  it("returns error on internal failure", async () => {
     mockVerifySession.mockResolvedValue({ id: "admin", role: Role.ADMIN });
-    mockCreateStoryWithDraft.mockRejectedValue(new Error("Unexpected"));
+    mockGetStory.mockResolvedValue({ id: 1 });
+    mockDeleteStory.mockRejectedValue(new Error("DB Error"));
 
-    const formData = createFormData({
-      title: "My Story",
-      slug: "my-story",
-      description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
-      createdBy: "admin",
-    });
-
-    const res = await createStory(formData);
+    const res = await deleteStory(1);
     expect(res).toEqual({ error: "Internal server error" });
   });
 });
