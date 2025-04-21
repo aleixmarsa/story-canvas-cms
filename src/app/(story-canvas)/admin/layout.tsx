@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { Toaster } from "@/components/ui/sonner";
-import { countAllUsers } from "@/lib/dal/user";
+import { countAllUsers } from "@/lib/dal/users";
 import { checkDbConnection } from "@/lib/db";
 
 export default async function AdminLayout({

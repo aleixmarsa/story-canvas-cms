@@ -1,9 +1,9 @@
 "use server";
 
-import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createInitialUserSchema } from "@/lib/validation/create-initial-user-schema";
 import { createSession } from "@/lib/auth/session";
+import { userExists, createUser } from "@/lib/dal/users";
 import { Role } from "@prisma/client";
 
 export const createInitialUser = async (formData: FormData) => {
@@ -24,19 +24,12 @@ export const createInitialUser = async (formData: FormData) => {
 
     const { email, password } = parsed.data;
 
-    const existingCount = await prisma.user.count();
-    if (existingCount > 0) {
+    if (await userExists()) {
       return { error: "Initial user already exists" };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        role: Role.ADMIN,
-      },
-    });
+    const user = await createUser(email, hashedPassword, Role.ADMIN);
 
     await createSession(user.id, user.role);
 

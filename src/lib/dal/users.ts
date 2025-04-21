@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { UserForTable } from "@/types/user";
+import { Role } from "@prisma/client";
 
 /**
  * Fetches all users from the database.
@@ -41,4 +42,23 @@ export const countAllUsers = async (): Promise<
       error: "Error in Database",
     };
   }
+};
+
+export const userExists = async (): Promise<boolean> => {
+  const count = await prisma.user.count();
+  return count > 0;
+};
+
+export const createUser = async (
+  email: string,
+  hashedPassword: string,
+  role: Role
+) => {
+  return prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      role,
+    },
+  });
 };
