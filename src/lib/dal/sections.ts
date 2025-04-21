@@ -3,16 +3,30 @@ import { ConflictError } from "@/lib/errors";
 import { SectionType, StoryStatus } from "@prisma/client";
 import { slugify } from "../utils";
 
+type UpdateSectionVersion = {
+  name: string;
+  slug: string;
+  type: SectionType;
+  order: number;
+  createdBy: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  content: Record<string, any>;
+  comment: string | undefined;
+};
+
 /**
- * Gets a section by its ID, including its versions.
+ * Gets a section with its current draft and published version.
  *
- * @param sectionId - The ID of the section to retrieve.
- * @returns The section with its versions, or null if not found.
+ * @param sectionId - The section ID.
+ * @returns The full section.
  */
 export const getSectionWithVersions = async (sectionId: number) => {
   return prisma.section.findUnique({
     where: { id: sectionId },
-    include: { versions: true },
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+    },
   });
 };
 
@@ -100,5 +114,51 @@ export const createSectionWithDraftVersion = async (input: {
         publishedVersion: true,
       },
     });
+  });
+};
+
+/**
+ * Checks if a slug is already used in another section of the same story.
+ *
+ * @param slug - The slug to check.
+ * @param storyId - The story ID for context.
+ * @param excludeSectionId - Section to exclude from the check (typically the current one).
+ *
+ * @throws ConflictError if a conflict is found.
+ */
+export const checkSectionSlugConflict = async (
+  slug: string,
+  storyId: number,
+  excludeSectionId: number
+) => {
+  const conflicting = await prisma.sectionVersion.findFirst({
+    where: {
+      slug,
+      section: {
+        storyId,
+        id: { not: excludeSectionId },
+      },
+    },
+  });
+
+  if (conflicting) {
+    throw new ConflictError("Slug already exists");
+  }
+};
+
+/**
+ * Updates a section version by its ID.
+ *
+ * @param versionId - The ID of the SectionVersion.
+ * @param data - The fields to update.
+ * @returns The updated SectionVersion.
+ */
+export const updateSectionVersionById = async (
+  versionId: number,
+  data: UpdateSectionVersion
+) => {
+  return prisma.sectionVersion.update({
+    where: { id: versionId },
+    data,
   });
 };

@@ -7,9 +7,9 @@ import { SectionType } from "@prisma/client";
 import SectionTypeForm from "./SectionTypeForm";
 import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
-import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { updateSectionVersion } from "@/lib/actions/section-version/update-section-verstion";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;
@@ -53,49 +53,43 @@ const EditSectionForm = ({
   ) => {
     const selectedStoryId = selectedStory?.id;
     const { name, order, createdBy, ...content } = data;
-    if (!type || !selectedStoryId) {
-      throw new Error("Section type or story ID is not selected");
+
+    if (!type || !selectedStoryId || !selectedSection?.currentDraft?.id) {
+      throw new Error("Missing type, story ID or section ID");
     }
 
     try {
-      const res = await fetch(
-        `/api/section-versions/${selectedSection?.currentDraft?.id}`,
+      const result = await updateSectionVersion(
+        selectedSection.currentDraft.id,
         {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            storyId: selectedStoryId,
-            sectionId: selectedSection.id,
-            type,
-            name,
-            order,
-            createdBy,
-            content,
-          }),
+          name,
+          order,
+          createdBy,
+          content,
+          type,
+          storyId: selectedStoryId,
+          sectionId: selectedSection.id,
         }
       );
 
-      if (!res) {
-        throw new Error("Failed to update section");
+      if ("error" in result) {
+        if (result.type === "slug") {
+          setExternalError({
+            field: "name",
+            message: "This name is already in use",
+          });
+          return false;
+        }
+        toast.error(result.error);
+        return false;
       }
-
-      if (res.status === 409) {
-        setExternalError({
-          field: "name",
-          message: "This name is already in use",
-        });
+      if (!result.section) {
+        toast.error("Failed to find updated section");
         return false;
       }
 
-      if (!res.ok) {
-        throw new Error("Failed to update section");
-      }
+      const updatedSection = result.section;
 
-      const updatedSection: SectionWithVersions = await res.json();
-      if (!updatedSection) {
-        throw new Error("Failed to update section");
-      }
-      // Update the URL if the name has changed
       if (
         updatedSection?.currentDraft?.name !==
         selectedSection?.currentDraft?.name
@@ -104,6 +98,7 @@ const EditSectionForm = ({
           `${ROUTES.stories}/${selectedStory.currentDraft?.slug}/${updatedSection?.currentDraft?.slug}`
         );
       }
+
       updateSection(updatedSection);
       selectSection(updatedSection);
       toast.success("Section updated successfully");
@@ -112,7 +107,7 @@ const EditSectionForm = ({
       if (err instanceof Error) {
         toast.error(err.message);
       } else {
-        toast.error("An unknown error occurred while udpating the section");
+        toast.error("An unknown error occurred while updating the section");
       }
       return false;
     }

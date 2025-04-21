@@ -158,3 +158,5 @@ export const createSectionVersionSchema = z.object({
 export const updateSectionVersionSchema = createSectionVersionSchema.omit({
   createdBy: true,
 });
+
+export type SectionFormData = z.infer<typeof createSectionVersionSchema>;
