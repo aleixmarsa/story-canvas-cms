@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { ConflictError } from "@/lib/errors";
+import { StoryStatus } from "@prisma/client";
 
 /**
  * Checks if a slug is already used by a version in a different story.
@@ -45,5 +46,62 @@ export const updateStoryVersionById = async (
   return prisma.storyVersion.update({
     where: { id },
     data,
+  });
+};
+
+/**
+ * Publishes a story version and creates a new draft copy.
+ *
+ * @param versionId - The ID of the version to publish.
+ * @returns The updated story with current draft and published versions.
+ *
+ * @throws Error - If the original version does not exist or the operation fails.
+ */
+export const publishStoryVersion = async (versionId: number) => {
+  return prisma.$transaction(async (tx) => {
+    const original = await tx.storyVersion.findUnique({
+      where: { id: versionId },
+    });
+
+    if (!original) {
+      throw new Error("Story version not found");
+    }
+
+    const publishedVersion = await tx.storyVersion.update({
+      where: { id: versionId },
+      data: {
+        status: StoryStatus.published,
+      },
+    });
+
+    const draftCopy = await tx.storyVersion.create({
+      data: {
+        storyId: original.storyId,
+        title: original.title,
+        slug: original.slug,
+        description: original.description ?? undefined,
+        theme: original.theme ?? undefined,
+        components: original.components ?? undefined,
+        content: original.content ?? undefined,
+        status: StoryStatus.draft,
+        createdBy: original.createdBy ?? undefined,
+        comment: `Auto-generated draft after publishing version ${original.id}`,
+      },
+    });
+
+    return tx.story.update({
+      where: { id: original.storyId },
+      data: {
+        publishedVersionId: publishedVersion.id,
+        currentDraftId: draftCopy.id,
+        publicSlug: publishedVersion.slug,
+        publishedAt: new Date(),
+        lastEditedBy: publishedVersion.createdBy ?? undefined,
+      },
+      include: {
+        publishedVersion: true,
+        currentDraft: true,
+      },
+    });
   });
 };

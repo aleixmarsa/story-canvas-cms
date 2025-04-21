@@ -7,6 +7,7 @@ import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryFor
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
 
 const EditStoryPage = () => {
   const { stories, selectStory, selectedStory, updateStory } =
@@ -22,19 +23,17 @@ const EditStoryPage = () => {
   const handlePublishStory = async () => {
     setIsPublishing(true);
     try {
-      const res = await fetch(
-        `/api/story-versions/${selectedStory?.currentDraftId}/publish`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (!res || !res.ok) {
-        throw new Error("Failed publishing the Story");
+      if (!selectedStory?.currentDraftId) {
+        throw new Error("No current draft ID found for the selected story");
       }
-      const updatedStory = await res.json();
-      updateStory(updatedStory);
+      const result = await publishStoryVersion(selectedStory?.currentDraftId);
+
+      if ("error" in result) {
+        toast.error(result.error);
+        return;
+      }
+
+      updateStory(result.story);
       toast.success("Story published successfully", {
         description: `Your story is now live!`,
       });

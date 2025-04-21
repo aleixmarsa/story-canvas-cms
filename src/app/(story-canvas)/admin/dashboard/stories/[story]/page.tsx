@@ -10,6 +10,7 @@ import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
+import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -49,19 +50,17 @@ const StoryPage = () => {
   const handlePublishStory = async () => {
     setIsPublishing(true);
     try {
-      const res = await fetch(
-        `/api/story-versions/${currentDraft.id}/publish`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Failed publishing the Story");
+      if (!selectedStory?.currentDraftId) {
+        throw new Error("No current draft ID found for the selected story");
       }
-      const updatedStory = await res.json();
-      updateStory(updatedStory);
+      const result = await publishStoryVersion(selectedStory?.currentDraftId);
+
+      if ("error" in result) {
+        toast.error(result.error);
+        return;
+      }
+
+      updateStory(result.story);
       toast.success("Story published successfully", {
         description: `Your story is now live!`,
       });

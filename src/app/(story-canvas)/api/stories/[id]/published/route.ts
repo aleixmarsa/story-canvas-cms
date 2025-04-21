@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+// ⚠️ Unused endpoint — preserved for potential future use
 /**
  * GET /api/stories/:id/published
  * Returns a single story published version by ID
@@ -12,7 +13,6 @@ import prisma from "@/lib/prisma";
  * @throws 404 - Published version not found.
  * @throws 500 - Internal server error.
  */
-
 export async function GET(
   _req: NextRequest,
   { params }: { params: { id: string } }
