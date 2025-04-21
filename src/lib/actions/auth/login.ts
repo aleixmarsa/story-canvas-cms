@@ -8,12 +8,15 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { findUserByEmail } from "@/lib/dal/users";
 
 /**
+ * Authenticates a user using email and password, then creates a session and redirects to the dashboard.
  *
- * @param formData - FormData object containing the email and password
- * @param formData.get("email") - The email of the user
- * @param formData.get("password") - The password of the user
- * @param formData.get("confirmPassword") - The password confirmation (not used in this function)
- * @returns {Promise<void>} - A promise that resolves when the login is complete or rejects with an error
+ * @param formData - A FormData object containing the user's email and password.
+ *
+ * @returns An object containing:
+ * - `{ error: string, details?: any }` if validation or authentication fails.
+ * - Or redirects to the dashboard on success (does not return).
+ *
+ * @throws Error - If an unexpected error occurs during session creation.
  */
 export const login = async (formData: FormData) => {
   const rawData = {

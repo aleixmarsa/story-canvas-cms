@@ -6,6 +6,17 @@ import { createSession } from "@/lib/auth/session";
 import { userExists, createUser } from "@/lib/dal/users";
 import { Role } from "@prisma/client";
 
+/**
+ * Creates the initial ADMIN user in the system.
+ *
+ * @param formData - A FormData object containing the initial user's email, password, and confirmation.
+ *
+ * @returns An object containing:
+ * - `{ success: true, user: { id, email } }` if creation and session setup succeed.
+ * - `{ error: string, details?: any }` if validation fails or the user already exists.
+ *
+ * @throws Error - If an unexpected error occurs during user creation or session handling.
+ */
 export const createInitialUser = async (formData: FormData) => {
   try {
     const rawData = {

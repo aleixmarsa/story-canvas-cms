@@ -7,6 +7,7 @@ import { Role } from "@prisma/client";
 
 /**
  * Fetches all users from the database.
+ *
  * @returns {Promise<{ UserForTable }[]>} - A promise that resolves to an array of users
  */
 export const getAllUsers = async (): Promise<UserForTable[]> => {
@@ -30,6 +31,7 @@ export const getAllUsers = async (): Promise<UserForTable[]> => {
 
 /**
  * Counts all users in the database.
+ *
  * @returns {Promise<{ numberOfUsers: number } | { error: string }>} - A promise that resolves to the number of users or an error message
  */
 export const countAllUsers = async (): Promise<
@@ -50,6 +52,7 @@ export const countAllUsers = async (): Promise<
 
 /**
  * Checks if any user exists in the database.
+ *
  * @returns {Promise<boolean>} - A promise that resolves to true if a user exists, false otherwise
  */
 export const userExists = async (): Promise<boolean> => {
@@ -59,6 +62,7 @@ export const userExists = async (): Promise<boolean> => {
 
 /**
  * Creates a new user in the database.
+ *
  * @param email - The email of the user
  * @param hashedPassword - The hashed password of the user
  * @param role - The role of the user (e.g., ADMIN, EDITOR)
@@ -80,6 +84,7 @@ export const createUser = async (
 
 /**
  * Finds a user by their email address.
+ *
  * @param email - The email of the user to find
  * @returns {Promise<{ id: number; email: string; role: Role } | null>} - A promise that resolves to the user if found, or null if not
  */
@@ -89,6 +94,7 @@ export const findUserByEmail = (email: string) => {
 
 /**
  * Finds a user by its ID.
+ *
  * @param id - The ID of the user to find
  * @returns {Promise<{ id: number; email: string; role: Role } | null>} - A promise that resolves to the user if found, or null if not
  */
@@ -98,6 +104,7 @@ export const findUserById = (id: string) => {
 
 /**
  * Deletes a user by its ID.
+ *
  * @param id - The ID of the user to delete
  * @returns {Promise<{ id: number; email: string; role: Role }>} - A promise that resolves to the deleted user
  */

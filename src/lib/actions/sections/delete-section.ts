@@ -7,9 +7,15 @@ import {
 } from "@/lib/dal/sections";
 
 /**
- * Deletes a section and all its versions.
+ * Deletes a section and all of its associated versions.
+ *
  * @param sectionId - The ID of the section to delete.
- * @returns A success or error message.
+ *
+ * @returns An object with:
+ * - `{ success: true }` if deletion was successful.
+ * - `{ error: string }` if the user is unauthorized, the section doesn't exist or an internal error occurs.
+ *
+ * @throws Error - If an unexpected exception occurs during deletion.
  */
 export const deleteSection = async (sectionId: number) => {
   try {
