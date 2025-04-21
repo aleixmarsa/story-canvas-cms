@@ -21,7 +21,7 @@ export const createSection = async (formData: FormData) => {
     type: formData.get("type"),
     order: Number(formData.get("order")),
     content: JSON.parse(formData.get("content") as string),
-    createdBy: session.id,
+    createdBy: formData.get("createdBy"),
   };
 
   const parsed = createSectionVersionSchema.safeParse(rawData);
