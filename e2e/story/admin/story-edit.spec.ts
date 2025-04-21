@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
+test.use({ storageState: "playwright/.auth/admin.json" });
 test.describe.configure({ mode: "serial" });
 
 test.describe("Edit story", () => {
