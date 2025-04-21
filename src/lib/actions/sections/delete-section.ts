@@ -1,7 +1,10 @@
 "use server";
 
 import { verifySession } from "@/lib/dal/auth";
-import prisma from "@/lib/prisma";
+import {
+  getSectionWithVersions,
+  deleteSectionWithVersions,
+} from "@/lib/dal/sections";
 
 /**
  * Deletes a section and all its versions.
@@ -11,29 +14,12 @@ import prisma from "@/lib/prisma";
 export const deleteSection = async (sectionId: number) => {
   try {
     const session = await verifySession();
+    if (!session) return { error: "Unauthorized" };
 
-    if (!session) {
-      return { error: "Unauthorized" };
-    }
+    const existingSection = await getSectionWithVersions(sectionId);
+    if (!existingSection) return { error: "Section not found" };
 
-    const existingSection = await prisma.section.findUnique({
-      where: { id: sectionId },
-      include: { versions: true },
-    });
-
-    if (!existingSection) {
-      return { error: "Section not found" };
-    }
-
-    await prisma.$transaction([
-      prisma.sectionVersion.deleteMany({
-        where: { sectionId },
-      }),
-      prisma.section.delete({
-        where: { id: sectionId },
-      }),
-    ]);
-
+    await deleteSectionWithVersions(sectionId);
     return { success: true };
   } catch (error) {
     console.error("Failed to delete section:", error);

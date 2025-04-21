@@ -1,15 +1,14 @@
 "use server";
 
-import { Role } from "@prisma/client";
-import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { createUserSchema } from "@/lib/validation/create-user-schema";
+import { Role } from "@prisma/client";
 import { verifySession } from "@/lib/dal/auth";
+import { createUserSchema } from "@/lib/validation/create-user-schema";
+import { createUser as createUserInDb, findUserByEmail } from "@/lib/dal/users";
 
 export const createUser = async (formData: FormData) => {
   try {
     const session = await verifySession();
-
     if (session.role !== Role.ADMIN) {
       return { error: "Unauthorized" };
     }
@@ -22,7 +21,6 @@ export const createUser = async (formData: FormData) => {
     };
 
     const parsed = createUserSchema.safeParse(rawData);
-
     if (!parsed.success) {
       return {
         error: "Invalid input",
@@ -30,25 +28,15 @@ export const createUser = async (formData: FormData) => {
       };
     }
 
-    const { email, password } = parsed.data;
+    const { email, password, role } = parsed.data;
 
-    const existing = await prisma.user.findUnique({
-      where: { email },
-    });
-
+    const existing = await findUserByEmail(email);
     if (existing) {
       return { error: "Email already in use", type: "email" };
     }
 
-    const hashed = await bcrypt.hash(password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashed,
-        role: Role.EDITOR,
-      },
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await createUserInDb(email, hashedPassword, role);
 
     return {
       success: true,
@@ -59,6 +47,9 @@ export const createUser = async (formData: FormData) => {
       },
     };
   } catch (err) {
-    return { error: "Internal server error", details: String(err) };
+    return {
+      error: "Internal server error",
+      details: String(err),
+    };
   }
 };

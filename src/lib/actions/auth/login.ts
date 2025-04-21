@@ -4,8 +4,8 @@ import { createSession, deleteSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import { loginSchema } from "@/lib/validation/login-schema";
 import bcrypt from "bcryptjs";
-import prisma from "@/lib/prisma";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { findUserByEmail } from "@/lib/dal/users";
 
 /**
  *
@@ -32,9 +32,7 @@ export const login = async (formData: FormData) => {
 
   const { email, password } = parsed.data;
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
+  const user = await findUserByEmail(email);
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return {
