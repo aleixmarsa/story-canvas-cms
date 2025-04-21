@@ -13,8 +13,11 @@ import { StoryStatus } from "@prisma/client";
  */
 export const checkSlugConflictAcrossStories = async (
   slug: string,
-  currentStoryId: number
+  currentStoryId: number | undefined
 ) => {
+  if (!currentStoryId) {
+    throw new ConflictError("Current story ID is required");
+  }
   const conflict = await prisma.storyVersion.findFirst({
     where: {
       slug,
