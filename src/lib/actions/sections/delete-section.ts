@@ -2,7 +2,6 @@
 
 import { verifySession } from "@/lib/dal/auth";
 import prisma from "@/lib/prisma";
-import { Role } from "@prisma/client";
 
 /**
  * Deletes a section and all its versions.
@@ -13,7 +12,7 @@ export const deleteSection = async (sectionId: number) => {
   try {
     const session = await verifySession();
 
-    if (session.role !== Role.ADMIN) {
+    if (!session) {
       return { error: "Unauthorized" };
     }
 

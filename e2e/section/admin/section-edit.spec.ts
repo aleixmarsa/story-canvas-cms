@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
+test.use({ storageState: "playwright/.auth/admin.json" });
 test.describe.configure({ mode: "serial" });
 
-test.describe("Edit section", () => {
+test.describe("Edit section (admin)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${ROUTES.stories}/story-list`);
     // Clicks on edit button

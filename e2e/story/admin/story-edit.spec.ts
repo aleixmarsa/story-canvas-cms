@@ -1,14 +1,15 @@
 import { test, expect } from "@playwright/test";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 
+test.use({ storageState: "playwright/.auth/admin.json" });
 test.describe.configure({ mode: "serial" });
 
-test.describe("Edit story", () => {
+test.describe("Edit story (admin)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(ROUTES.stories);
     // Clicks on edit button
     await page
-      .getByRole("row", { name: "Story to edit" })
+      .getByRole("row", { name: "Story to edit draft story-" })
       .getByTestId("row-actions-menu")
       .click();
     await page.getByTestId("action-edit-button").click();
@@ -61,7 +62,9 @@ test.describe("Edit story", () => {
     // Check if the story is updated in the list
     await page.goto(ROUTES.stories);
     await expect(page.getByText("Story edited via test")).toBeVisible();
-    await expect(page.getByText("Story to edit")).not.toBeVisible();
+    await expect(
+      page.getByText("Story to edit", { exact: true })
+    ).not.toBeVisible();
     await expect(page.getByText("playwright-e2e")).toBeVisible();
     await expect(
       page.getByRole("cell", { name: "story-edited-test" })

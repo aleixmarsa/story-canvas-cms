@@ -15,7 +15,15 @@ async function main() {
     },
   });
 
-  // Story to test the list
+  const editor = await prisma.user.create({
+    data: {
+      email: "editor@cms.com",
+      password: hashedPassword,
+      role: "EDITOR",
+    },
+  });
+
+  // [ADMIN] Story to test the list
   const listStory = await prisma.story.create({ data: {} });
   const listVersion = await prisma.storyVersion.create({
     data: {
@@ -34,7 +42,26 @@ async function main() {
     data: { currentDraftId: listVersion.id },
   });
 
-  // Story to test editing
+  // [EDITOR] Story to test the list
+  const editorListStory = await prisma.story.create({ data: {} });
+  const editorListVersion = await prisma.storyVersion.create({
+    data: {
+      title: "Editor story visible in list",
+      slug: "editor-story-list",
+      createdBy: editor.email,
+      description: "Editor Story for list test",
+      status: "draft",
+      storyId: editorListStory.id,
+      theme: {},
+      content: {},
+    },
+  });
+  await prisma.story.update({
+    where: { id: editorListStory.id },
+    data: { currentDraftId: editorListVersion.id },
+  });
+
+  // [ADMIN] Story to test editing
   const editableStory = await prisma.story.create({ data: {} });
   const editableVersion = await prisma.storyVersion.create({
     data: {
@@ -53,7 +80,26 @@ async function main() {
     data: { currentDraftId: editableVersion.id },
   });
 
-  //  Story to test deletion
+  // [EDITOR] Story to test editing
+  const editorEditableStory = await prisma.story.create({ data: {} });
+  const editorEditableVersion = await prisma.storyVersion.create({
+    data: {
+      title: "Editor Story to edit",
+      slug: "editor-story-edit",
+      createdBy: editor.email,
+      description: "Editor Story for editing test",
+      status: "draft",
+      storyId: editorEditableStory.id,
+      theme: {},
+      content: {},
+    },
+  });
+  await prisma.story.update({
+    where: { id: editorEditableStory.id },
+    data: { currentDraftId: editorEditableVersion.id },
+  });
+
+  // [ADMIN] Story to test deleting
   const deletableStory = await prisma.story.create({ data: {} });
   const deletableVersion = await prisma.storyVersion.create({
     data: {
@@ -72,7 +118,7 @@ async function main() {
     data: { currentDraftId: deletableVersion.id },
   });
 
-  // Section for list test
+  // [ADMIN] Section to test listing
   const listSection = await prisma.section.create({
     data: {
       storyId: listStory.id,
@@ -95,7 +141,30 @@ async function main() {
     data: { currentDraftId: listSectionVersion.id },
   });
 
-  // Section for edit test
+  // [EDITOR] Section to test listing
+  const editorListSection = await prisma.section.create({
+    data: {
+      storyId: editorListStory.id,
+    },
+  });
+  const editorListSectionVersion = await prisma.sectionVersion.create({
+    data: {
+      name: "Editor Section visible in list",
+      slug: slugify("Editor Section visible in list"),
+      createdBy: editor.email,
+      type: "TITLE",
+      order: 1,
+      content: { text: "Editor Section for listing" },
+      status: "draft",
+      sectionId: editorListSection.id,
+    },
+  });
+  await prisma.section.update({
+    where: { id: editorListSection.id },
+    data: { currentDraftId: editorListSectionVersion.id },
+  });
+
+  // [ADMIN] Section to test editing
   const editSection = await prisma.section.create({
     data: {
       storyId: listStory.id,
@@ -118,7 +187,30 @@ async function main() {
     data: { currentDraftId: editSectionVersion.id },
   });
 
-  // Section for delete test
+  // [EDITOR] Section to test editing
+  const editorEditSection = await prisma.section.create({
+    data: {
+      storyId: editorListStory.id,
+    },
+  });
+  const editorEditSectionVersion = await prisma.sectionVersion.create({
+    data: {
+      name: "Editor Section to edit",
+      slug: slugify("Editor Section to edit"),
+      createdBy: editor.email,
+      type: "TITLE",
+      order: 1,
+      content: { text: "Editor Editable content" },
+      status: "draft",
+      sectionId: editorEditSection.id,
+    },
+  });
+  await prisma.section.update({
+    where: { id: editorEditSection.id },
+    data: { currentDraftId: editorEditSectionVersion.id },
+  });
+
+  // [ADMIN] Section to test deleting
   const deleteSection = await prisma.section.create({
     data: {
       storyId: listStory.id,
@@ -141,8 +233,31 @@ async function main() {
     data: { currentDraftId: deleteSectionVersion.id },
   });
 
+  // [EDITOR] Section to test deleting
+  const editorDeleteSection = await prisma.section.create({
+    data: {
+      storyId: editorListStory.id,
+    },
+  });
+  const editorDeleteSectionVersion = await prisma.sectionVersion.create({
+    data: {
+      name: "Editor Section to delete",
+      slug: slugify("Editor Section to delete"),
+      createdBy: editor.email,
+      type: "IMAGE",
+      order: 1,
+      content: { text: "Editor Section to delete" },
+      status: "draft",
+      sectionId: deleteSection.id,
+    },
+  });
+  await prisma.section.update({
+    where: { id: editorDeleteSection.id },
+    data: { currentDraftId: editorDeleteSectionVersion.id },
+  });
+
   console.log(
-    "✅ Seeded: user + 3 stories (list, edit, delete) + 3 sections (list, edit, delete)"
+    "✅ Seeded: user + 6 stories (list, edit, delete) + 6 sections (list, edit, delete)"
   );
 }
 

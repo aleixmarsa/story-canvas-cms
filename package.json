@@ -21,7 +21,8 @@
     "test:coverage": "jest --coverage",
     "test:db:reset": "pnpm exec tsx scripts/reset-test-database.ts",
     "test:db:cleanup": "pnpm exec tsx scripts/cleanup-test-database.ts",
-    "test:e2e": "playwright test --project=chromium"
+    "test:e2e": "playwright test --project=chromium",
+    "test:e2e:trace": "playwright test --project=chromium --trace on"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
