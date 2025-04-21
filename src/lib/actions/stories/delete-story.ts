@@ -1,70 +1,31 @@
 "use server";
 
 import { verifySession } from "@/lib/dal/auth";
-import prisma from "@/lib/prisma";
+import {
+  getStoryWithSectionsAndVersions,
+  deleteStoryAndRelated,
+} from "@/lib/dal/stories";
 import { Role } from "@prisma/client";
 
 /**
- * Deletes a story and all its versions and sections.
- * @param storyId - The ID of the story to delete.
- * @returns A success message or an error message.
+ * Creates a new Story and its initial draft version inside a transaction.
+ *
+ * @param data - The data required to create the draft story version, including title, slug, theme, etc.
+ *               Must include `createdBy`, which links the story to its creator.
+ * @returns The updated Story including its current draft and published version.
+ *
+ * @throws ConflictError - If the slug is already used by another story.
+ * @throws Prisma.PrismaClientKnownRequestError - If a database-level constraint fails.
  */
 export const deleteStory = async (storyId: number) => {
   try {
     const session = await verifySession();
+    if (session.role !== Role.ADMIN) return { error: "Unauthorized" };
 
-    if (session.role !== Role.ADMIN) {
-      return { error: "Unauthorized" };
-    }
+    const existingStory = await getStoryWithSectionsAndVersions(storyId);
+    if (!existingStory) return { error: "Story not found" };
 
-    const existingStory = await prisma.story.findUnique({
-      where: { id: storyId },
-      include: {
-        versions: true,
-        sections: {
-          include: {
-            versions: true,
-          },
-        },
-      },
-    });
-
-    if (!existingStory) {
-      return { error: "Story not found" };
-    }
-
-    await prisma.$transaction([
-      // Deletes all the SectionVersions associated with the Sections
-      prisma.sectionVersion.deleteMany({
-        where: {
-          section: {
-            storyId,
-          },
-        },
-      }),
-
-      // Delete all the Sections associated with the Story
-      prisma.section.deleteMany({
-        where: {
-          storyId,
-        },
-      }),
-
-      // Delete all the StoryVersions associated with the Story
-      prisma.storyVersion.deleteMany({
-        where: {
-          storyId,
-        },
-      }),
-
-      // Delete the Story itself
-      prisma.story.delete({
-        where: {
-          id: storyId,
-        },
-      }),
-    ]);
-
+    await deleteStoryAndRelated(storyId);
     return { success: true };
   } catch (error) {
     console.error("Failed to delete story:", error);

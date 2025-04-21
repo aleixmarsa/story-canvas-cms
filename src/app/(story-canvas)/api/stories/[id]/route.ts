@@ -46,6 +46,7 @@ export async function GET(
   }
 }
 
+// ⚠️ Unused endpoint — preserved for potential future use
 /**
  * PATCH /api/stories/:id
  * Updates Story metadata (only fields stored on Story, not the version)
@@ -57,7 +58,6 @@ export async function GET(
  * @throws 409 - Slug already exists.
  * @throws 500 - Internal server error.
  */
-
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

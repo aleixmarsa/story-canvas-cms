@@ -6,8 +6,14 @@ import { Role } from "@prisma/client";
 
 /**
  * Deletes a user from the database.
+ *
  * @param userId - The ID of the user to delete.
- * @returns A success message or an error message.
+ *
+ * @returns An object containing:
+ * - `{ success: true }` if the user was successfully deleted.
+ * - `{ error: string }` if the operation failed (unauthorized, user not found, etc.).
+ *
+ * @throws Error - If an unexpected database error occurs.
  */
 export const deleteUser = async (userId: string) => {
   try {

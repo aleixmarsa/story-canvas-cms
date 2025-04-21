@@ -12,6 +12,7 @@ import { StoryWithVersions } from "@/types/story";
 import FormErrorMessage from "../../FormErrorMessage";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { createStory } from "@/lib/actions/stories/create-story";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -48,24 +49,31 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
 
     const onSubmit = async (data: StoryFormData) => {
       try {
-        const res = await fetch("/api/stories", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...data, components: [] }),
-        });
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("slug", data.slug);
+        formData.append("createdBy", data.createdBy);
+        formData.append("description", data.description || "");
+        formData.append("theme", data.theme || "");
+        formData.append("components", JSON.stringify(data.components || []));
+        formData.append("content", JSON.stringify(data.content || []));
 
-        if (res.status === 409) {
-          setError("slug", {
-            type: "manual",
-            message: "This slug is already in use",
-          });
+        const result = await createStory(formData);
+
+        if ("error" in result) {
+          if (result.type === "slug") {
+            setError("slug", {
+              type: "manual",
+              message: "This slug is already in use",
+            });
+            return;
+          }
+
+          toast.error(result.error);
           return;
         }
-        if (!res || !res.ok) {
-          throw new Error("Failed to create story");
-        }
 
-        const newStory: StoryWithVersions = await res.json();
+        const newStory: StoryWithVersions = result.story;
         addStory(newStory);
         reset();
         toast.success("Story created successfully", {

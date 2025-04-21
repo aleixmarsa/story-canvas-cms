@@ -12,6 +12,7 @@ import { useDashboardStore } from "@/stores/dashboard-store";
 import { StoryVersion } from "@prisma/client";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { updateStoryVersion } from "@/lib/actions/story-versions/update-story-version";
 
 type EditStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -59,42 +60,32 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
 
     const onSubmit = async (data: StoryFormData) => {
       try {
-        // Add the story ID to the data
-        const res = await fetch(
-          `/api/story-versions/${selectedStory?.currentDraftId}`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-          }
+        if (!selectedStory?.currentDraftId) {
+          throw new Error("No story is selected for editing");
+        }
+        const result = await updateStoryVersion(
+          selectedStory.currentDraftId,
+          data
         );
 
-        if (!res) {
-          throw new Error("Failed to update story");
-        }
-
-        if (res.status === 409) {
-          setError("slug", {
-            type: "manual",
-            message: "This slug is already in use",
-          });
+        if ("error" in result) {
+          if (result.type === "slug") {
+            setError("slug", {
+              type: "manual",
+              message: "This slug is already in use",
+            });
+          } else {
+            toast.error(result.error);
+          }
           return;
         }
 
-        if (!res.ok) {
-          throw new Error("Failed to update story");
-        }
+        const updatedStoryVersion: StoryVersion = result.version;
 
-        const updatedStoryVersion: StoryVersion = await res.json();
-        if (!updatedStoryVersion) {
-          throw new Error("Failed to update story");
-        }
-        // Update the URL if the slug has changed
         if (data.slug !== selectedStory?.currentDraft?.slug) {
           router.replace(`${ROUTES.stories}/${data.slug}/edit`);
         }
 
-        // Update the story in the store
         if (selectedStory) {
           const updatedStory = {
             ...selectedStory,
@@ -103,14 +94,14 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           updateStory(updatedStory);
           selectStory(updatedStory);
         }
+
         toast.success("Story updated successfully");
-        // Reset the form with the updated data to reset the dirty state
         reset(data);
       } catch (err) {
         if (err instanceof Error) {
           toast.error(err.message);
         } else {
-          toast.error("An unknown error occurred while udpating the story");
+          toast.error("An unknown error occurred while updating the story");
         }
       }
     };

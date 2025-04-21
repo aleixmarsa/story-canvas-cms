@@ -6,8 +6,10 @@ import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import prisma from "@/lib/prisma";
 import type { VerifiedSession, CurrentUser } from "@/types/auth";
+
 /**
  * Verifies the session by checking if the session cookie exists and decrypting it.
+ *
  * @returns {Promise<{ id: string; role: string }>} The user ID and role if the session is valid.
  */
 export const verifySession = cache(async (): Promise<VerifiedSession> => {
@@ -26,6 +28,7 @@ export const verifySession = cache(async (): Promise<VerifiedSession> => {
 
 /**
  * Fetches the current user from the database based on the session ID.
+ *
  * @returns {Promise<{ id: string; email: string: role: Role; createdAt: Date } | null>} The user object if found, otherwise null.
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {

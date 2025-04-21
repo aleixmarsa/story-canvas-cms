@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth/withAuth";
 
+// ⚠️ Unused endpoint — preserved for potential future use
 /**
  * PATCH /api/sections/:id
  * Updates a Section metadata (only fields stored on Section, not the version)

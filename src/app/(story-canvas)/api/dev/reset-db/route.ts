@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // If no table specified, reset all
     await prisma.$executeRawUnsafe(
-      `TRUNCATE TABLE "Section", "Story" RESTART IDENTITY CASCADE;`
+      `TRUNCATE TABLE "Section", "Story", "User" RESTART IDENTITY CASCADE;`
     );
     return NextResponse.json({ message: "All tables reset successfully" });
   } catch (error) {

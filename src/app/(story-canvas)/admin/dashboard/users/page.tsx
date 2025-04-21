@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/dal/auth";
-import { getAllUsers } from "@/lib/dal/user";
+import { getAllUsers } from "@/lib/dal/users";
 import { redirect } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
