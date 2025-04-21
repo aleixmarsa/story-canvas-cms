@@ -7,7 +7,6 @@ import { Role } from "@prisma/client";
 
 const StoriesPage = async () => {
   const currentUser = await getCurrentUser();
-  console.log("🚀 ~ StoriesPage ~ currentUser:", currentUser);
 
   if (!currentUser) {
     redirect(ROUTES.login);
