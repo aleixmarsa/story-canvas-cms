@@ -20,7 +20,7 @@ type SchemaWithUI<T extends z.ZodTypeAny> = {
 // Base fields for all section types
 // ----------
 export const SectionTypeEnum = z.enum(
-  Object.values(SectionType) as [string, ...string[]]
+  Object.values(SectionType) as [SectionType, ...SectionType[]]
 );
 
 const baseFields = {

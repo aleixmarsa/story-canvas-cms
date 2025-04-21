@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
+import { createSection } from "@/lib/actions/sections/create-section";
 
 const CreateSectionForm = ({
   onDirtyChange,
@@ -50,37 +51,31 @@ const CreateSectionForm = ({
     const { name, order, createdBy, ...content } = data;
 
     try {
-      const res = await fetch("/api/sections", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          storyId: selectedStoryId,
-          name,
-          order,
-          createdBy,
-          content,
-          type: selectedType,
-        }),
-      });
+      const formData = new FormData();
+      formData.set("storyId", selectedStoryId.toString());
+      formData.set("name", name);
+      formData.set("order", order.toString());
+      formData.set("createdBy", createdBy);
+      formData.set("content", JSON.stringify(content));
+      formData.set("type", selectedType);
 
-      if (!res) {
-        throw new Error("Failed to create section");
-      }
+      const result = await createSection(formData);
+      console.log("🚀 ~ result:", result.section);
 
-      if (res.status === 409) {
-        setExternalError({
-          field: "name",
-          message: "This name is already in use",
-        });
+      if ("error" in result) {
+        if (result.type === "slug") {
+          setExternalError({
+            field: "name",
+            message: "This name is already in use",
+          });
+          return false;
+        }
+
+        toast.error(result.error);
         return false;
       }
 
-      if (!res.ok) {
-        throw new Error("Failed to create section");
-      }
-
-      const newSection = await res.json();
-      addSection(newSection);
+      addSection(result.section);
       setSelectedType(null);
       toast.success("Section created successfully");
       router.push(`${ROUTES.stories}/${selectedStory.currentDraft?.slug}`);
@@ -89,7 +84,7 @@ const CreateSectionForm = ({
       if (err instanceof Error) {
         toast.error(err.message);
       } else {
-        toast.error("An unknown error occurred while creating the story");
+        toast.error("An unknown error occurred while creating the section");
       }
       return false;
     }
