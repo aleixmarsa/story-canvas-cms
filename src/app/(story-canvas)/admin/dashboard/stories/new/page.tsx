@@ -14,7 +14,10 @@ const NewStoryPage = () => {
     <>
       <DashboardHeader
         title="New Story"
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
+        breadcrumbs={[
+          { label: "Dashboard", href: ROUTES.dashboard },
+          { label: "Stories", href: ROUTES.stories },
+        ]}
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}
         isSaving={isSubmitting}

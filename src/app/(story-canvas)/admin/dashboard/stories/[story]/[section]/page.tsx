@@ -8,6 +8,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
+import LivePreviewPanel from "@/components/storyCanvas/dashboard/LivePreviewPanel";
 
 const EditSectionPage = () => {
   const {
@@ -77,6 +78,7 @@ const EditSectionPage = () => {
   };
 
   if (!selectedSection) return null;
+  const sectionDraftData = selectedSection?.currentDraft;
 
   return (
     <>
@@ -101,6 +103,12 @@ const EditSectionPage = () => {
           formRef={formRef}
           onDirtyChange={setFormIsDirty}
           onSubmittingChange={setFormIsSubmitting}
+        />
+      </div>
+      <div className="px-6 mt-8">
+        <LivePreviewPanel
+          slug={selectedStory.currentDraft?.slug ?? ""}
+          draftData={sectionDraftData}
         />
       </div>
     </>

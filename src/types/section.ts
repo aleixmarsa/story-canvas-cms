@@ -16,3 +16,11 @@ export type SectionWithVersions = Section & {
 export type SectionDraft = SectionVersion & {
   story: Section;
 };
+
+/**
+ * Represents preview data for a Section,
+ */
+export type DraftSectionPreviewData = Pick<
+  SectionVersion,
+  "id" | "name" | "type" | "order" | "content"
+>;

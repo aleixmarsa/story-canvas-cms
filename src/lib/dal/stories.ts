@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
 import { StoryStatus } from "@prisma/client";
 import { StoryFormData } from "../validation/story-schemas";
-
+import { DraftStoryPreviewData } from "@/types/story";
 /**
  * Gets a story by its ID, including its sections and versions.
  *
@@ -97,3 +97,42 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
     });
   });
 };
+
+export async function getDraftStoryBySlug(
+  slug: string
+): Promise<DraftStoryPreviewData | null> {
+  const story = await prisma.story.findFirst({
+    where: {
+      currentDraft: {
+        slug,
+      },
+    },
+    include: {
+      currentDraft: true,
+      sections: {
+        include: {
+          currentDraft: true,
+        },
+      },
+    },
+  });
+
+  if (!story || !story.currentDraft) return null;
+
+  // Transformem el resultat en una estructura plana usable per al renderer
+  return {
+    title: story.currentDraft.title,
+    description: story.currentDraft.description,
+    theme: story.currentDraft.theme,
+    slug: story.currentDraft.slug,
+    sections: story.sections
+      .filter((s) => s.currentDraft)
+      .map((s) => ({
+        id: s.id,
+        name: s.currentDraft!.name,
+        type: s.currentDraft!.type,
+        order: s.currentDraft!.order,
+        content: s.currentDraft!.content,
+      })),
+  };
+}
