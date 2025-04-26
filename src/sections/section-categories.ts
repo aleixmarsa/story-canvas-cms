@@ -7,6 +7,10 @@ import { TitleSectionSchema } from "./validation/title-section-schema";
 import { ParagraphSectionSchema } from "./validation/paragraph-section-schema";
 import { ImageSectionSchema } from "./validation/image-section-schema";
 import { VideoSectionSchema } from "./validation/video-section-schema";
+import { TitleSectionProps } from "./validation/title-section-schema";
+import { ParagraphSectionProps } from "./validation/paragraph-section-schema";
+import { ImageSectionProps } from "./validation/image-section-schema";
+import { VideoSectionProps } from "./validation/video-section-schema";
 
 export type SectionSchemas =
   | TitleSectionSchema
@@ -40,3 +44,10 @@ export type SectionCategoriesSchemasWithUI =
   typeof sectionCategoriesSchemasWithUI;
 
 export type SectionCategory = z.infer<typeof SectionCategoryEnum>;
+
+export type SectionContentByCategory = {
+  TITLE: TitleSectionProps;
+  PARAGRAPH: ParagraphSectionProps;
+  IMAGE: ImageSectionProps;
+  VIDEO: VideoSectionProps;
+};

@@ -6,3 +6,4 @@ export const paragraphSectionSchema = baseFields.extend({
 });
 
 export type ParagraphSectionSchema = typeof paragraphSectionSchema;
+export type ParagraphSectionProps = z.infer<typeof paragraphSectionSchema>;
