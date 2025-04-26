@@ -8,7 +8,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
-import LivePreviewPanel from "@/components/storyCanvas/dashboard/LivePreviewPanel";
+import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 
 const EditSectionPage = () => {
   const {
