@@ -1,53 +1,42 @@
-import { DraftSectionPreviewData } from "@/types/section";
+import { SectionContentByCategory } from "@/sections/section-categories";
 
-const SectionRenderer = ({ section }: { section: DraftSectionPreviewData }) => {
-  const { type, content, name } = section;
+import TitleSection from "../section/categories/TitleSection";
+import ParagraphSection from "../section/categories/ParagraphSection";
+import ImageSection from "../section/categories/ImageSection";
+import VideoSection from "../section/categories/VideoSection";
+
+type SectionRendererProps<T extends keyof SectionContentByCategory> = {
+  type: T;
+  content: SectionContentByCategory[T];
+};
+
+const SectionRenderer = <T extends keyof SectionContentByCategory>({
+  type,
+  content,
+}: SectionRendererProps<T>) => {
+  console.log("🚀 ~ type:", type);
 
   switch (type) {
     case "TITLE":
       return (
-        <div>
-          <h1 className="text-2xl font-semibold">{content?.text || name}</h1>
-        </div>
+        <TitleSection {...(content as SectionContentByCategory["TITLE"])} />
       );
     case "PARAGRAPH":
       return (
-        <div className="text-base whitespace-pre-line text-muted-foreground">
-          {content?.body}
-        </div>
+        <ParagraphSection
+          {...(content as SectionContentByCategory["PARAGRAPH"])}
+        />
       );
     case "IMAGE":
       return (
-        <div>
-          <img
-            src={content?.url}
-            alt={content?.alt ?? ""}
-            className="rounded-md shadow-md"
-          />
-          {content?.caption && (
-            <p className="text-sm text-center mt-2 text-muted-foreground">
-              {content.caption}
-            </p>
-          )}
-        </div>
+        <ImageSection {...(content as SectionContentByCategory["IMAGE"])} />
       );
     case "VIDEO":
       return (
-        <div className="aspect-video">
-          <iframe
-            src={content?.embedUrl}
-            title={content?.title ?? "Video"}
-            allowFullScreen
-            className="w-full h-full rounded-md shadow-md"
-          />
-        </div>
+        <VideoSection {...(content as SectionContentByCategory["VIDEO"])} />
       );
     default:
-      return (
-        <div className="text-red-500">
-          Unknown section type: <code>{type}</code>
-        </div>
-      );
+      return <div className="text-red-500">Unknown section type: {type}</div>;
   }
 };
 
