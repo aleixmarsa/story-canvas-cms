@@ -29,7 +29,7 @@ interface SectionFormProps<T extends SectionCategory> {
   onSubmittingChange?: (submitting: boolean) => void;
 }
 
-const SectionTypeForm = <T extends SectionCategory>({
+const SectionCategoryForm = <T extends SectionCategory>({
   type,
   defaultValues,
   onSubmit,
@@ -159,4 +159,4 @@ const SectionTypeForm = <T extends SectionCategory>({
   );
 };
 
-export default SectionTypeForm;
+export default SectionCategoryForm;

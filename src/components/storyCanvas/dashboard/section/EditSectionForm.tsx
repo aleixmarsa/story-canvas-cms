@@ -11,7 +11,7 @@ import type {
   SectionCategory,
   SectionCategoriesSchemasWithUI,
 } from "@/sections/section-categories";
-import SectionTypeForm from "./SectionTypeForm";
+import SectionTypeForm from "./SectionCategoryForm";
 import { defaultContentByType } from "@/sections/lib/default-content-by-type";
 
 type EditSectionFormProps = {

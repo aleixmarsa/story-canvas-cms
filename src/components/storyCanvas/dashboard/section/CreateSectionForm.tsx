@@ -3,7 +3,7 @@ import { z } from "zod";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboardStore } from "@/stores/dashboard-store";
-import SectionTypeForm from "./SectionTypeForm";
+import SectionTypeForm from "./SectionCategoryForm";
 import type {
   SectionCategory,
   SectionCategoriesSchemasWithUI,
