@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import FormErrorMessage from "../../FormErrorMessage";
+import { Label } from "@radix-ui/react-label";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -102,6 +103,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key)}
             data-testid={`create-section-${key}-input`}
+            required={config.required}
           />
         );
         break;
@@ -113,6 +115,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key, { valueAsNumber: true })}
             data-testid={`create-section-${key}-input`}
+            required={config.required}
           />
         );
         break;
@@ -126,15 +129,21 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key)}
             data-testid={`create-section-${key}-input`}
+            required={config.required}
           />
         );
     }
 
     return (
       <div key={id} className="flex flex-col gap-1">
-        <label htmlFor={id} className="font-medium">
+        <Label
+          htmlFor={id}
+          className="font-medium"
+          aria-required={config.required}
+        >
           {config.label}
-        </label>
+          {config.required && <span className="text-red-500 ml-0.5">*</span>}
+        </Label>
         {inputElement}
         {error && <FormErrorMessage error={error} />}
       </div>
