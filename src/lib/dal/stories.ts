@@ -1,3 +1,4 @@
+import "server-only";
 import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
 import { StoryStatus } from "@prisma/client";
@@ -85,7 +86,7 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
       },
     });
 
-    return tx.story.update({
+    const updatedStory = await tx.story.update({
       where: { id: story.id },
       data: {
         currentDraftId: draftVersion.id,
@@ -95,6 +96,7 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
         publishedVersion: true,
       },
     });
+    return updatedStory;
   });
 };
 
@@ -125,14 +127,12 @@ export async function getDraftStoryBySlug(
     description: story.currentDraft.description,
     theme: story.currentDraft.theme,
     slug: story.currentDraft.slug,
-    sections: story.sections
-      .filter((s) => s.currentDraft)
-      .map((s) => ({
-        id: s.id,
-        name: s.currentDraft!.name,
-        type: s.currentDraft!.type,
-        order: s.currentDraft!.order,
-        content: s.currentDraft!.content,
-      })),
+    sections: story.sections.map((section) => ({
+      id: section.currentDraft?.id ?? 0,
+      name: section.currentDraft?.name ?? "",
+      type: section.currentDraft?.type ?? "",
+      order: section.currentDraft?.order ?? 0,
+      content: section.currentDraft?.content ?? {},
+    })),
   };
 }
