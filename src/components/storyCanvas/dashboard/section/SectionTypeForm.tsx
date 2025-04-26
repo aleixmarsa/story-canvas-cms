@@ -1,6 +1,9 @@
 import { useEffect } from "react";
-import { SectionType } from "@prisma/client";
-import { sectionSchemas } from "@/lib/validation/section-schemas";
+import type {
+  SectionCategory,
+  SectionCategoriesSchemasWithUI,
+} from "@/sections/section-categories";
+import { sectionCategoriesSchemasWithUI } from "@/sections/section-categories";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,15 +11,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import FormErrorMessage from "../../FormErrorMessage";
 
-interface SectionFormProps<T extends SectionType> {
+interface SectionFormProps<T extends SectionCategory> {
   type: T;
-  defaultValues?: z.infer<(typeof sectionSchemas)[T]["schema"]>;
+  defaultValues?: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>;
   onSubmitButtonLabel: string;
   onSubmit: (
-    data: z.infer<(typeof sectionSchemas)[T]["schema"]>
+    data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => Promise<boolean>;
   externalError?: {
-    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    field: keyof z.infer<
+      SectionCategoriesSchemasWithUI[SectionCategory]["schema"]
+    >;
     message: string;
   } | null;
   formSubmitRef?: React.MutableRefObject<(() => void) | undefined>;
@@ -24,7 +29,7 @@ interface SectionFormProps<T extends SectionType> {
   onSubmittingChange?: (submitting: boolean) => void;
 }
 
-const SectionTypeForm = <T extends SectionType>({
+const SectionTypeForm = <T extends SectionCategory>({
   type,
   defaultValues,
   onSubmit,
@@ -33,7 +38,11 @@ const SectionTypeForm = <T extends SectionType>({
   onDirtyChange,
   onSubmittingChange,
 }: SectionFormProps<T>) => {
-  const { schema, ui } = sectionSchemas[type];
+  const { ui } = sectionCategoriesSchemasWithUI[type];
+  const schema = sectionCategoriesSchemasWithUI[type].schema as z.ZodType<
+    z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
+  >;
+
   type FormData = z.infer<typeof schema>;
 
   const {
@@ -77,7 +86,7 @@ const SectionTypeForm = <T extends SectionType>({
   }, [isSubmitting, onSubmittingChange]);
 
   const renderField = (
-    key: keyof typeof FormData,
+    key: keyof typeof ui,
     config: (typeof ui)[typeof key]
   ) => {
     const error = errors[key]?.message as string;
@@ -134,7 +143,7 @@ const SectionTypeForm = <T extends SectionType>({
 
   useEffect(() => {
     if (externalError) {
-      setError(externalError.field as string, {
+      setError(externalError.field, {
         type: "manual",
         message: externalError.message,
       });
@@ -143,7 +152,7 @@ const SectionTypeForm = <T extends SectionType>({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {(Object.keys(ui) as Array<keyof typeof FormData>).map((key) =>
+      {(Object.keys(ui) as (keyof typeof ui)[]).map((key) =>
         renderField(key, ui[key])
       )}
     </form>

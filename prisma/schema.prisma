@@ -13,13 +13,6 @@ enum StoryStatus {
   changed
 }
 
-enum SectionType {
-  TITLE
-  PARAGRAPH
-  IMAGE
-  VIDEO
-}
-
 enum Role {
   ADMIN
   EDITOR
@@ -114,7 +107,7 @@ model SectionVersion {
   name      String
   slug      String
   createdBy String
-  type      SectionType
+  type      String
   order     Int
 
   // Section content (e.g. text, image, etc.)

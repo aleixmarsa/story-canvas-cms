@@ -1,12 +1,12 @@
 import prisma from "@/lib/prisma";
-import { SectionType } from "@prisma/client";
 import { slugify } from "../utils";
 import { Prisma } from "@prisma/client";
+import type { SectionCategory } from "@/sections/section-categories";
 
 type UpdateSectionVersion = {
   name: string;
   slug: string;
-  type: SectionType;
+  type: SectionCategory;
   order: number;
   createdBy: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
