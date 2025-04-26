@@ -9,7 +9,7 @@ import {
 } from "@/lib/dal/sections";
 import { updateSectionVersionById } from "@/lib/dal/section-versions";
 import { ConflictError } from "@/lib/errors";
-import { Role, SectionType } from "@prisma/client";
+import { Role } from "@prisma/client";
 
 jest.mock("@/lib/dal/auth", () => ({
   verifySession: jest.fn(),
@@ -38,7 +38,7 @@ describe("updateSectionVersion", () => {
     storyId: 1,
     sectionId: 2,
     name: "Updated Section",
-    type: SectionType.TITLE,
+    type: "TITLE",
     order: 1,
     createdBy: "admin",
     content: {},
@@ -109,7 +109,7 @@ describe("updateSectionVersion", () => {
         createdBy: "admin",
         content: {},
         status: "draft",
-        type: SectionType.TITLE,
+        type: "TITLE",
         order: 1,
         comment: null,
       },

@@ -6,11 +6,11 @@ import {
 } from "@/lib/dal/sections";
 import { updateSectionVersionById } from "@/lib/dal/section-versions";
 import { verifySession } from "@/lib/dal/auth";
-import { updateSectionVersionSchema } from "@/lib/validation/section-schemas";
+import { updateSectionVersionSchema } from "@/lib/validation/section-version";
 import { ConflictError } from "@/lib/errors";
 import { slugify } from "@/lib/utils";
-import { SectionType } from "@prisma/client";
-import { SectionFormData } from "@/lib/validation/section-schemas";
+import { SectionFormData } from "@/lib/validation/section-version";
+import type { SectionCategory } from "@/sections/section-categories";
 
 type UpdateSectionVersionInput = SectionFormData & {
   storyId: number;
@@ -51,7 +51,7 @@ export const updateSectionVersion = async (
     const updatedVersion = await updateSectionVersionById(versionId, {
       name,
       slug: slugify(name),
-      type: type as SectionType,
+      type: type as SectionCategory,
       order,
       createdBy,
       content,

@@ -5,7 +5,7 @@ import { createSection } from "@/lib/actions/sections/create-section";
 import { verifySession } from "@/lib/dal/auth";
 import { createSectionWithDraftVersion } from "@/lib/dal/sections";
 import { ConflictError } from "@/lib/errors";
-import { Role, SectionType } from "@prisma/client";
+import { Role } from "@prisma/client";
 
 jest.mock("@/lib/dal/auth", () => ({
   verifySession: jest.fn(),
@@ -40,7 +40,7 @@ describe("createSection", () => {
     const formData = createFormData({
       storyId: "1",
       name: "Intro",
-      type: SectionType.TITLE,
+      type: "TITLE",
       order: "1",
       content: {},
       createdBy: "admin",
@@ -76,7 +76,7 @@ describe("createSection", () => {
     const formData = createFormData({
       storyId: "1",
       name: "Conflict Name",
-      type: SectionType.TITLE,
+      type: "TITLE",
       order: "1",
       content: {},
       createdBy: "admin",
@@ -109,7 +109,7 @@ describe("createSection", () => {
         slug: "new-section",
         createdAt: new Date(),
         updatedAt: new Date(),
-        type: SectionType.TITLE,
+        type: "TITLE",
         order: 1,
         createdBy: "admin",
         status: "draft",
@@ -124,7 +124,7 @@ describe("createSection", () => {
     const formData = createFormData({
       storyId: "1",
       name: "New Section",
-      type: SectionType.TITLE,
+      type: "TITLE",
       order: "1",
       content: {},
       createdBy: "admin",
@@ -144,7 +144,7 @@ describe("createSection", () => {
     const formData = createFormData({
       storyId: "1",
       name: "New Section",
-      type: SectionType.TITLE,
+      type: "TITLE",
       order: "1",
       content: {},
       createdBy: "admin",

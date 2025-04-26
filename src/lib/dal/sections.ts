@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
-import { SectionType, StoryStatus } from "@prisma/client";
+import { StoryStatus } from "@prisma/client";
 import { slugify } from "../utils";
+import type { SectionCategory } from "@/sections/section-categories";
 
 /**
  * Gets a section with its current draft and published version.
@@ -48,7 +49,7 @@ export const deleteSectionWithVersions = async (sectionId: number) => {
 export const createSectionWithDraftVersion = async (input: {
   storyId: number;
   name: string;
-  type: SectionType;
+  type: SectionCategory;
   order: number;
   content: unknown;
   createdBy: string;

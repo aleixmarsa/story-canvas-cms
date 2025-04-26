@@ -3,13 +3,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useDashboardStore } from "@/stores/dashboard-store";
-import { SectionType } from "@prisma/client";
-import SectionTypeForm from "./SectionTypeForm";
-import { sectionSchemas } from "@/lib/validation/section-schemas";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { updateSectionVersion } from "@/lib/actions/section-version/update-section-version";
+import type {
+  SectionCategory,
+  SectionCategoriesSchemasWithUI,
+} from "@/sections/section-categories";
+import SectionTypeForm from "./SectionCategoryForm";
+import { defaultContentByType } from "@/sections/lib/default-content-by-type";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;
@@ -27,7 +30,9 @@ const EditSectionForm = ({
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
   const [externalError, setExternalError] = useState<{
-    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    field: keyof z.infer<
+      SectionCategoriesSchemasWithUI[SectionCategory]["schema"]
+    >;
     message: string;
   } | null>(null);
 
@@ -44,12 +49,19 @@ const EditSectionForm = ({
   if (!currentSectionDraft) return null;
   const { name, order, type, content, createdBy } = currentSectionDraft;
 
-  const contentObject =
-    typeof content === "object" && content !== null ? content : {};
-  const defaultValues = { name, order, createdBy, ...contentObject };
+  const safeContentObject =
+    typeof content === "object" && content !== null && !Array.isArray(content)
+      ? content
+      : {};
 
-  const submitHandler = async <T extends SectionType>(
-    data: z.infer<(typeof sectionSchemas)[T]["schema"]>
+  const defaultsForType = defaultContentByType[type];
+
+  const mergedContent = { ...defaultsForType, ...safeContentObject };
+
+  const defaultValues = { ...mergedContent, name, order, createdBy };
+
+  const submitHandler = async <T extends SectionCategory>(
+    data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => {
     const selectedStoryId = selectedStory?.id;
     const { name, order, createdBy, ...content } = data;
