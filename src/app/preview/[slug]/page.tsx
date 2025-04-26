@@ -11,7 +11,7 @@ interface PreviewPageProps {
 }
 
 export default async function PreviewPage({ params }: PreviewPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const story = await getDraftStoryBySlug(slug);
 
