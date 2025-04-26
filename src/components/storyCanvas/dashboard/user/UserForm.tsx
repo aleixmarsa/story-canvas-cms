@@ -88,15 +88,19 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 max-w-lg"
       >
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" {...register("email")} />
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="email" required>
+            Email
+          </Label>
+          <Input id="email" {...register("email")} required />
           {errors.email && <FormErrorMessage error={errors.email.message} />}
         </div>
-        <div>
-          <Label htmlFor="role">Role</Label>
 
-          <Select {...register("role")}>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="role" required>
+            Role
+          </Label>
+          <Select {...register("role")} required>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Role" />
             </SelectTrigger>
@@ -111,20 +115,30 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           {errors.role && <FormErrorMessage error={errors.role.message} />}
         </div>
 
-        <div>
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" {...register("password")} />
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="password" required>
+            Password
+          </Label>
+          <Input
+            id="password"
+            type="password"
+            {...register("password")}
+            required
+          />
           {errors.password && (
             <FormErrorMessage error={errors.password.message} />
           )}
         </div>
 
-        <div>
-          <Label htmlFor="confirmPassword">Confirm password</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="confirmPassword" required>
+            Confirm password
+          </Label>
           <Input
             id="confirmPassword"
             type="password"
             {...register("confirmPassword")}
+            required
           />
           {errors.confirmPassword && (
             <FormErrorMessage error={errors.confirmPassword.message} />

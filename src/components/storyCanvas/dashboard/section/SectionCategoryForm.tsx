@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import FormErrorMessage from "../../FormErrorMessage";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -140,9 +140,9 @@ const SectionCategoryForm = <T extends SectionCategory>({
           htmlFor={id}
           className="font-medium"
           aria-required={config.required}
+          required={config.required}
         >
           {config.label}
-          {config.required && <span className="text-red-500 ml-0.5">*</span>}
         </Label>
         {inputElement}
         {error && <FormErrorMessage error={error} />}
