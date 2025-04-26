@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { SectionVersion } from "@prisma/client";
+import { DraftSectionPreviewData } from "@/types/section";
 
 type PreviewSize = "desktop" | "tablet" | "mobile" | "custom";
 
@@ -39,10 +40,17 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
 
   useEffect(() => {
     if (draftData && iframeRef.current?.contentWindow) {
+      const previewDraftSectionData: DraftSectionPreviewData = {
+        id: draftData.id,
+        name: draftData.name,
+        type: draftData.type,
+        order: draftData.order,
+        content: draftData.content,
+      };
       iframeRef.current.contentWindow.postMessage(
         {
           type: "preview:update",
-          payload: draftData,
+          payload: previewDraftSectionData,
         },
         "*"
       );
