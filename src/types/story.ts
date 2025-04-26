@@ -5,8 +5,8 @@ import { DraftSectionPreviewData } from "./section";
  * current draft and published version objects (via relation includes).
  */
 export type StoryWithVersions = Story & {
-  currentDraft: StoryVersion;
-  publishedVersion: StoryVersion;
+  currentDraft: StoryVersion | null;
+  publishedVersion: StoryVersion | null;
 };
 
 /**
