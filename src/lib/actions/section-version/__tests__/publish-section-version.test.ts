@@ -4,7 +4,7 @@
 import { publishSection } from "../publish-section-version";
 import { verifySession } from "@/lib/dal/auth";
 import { publishSectionVersion } from "@/lib/dal/section-versions";
-import { Role, SectionType } from "@prisma/client";
+import { Role } from "@prisma/client";
 import type { SectionWithVersions } from "@/types/section";
 
 jest.mock("@/lib/dal/auth", () => ({
@@ -77,7 +77,7 @@ describe("publishSection", () => {
         createdBy: "admin",
         content: {},
         status: "draft",
-        type: SectionType.TITLE,
+        type: "TITLE",
         order: 1,
         comment: null,
       },
@@ -91,7 +91,7 @@ describe("publishSection", () => {
         createdBy: "admin",
         content: {},
         status: "published",
-        type: SectionType.TITLE,
+        type: "TITLE",
         order: 1,
         comment: null,
       },

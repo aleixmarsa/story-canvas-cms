@@ -2,7 +2,7 @@
 
 import { createSectionWithDraftVersion } from "@/lib/dal/sections";
 import { verifySession } from "@/lib/dal/auth";
-import { createSectionVersionSchema } from "@/lib/validation/section-schemas";
+import { createSectionVersionSchema } from "@/lib/validation/section-version";
 import { ConflictError } from "@/lib/errors";
 
 /**

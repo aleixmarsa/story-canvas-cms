@@ -1,12 +1,14 @@
 "use client";
-
+import { z } from "zod";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 import { useDashboardStore } from "@/stores/dashboard-store";
-import { SectionType } from "@prisma/client";
-import SectionTypeForm from "./SectionTypeForm";
-import { sectionSchemas } from "@/lib/validation/section-schemas";
+import SectionTypeForm from "./SectionCategoryForm";
+import type {
+  SectionCategory,
+  SectionCategoriesSchemasWithUI,
+} from "@/sections/section-categories";
+import { sectionCategoriesSchemasWithUI } from "@/sections/section-categories";
 import { Select } from "@/components/ui/select";
 import {
   SelectTrigger,
@@ -27,21 +29,25 @@ const CreateSectionForm = ({
   onDirtyChange: (dirty: boolean) => void;
   onSubmittingChange?: (submitting: boolean) => void;
 }) => {
-  const [selectedType, setSelectedType] = useState<SectionType | null>(null);
+  const [selectedType, setSelectedType] = useState<SectionCategory | null>(
+    null
+  );
   const { addSection, selectedStory } = useDashboardStore();
   const [externalError, setExternalError] = useState<{
-    field: keyof z.infer<(typeof sectionSchemas)[SectionType]["schema"]>;
+    field: keyof z.infer<
+      SectionCategoriesSchemasWithUI[SectionCategory]["schema"]
+    >;
     message: string;
   } | null>(null);
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
 
   const handleTypeSelect = (value: string) => {
-    setSelectedType(value as SectionType);
+    setSelectedType(value as SectionCategory);
   };
 
-  const handleSubmit = async <T extends SectionType>(
-    data: z.infer<(typeof sectionSchemas)[T]["schema"]>
+  const handleSubmit = async <T extends SectionCategory>(
+    data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => {
     const selectedStoryId = selectedStory?.id;
     if (!selectedType || !selectedStoryId) {
@@ -105,7 +111,7 @@ const CreateSectionForm = ({
             <SelectValue placeholder="Select section type" />
           </SelectTrigger>
           <SelectContent>
-            {Object.keys(sectionSchemas).map((type) => (
+            {Object.keys(sectionCategoriesSchemasWithUI).map((type) => (
               <SelectItem key={type} value={type}>
                 {type}
               </SelectItem>
