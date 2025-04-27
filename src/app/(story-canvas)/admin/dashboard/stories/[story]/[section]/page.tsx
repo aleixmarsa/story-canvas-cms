@@ -19,7 +19,7 @@ const EditSectionPage = () => {
     selectSection,
     updateSection,
   } = useDashboardStore();
-  const [previewVisible, setPreviewVisible] = useState(true);
+  const [previewVisible, setPreviewVisible] = useState(false);
   const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
