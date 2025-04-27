@@ -104,7 +104,7 @@ const EditSectionPage = () => {
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
       />
-      <div className="flex px-6 w-full gap-6 overflow-hidden">
+      <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
         <div className="min-w-[30%]">
           <EditSectionForm
             formRef={formRef}
@@ -119,7 +119,7 @@ const EditSectionPage = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
               transition={{ duration: 0.25, ease: "easeInOut" }}
-              className=" flex-1 overflow-hidden h-max-full w-[100px]"
+              className="flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0"
             >
               <LivePreviewPanel
                 slug={selectedStory.currentDraft?.slug ?? ""}
