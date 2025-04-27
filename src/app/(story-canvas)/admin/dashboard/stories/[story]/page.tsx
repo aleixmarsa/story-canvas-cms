@@ -13,6 +13,7 @@ import { deleteSection } from "@/lib/actions/sections/delete-section";
 import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -44,7 +45,12 @@ const StoryPage = () => {
     fetchSections();
   }, [storySlug, stories, selectStory, selectSection, setSections]);
 
-  if (!selectedStory) return <p className="p-6">Loading...</p>;
+  if (!selectedStory)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
 
   const { currentDraft } = selectedStory;
   if (!currentDraft) return <p className="p-6">No draft found</p>;

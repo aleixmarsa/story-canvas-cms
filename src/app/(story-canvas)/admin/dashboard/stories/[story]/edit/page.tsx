@@ -8,6 +8,7 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
+import { Loader2 } from "lucide-react";
 
 const EditStoryPage = () => {
   const { stories, selectStory, selectedStory, updateStory } =
@@ -64,7 +65,12 @@ const EditStoryPage = () => {
     }
   }, [storySlug]);
 
-  if (!selectedStory) return null;
+  if (!selectedStory)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
 
   return (
     <>
