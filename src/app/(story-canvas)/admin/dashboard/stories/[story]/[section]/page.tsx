@@ -9,6 +9,7 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
+import { motion, AnimatePresence } from "framer-motion";
 
 const EditSectionPage = () => {
   const {
@@ -103,22 +104,30 @@ const EditSectionPage = () => {
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
       />
-      <div className="flex px-6 w-full">
-        <div className="w-[40%]">
+      <div className="flex px-6 w-full gap-6 overflow-hidden">
+        <div className="min-w-[30%]">
           <EditSectionForm
             formRef={formRef}
             onDirtyChange={setFormIsDirty}
             onSubmittingChange={setFormIsSubmitting}
           />
         </div>
-        {previewVisible && (
-          <div className="w-[60%]">
-            <LivePreviewPanel
-              slug={selectedStory.currentDraft?.slug ?? ""}
-              draftData={sectionDraftData}
-            />
-          </div>
-        )}
+        <AnimatePresence>
+          {previewVisible && (
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className=" flex-1 overflow-hidden h-max-full w-[100px]"
+            >
+              <LivePreviewPanel
+                slug={selectedStory.currentDraft?.slug ?? ""}
+                draftData={sectionDraftData}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
