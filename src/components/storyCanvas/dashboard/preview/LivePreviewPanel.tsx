@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -61,26 +60,24 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
 
   return (
     <div className="flex flex-col h-full border rounded-md overflow-hidden">
-      <div className="flex items-center justify-between p-2 border-b bg-muted/40">
-        <div className="flex items-center gap-2">
-          {(["desktop", "tablet", "mobile", "custom"] as PreviewSize[]).map(
-            (preset) => (
-              <Button
-                key={preset}
-                variant="outline"
-                onClick={() => setSize(preset)}
-                className={
-                  size === preset
-                    ? "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
-                    : ""
-                }
-              >
-                {preset.charAt(0).toUpperCase() + preset.slice(1)}
-              </Button>
-            )
-          )}
-
-          <div className="flex items-center ml-4 gap-1">
+      <div className="flex items-center justify-between py-2 px-4 border-b bg-muted/40">
+        <div className="flex items-center gap-4">
+          <Select
+            value={size}
+            onValueChange={(value) => setSize(value as PreviewSize)}
+          >
+            <SelectTrigger className="px-0 gap-1 border-0 shadow-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(SIZE_PRESETS).map((size) => (
+                <SelectItem key={size} value={size}>
+                  {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex items-center gap-1">
             <Input
               type="number"
               className="w-20 border rounded px-2 py-1 text-sm"
@@ -108,12 +105,14 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
               placeholder="Height"
               disabled={size !== "custom"}
             />
-            <span className="ml-4 text-sm text-muted-foreground">Zoom:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Zoom:</span>
             <Select
               value={zoom.toString()}
               onValueChange={(value) => setZoom(Number(value))}
             >
-              <SelectTrigger className="w-[88px]">
+              <SelectTrigger className="px-0 gap-1 border-0 shadow-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
