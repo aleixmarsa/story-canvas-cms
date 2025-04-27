@@ -66,21 +66,20 @@ const EditSectionPage = () => {
   }, [sections, sectionSlug]);
 
   useEffect(() => {
-    if (!sectionSlug) return;
+    if (!sectionSlug || !sections.length) return;
     const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
+
     if (!found) {
       router.push(ROUTES.dashboard);
     }
   }, [sectionSlug]);
-
-  if (!selectedStory) return null;
 
   const handleSaveDraft = async () => {
     if (formRef.current) {
       await formRef.current();
     }
   };
-
+  if (!selectedStory) return null;
   if (!selectedSection) return null;
   const sectionDraftData = selectedSection?.currentDraft;
 
