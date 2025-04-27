@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react";
+import { X, SquareArrowOutUpRight } from "lucide-react";
 import { SectionVersion } from "@prisma/client";
 import { DraftSectionPreviewData } from "@/types/section";
 
@@ -59,7 +59,7 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
   const zoomScale = zoom / 100;
 
   return (
-    <div className="flex flex-col h-full border rounded-md overflow-hidden">
+    <div className="flex flex-col border rounded-md ">
       <div className="flex items-center justify-between py-2 px-4 border-b bg-muted/40">
         <div className="flex items-center gap-4">
           <Select
@@ -72,7 +72,7 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
             <SelectContent>
               {Object.keys(SIZE_PRESETS).map((size) => (
                 <SelectItem key={size} value={size}>
-                  {size}
+                  {size[0].toUpperCase() + size.slice(1)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -127,24 +127,23 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
         </div>
 
         <div className="text-xs text-muted-foreground flex items-center gap-4">
-          <div>
-            Previewing: <code>{previewPath}</code>
-          </div>
           <a
             href={previewPath}
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-foreground"
+            title="Open in new tab"
           >
-            Open in new tab
+            <SquareArrowOutUpRight className="h-4 w-4 mr-1" />
           </a>
         </div>
       </div>
 
-      <div className="flex-1 bg-muted flex justify-center items-center overflow-auto p-4">
+      <div className="flex-1 bg-muted flex p-4 overflow-hidden">
         <div
           style={{
             width,
+            minWidth: width,
             height,
             transform: `scale(${zoomScale})`,
             transformOrigin: "top left",
