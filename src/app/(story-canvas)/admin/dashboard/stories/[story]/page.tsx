@@ -11,6 +11,8 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
 import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
+import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
+import { motion, AnimatePresence } from "framer-motion";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -26,6 +28,7 @@ const StoryPage = () => {
     addSection,
     deleteSection: deleteSectionFromStore,
   } = useDashboardStore();
+  const [previewVisible, setPreviewVisible] = useState(false);
 
   useEffect(() => {
     const story = stories.find((s) => s.currentDraft?.slug === storySlug);
@@ -103,6 +106,8 @@ const StoryPage = () => {
     });
   };
 
+  const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
+
   return (
     <>
       <DashboardHeader
@@ -116,16 +121,40 @@ const StoryPage = () => {
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
         isPublishing={isPublishing}
+        onTogglePreview={handleTogglePreview}
+        previewVisible={previewVisible}
       />
-      <div className="px-6">
-        <DataTable
-          columns={columns(slug, handleDelete)}
-          data={sections}
-          filterConfig={{
-            columnKey: "name",
-            placeholder: "Search by Name...",
-          }}
-        />
+      <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            previewVisible ? "w-full lg:w-[40%]" : "w-full"
+          }`}
+        >
+          <DataTable
+            columns={columns(slug, handleDelete)}
+            data={sections}
+            filterConfig={{
+              columnKey: "name",
+              placeholder: "Search by Name...",
+            }}
+          />
+        </div>
+        <AnimatePresence>
+          {previewVisible && (
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0"
+            >
+              <LivePreviewPanel
+                slug={selectedStory.currentDraft?.slug ?? ""}
+                draftData={null}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
