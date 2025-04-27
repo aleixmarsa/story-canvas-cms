@@ -14,8 +14,6 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
   type,
   content,
 }: SectionRendererProps<T>) => {
-  console.log("🚀 ~ type:", type);
-
   switch (type) {
     case "TITLE":
       return (
