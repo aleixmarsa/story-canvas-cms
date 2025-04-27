@@ -18,6 +18,7 @@ const EditSectionPage = () => {
     selectSection,
     updateSection,
   } = useDashboardStore();
+  const [previewVisible, setPreviewVisible] = useState(true);
   const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
@@ -52,6 +53,8 @@ const EditSectionPage = () => {
       setIsPublishing(false);
     }
   };
+
+  const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
   useEffect(() => {
     if (!sectionSlug) return;
@@ -97,19 +100,25 @@ const EditSectionPage = () => {
         isSaving={formIsSubmitting}
         publishButtonLabel="Publish Section"
         isPublishing={isPublishing}
+        onTogglePreview={handleTogglePreview}
+        previewVisible={previewVisible}
       />
-      <div className="px-6">
-        <EditSectionForm
-          formRef={formRef}
-          onDirtyChange={setFormIsDirty}
-          onSubmittingChange={setFormIsSubmitting}
-        />
-      </div>
-      <div className="px-6 mt-8">
-        <LivePreviewPanel
-          slug={selectedStory.currentDraft?.slug ?? ""}
-          draftData={sectionDraftData}
-        />
+      <div className="flex px-6 w-full">
+        <div className="w-[40%]">
+          <EditSectionForm
+            formRef={formRef}
+            onDirtyChange={setFormIsDirty}
+            onSubmittingChange={setFormIsSubmitting}
+          />
+        </div>
+        {previewVisible && (
+          <div className="w-[60%]">
+            <LivePreviewPanel
+              slug={selectedStory.currentDraft?.slug ?? ""}
+              draftData={sectionDraftData}
+            />
+          </div>
+        )}
       </div>
     </>
   );
