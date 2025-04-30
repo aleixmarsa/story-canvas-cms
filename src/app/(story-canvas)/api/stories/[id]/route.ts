@@ -14,9 +14,10 @@ import { requireAuth } from "@/lib/auth/withAuth";
  */
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const storyId = parseInt(params.id);
+  const { id } = await params;
+  const storyId = parseInt(id);
 
   if (isNaN(storyId)) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });

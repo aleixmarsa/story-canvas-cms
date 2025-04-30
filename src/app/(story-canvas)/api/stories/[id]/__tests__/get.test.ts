@@ -21,11 +21,11 @@ jest.mock("@/lib/prisma", () => ({
 }));
 
 describe("GET /api/stories/[id]", () => {
-  const mockParams = { id: "1" };
+  const mockParams = Promise.resolve({ id: "1" });
 
   it("returns 400 if id is invalid", async () => {
     const res = await GET(new NextRequest("http://localhost"), {
-      params: { id: "abc" },
+      params: Promise.resolve({ id: "abc" }),
     });
     const json = await res.json();
 
