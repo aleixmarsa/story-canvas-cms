@@ -92,7 +92,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           <Label htmlFor="email" required>
             Email
           </Label>
-          <Input id="email" {...register("email")} required />
+          <Input id="email" {...register("email")} />
           {errors.email && <FormErrorMessage error={errors.email.message} />}
         </div>
 
@@ -100,7 +100,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           <Label htmlFor="role" required>
             Role
           </Label>
-          <Select {...register("role")} required>
+          <Select {...register("role")}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Role" />
             </SelectTrigger>
@@ -119,12 +119,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           <Label htmlFor="password" required>
             Password
           </Label>
-          <Input
-            id="password"
-            type="password"
-            {...register("password")}
-            required
-          />
+          <Input id="password" type="password" {...register("password")} />
           {errors.password && (
             <FormErrorMessage error={errors.password.message} />
           )}
@@ -138,7 +133,6 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
             id="confirmPassword"
             type="password"
             {...register("confirmPassword")}
-            required
           />
           {errors.confirmPassword && (
             <FormErrorMessage error={errors.confirmPassword.message} />

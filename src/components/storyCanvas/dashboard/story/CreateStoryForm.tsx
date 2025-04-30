@@ -102,7 +102,6 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           <Input
             id="title"
             {...register("title")}
-            required
             data-testid="create-story-title-input"
           />
           {errors.title && <FormErrorMessage error={errors.title.message} />}
@@ -115,7 +114,6 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           <Input
             id="createdBy"
             {...register("createdBy")}
-            required
             data-testid="create-story-createdBy-input"
           />
           {errors.createdBy && (
@@ -130,7 +128,6 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           <Input
             id="slug"
             {...register("slug")}
-            required
             data-testid="create-story-slug-input"
           />
           {errors.slug && <FormErrorMessage error={errors.slug.message} />}

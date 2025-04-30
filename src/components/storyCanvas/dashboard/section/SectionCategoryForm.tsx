@@ -172,7 +172,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key)}
             data-testid={`create-section-${key}-input`}
-            required={config.required}
           />
         );
         break;
@@ -184,7 +183,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key, { valueAsNumber: true })}
             data-testid={`create-section-${key}-input`}
-            required={config.required}
           />
         );
         break;
@@ -198,7 +196,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key)}
             data-testid={`create-section-${key}-input`}
-            required={config.required}
           />
         );
     }
