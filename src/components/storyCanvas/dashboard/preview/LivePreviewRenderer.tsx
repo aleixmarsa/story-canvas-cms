@@ -13,16 +13,11 @@ const LivePreviewRenderer = ({
   initialStoryData,
 }: LivePreviewRendererProps) => {
   const [storyData, setStoryData] = useState(initialStoryData);
-  console.log("🚀 ~ storyData:", storyData);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === "preview:update") {
         const updatedSection = event.data.payload;
-        console.log(
-          "🚀 ~ handleMessage ~ event.data.payload:",
-          event.data.payload
-        );
         setStoryData((prev) => ({
           ...prev,
           sections: prev.sections.map((section) =>
