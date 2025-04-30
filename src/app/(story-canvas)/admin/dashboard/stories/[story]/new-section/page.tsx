@@ -4,6 +4,7 @@ import CreateSectionForm from "@/components/storyCanvas/dashboard/section/Create
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRef, useState } from "react";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { Loader2 } from "lucide-react";
 
 const NewSectionPage = () => {
   const { selectedStory } = useDashboardStore();
@@ -16,8 +17,12 @@ const NewSectionPage = () => {
       await formRef.current();
     }
   };
-  if (!selectedStory) return <p className="p-6">Loading...</p>;
-
+  if (!selectedStory)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
   return (
     <>
       <DashboardHeader

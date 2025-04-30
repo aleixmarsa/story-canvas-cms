@@ -44,6 +44,7 @@ export function DashboardSidebar({
   }, [stories.length, setStories]);
 
   const handleLogout = async () => {
+    useDashboardStore.persist.clearStorage();
     await logout();
   };
 

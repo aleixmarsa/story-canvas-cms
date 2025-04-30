@@ -88,14 +88,18 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 max-w-lg"
       >
-        <div>
-          <Label htmlFor="email">Email</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="email" required>
+            Email
+          </Label>
           <Input id="email" {...register("email")} />
           {errors.email && <FormErrorMessage error={errors.email.message} />}
         </div>
-        <div>
-          <Label htmlFor="role">Role</Label>
 
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="role" required>
+            Role
+          </Label>
           <Select {...register("role")}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Role" />
@@ -111,16 +115,20 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           {errors.role && <FormErrorMessage error={errors.role.message} />}
         </div>
 
-        <div>
-          <Label htmlFor="password">Password</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="password" required>
+            Password
+          </Label>
           <Input id="password" type="password" {...register("password")} />
           {errors.password && (
             <FormErrorMessage error={errors.password.message} />
           )}
         </div>
 
-        <div>
-          <Label htmlFor="confirmPassword">Confirm password</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="confirmPassword" required>
+            Confirm password
+          </Label>
           <Input
             id="confirmPassword"
             type="password"

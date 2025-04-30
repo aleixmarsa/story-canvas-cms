@@ -112,8 +112,10 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 max-w-lg"
       >
-        <div>
-          <Label htmlFor="title">Title</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="title" required>
+            Title
+          </Label>
           <Input
             id="title"
             {...register("title" as const)}
@@ -122,8 +124,10 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           {errors.title && <FormErrorMessage error={errors.title.message} />}
         </div>
 
-        <div>
-          <Label htmlFor="createdBy">Created By</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="createdBy" required>
+            Created By
+          </Label>
           <Input
             id="createdBy"
             {...register("createdBy" as const)}
@@ -134,8 +138,10 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           )}
         </div>
 
-        <div>
-          <Label htmlFor="slug">Slug (URL)</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="slug" required>
+            Slug (URL)
+          </Label>
           <Input
             id="slug"
             {...register("slug" as const)}

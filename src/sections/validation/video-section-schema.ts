@@ -7,3 +7,4 @@ export const videoSectionSchema = baseFields.extend({
 });
 
 export type VideoSectionSchema = typeof videoSectionSchema;
+export type VideoSectionProps = z.infer<typeof videoSectionSchema>;

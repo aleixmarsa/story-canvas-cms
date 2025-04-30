@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Plus, Rocket, Save } from "lucide-react";
+import { Plus, Rocket, Save, Loader2, Eye, EyeOff } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
 
 type Breadcrumb = { label: string; href?: string };
 
@@ -25,6 +24,8 @@ type BaseDashboardHeaderProps = {
   isSaving?: boolean;
   publishButtonLabel?: string;
   isPublishing?: boolean;
+  onTogglePreview?: () => void;
+  previewVisible?: boolean;
 };
 
 type AddButtonWithHref = {
@@ -62,6 +63,8 @@ const DashboardHeader = ({
   isSaving,
   publishButtonLabel = "Publish",
   isPublishing,
+  onTogglePreview,
+  previewVisible,
 }: DashboardHeaderProps) => {
   return (
     <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -122,6 +125,27 @@ const DashboardHeader = ({
               {addButtonLabel}
             </Button>
           ))}
+
+        {onTogglePreview && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onTogglePreview}
+            className="text-sm flex items-center gap-1"
+          >
+            {previewVisible ? (
+              <>
+                <EyeOff className="w-4 h-4" />
+                Hide Preview
+              </>
+            ) : (
+              <>
+                <Eye className="w-4 h-4" />
+                Show Preview
+              </>
+            )}
+          </Button>
+        )}
 
         {(onPublish || onSaveDraft) && (
           <>

@@ -1,8 +1,9 @@
+import "server-only";
 import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
 import { StoryStatus } from "@prisma/client";
 import { StoryFormData } from "../validation/story-schemas";
-
+import { DraftStoryPreviewData } from "@/types/story";
 /**
  * Gets a story by its ID, including its sections and versions.
  *
@@ -85,7 +86,7 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
       },
     });
 
-    return tx.story.update({
+    const updatedStory = await tx.story.update({
       where: { id: story.id },
       data: {
         currentDraftId: draftVersion.id,
@@ -95,5 +96,43 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
         publishedVersion: true,
       },
     });
+    return updatedStory;
   });
 };
+
+export async function getDraftStoryBySlug(
+  slug: string
+): Promise<DraftStoryPreviewData | null> {
+  const story = await prisma.story.findFirst({
+    where: {
+      currentDraft: {
+        slug,
+      },
+    },
+    include: {
+      currentDraft: true,
+      sections: {
+        include: {
+          currentDraft: true,
+        },
+      },
+    },
+  });
+
+  if (!story || !story.currentDraft) return null;
+
+  // Transformem el resultat en una estructura plana usable per al renderer
+  return {
+    title: story.currentDraft.title,
+    description: story.currentDraft.description,
+    theme: story.currentDraft.theme,
+    slug: story.currentDraft.slug,
+    sections: story.sections.map((section) => ({
+      id: section.currentDraft?.id ?? 0,
+      name: section.currentDraft?.name ?? "",
+      type: section.currentDraft?.type ?? "",
+      order: section.currentDraft?.order ?? 0,
+      content: section.currentDraft?.content ?? {},
+    })),
+  };
+}

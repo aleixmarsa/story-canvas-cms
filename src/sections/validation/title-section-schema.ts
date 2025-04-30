@@ -7,3 +7,5 @@ export const titleSectionSchema = baseFields.extend({
 });
 
 export type TitleSectionSchema = typeof titleSectionSchema;
+
+export type TitleSectionProps = z.infer<typeof titleSectionSchema>;

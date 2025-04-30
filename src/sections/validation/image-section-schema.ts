@@ -8,3 +8,4 @@ export const imageSectionSchema = baseFields.extend({
 });
 
 export type ImageSectionSchema = typeof imageSectionSchema;
+export type ImageSectionProps = z.infer<typeof imageSectionSchema>;

@@ -8,6 +8,8 @@ import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader"
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
+import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
+import { motion, AnimatePresence } from "framer-motion";
 
 const EditSectionPage = () => {
   const {
@@ -17,6 +19,7 @@ const EditSectionPage = () => {
     selectSection,
     updateSection,
   } = useDashboardStore();
+  const [previewVisible, setPreviewVisible] = useState(false);
   const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
@@ -52,6 +55,8 @@ const EditSectionPage = () => {
     }
   };
 
+  const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
+
   useEffect(() => {
     if (!sectionSlug) return;
     const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
@@ -61,22 +66,22 @@ const EditSectionPage = () => {
   }, [sections, sectionSlug]);
 
   useEffect(() => {
-    if (!sectionSlug) return;
+    if (!sectionSlug || !sections.length) return;
     const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
+
     if (!found) {
       router.push(ROUTES.dashboard);
     }
   }, [sectionSlug]);
-
-  if (!selectedStory) return null;
 
   const handleSaveDraft = async () => {
     if (formRef.current) {
       await formRef.current();
     }
   };
-
+  if (!selectedStory) return null;
   if (!selectedSection) return null;
+  const sectionDraftData = selectedSection?.currentDraft;
 
   return (
     <>
@@ -95,13 +100,33 @@ const EditSectionPage = () => {
         isSaving={formIsSubmitting}
         publishButtonLabel="Publish Section"
         isPublishing={isPublishing}
+        onTogglePreview={handleTogglePreview}
+        previewVisible={previewVisible}
       />
-      <div className="px-6">
-        <EditSectionForm
-          formRef={formRef}
-          onDirtyChange={setFormIsDirty}
-          onSubmittingChange={setFormIsSubmitting}
-        />
+      <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
+        <div className="min-w-[30%]">
+          <EditSectionForm
+            formRef={formRef}
+            onDirtyChange={setFormIsDirty}
+            onSubmittingChange={setFormIsSubmitting}
+          />
+        </div>
+        <AnimatePresence>
+          {previewVisible && (
+            <motion.div
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 100 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0"
+            >
+              <LivePreviewPanel
+                slug={selectedStory.currentDraft?.slug ?? ""}
+                draftData={sectionDraftData}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

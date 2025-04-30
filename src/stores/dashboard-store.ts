@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { StoryWithVersions } from "@/types/story";
 import { SectionWithVersions } from "@/types/section";
 import { CurrentUser } from "@/types/auth";
@@ -40,63 +41,83 @@ interface DashboardState {
   deleteUser: (userId: string) => void;
 }
 
-export const useDashboardStore = create<DashboardState>((set) => ({
-  stories: [],
-  sections: [],
-  users: [],
-  selectedStory: null,
-  selectedSection: null,
-  currentUser: null,
+export const useDashboardStore = create<DashboardState>()(
+  persist(
+    (set) => ({
+      stories: [],
+      sections: [],
+      users: [],
+      selectedStory: null,
+      selectedSection: null,
+      currentUser: null,
 
-  // Setters
-  setStories: (stories) => set({ stories }),
-  setSections: (sections) => set({ sections }),
-  setUsers: (users) => set({ users }),
+      // Setters
+      setStories: (stories) => set({ stories }),
+      setSections: (sections) => set({ sections }),
+      setUsers: (users) => set({ users }),
 
-  // Selectors
-  selectStory: (story) =>
-    set((state) => ({ ...state, selectedStory: story, selectedSection: null })),
-  selectSection: (section) =>
-    set((state) => ({ ...state, selectedSection: section })),
-  selectCurrentUser: (user) => set({ currentUser: user }),
+      // Selectors
+      selectStory: (story) =>
+        set((state) => ({
+          ...state,
+          selectedStory: story,
+          selectedSection: null,
+        })),
+      selectSection: (section) =>
+        set((state) => ({ ...state, selectedSection: section })),
+      selectCurrentUser: (user) => set({ currentUser: user }),
 
-  // Reset
-  resetSelection: () => set({ selectedStory: null, selectedSection: null }),
-  resetStoryAndSection: () =>
-    set({ selectedStory: null, selectedSection: null }),
-  resetUsers: () => set({ users: [] }),
+      // Reset
+      resetSelection: () => set({ selectedStory: null, selectedSection: null }),
+      resetStoryAndSection: () =>
+        set({ selectedStory: null, selectedSection: null }),
+      resetUsers: () => set({ users: [] }),
 
-  // CRUD Stories
-  addStory: (story) => set((state) => ({ stories: [...state.stories, story] })),
-  updateStory: (story) =>
-    set((state) => ({
-      stories: state.stories.map((s) => (s.id === story.id ? story : s)),
-    })),
-  deleteStory: (storyId) =>
-    set((state) => ({
-      stories: state.stories.filter((s) => s.id !== storyId),
-    })),
+      // CRUD Stories
+      addStory: (story) =>
+        set((state) => ({ stories: [...state.stories, story] })),
+      updateStory: (story) =>
+        set((state) => ({
+          stories: state.stories.map((s) => (s.id === story.id ? story : s)),
+        })),
+      deleteStory: (storyId) =>
+        set((state) => ({
+          stories: state.stories.filter((s) => s.id !== storyId),
+        })),
 
-  // CRUD Sections
-  addSection: (section) =>
-    set((state) => ({ sections: [...state.sections, section] })),
-  updateSection: (section) =>
-    set((state) => ({
-      sections: state.sections.map((s) => (s.id === section.id ? section : s)),
-    })),
-  deleteSection: (sectionId) =>
-    set((state) => ({
-      sections: state.sections.filter((s) => s.id !== sectionId),
-    })),
+      // CRUD Sections
+      addSection: (section) =>
+        set((state) => ({ sections: [...state.sections, section] })),
+      updateSection: (section) =>
+        set((state) => ({
+          sections: state.sections.map((s) =>
+            s.id === section.id ? section : s
+          ),
+        })),
+      deleteSection: (sectionId) =>
+        set((state) => ({
+          sections: state.sections.filter((s) => s.id !== sectionId),
+        })),
 
-  // CRUD Users
-  addUser: (user) => set((state) => ({ users: [...state.users, user] })),
-  updateUser: (user) =>
-    set((state) => ({
-      users: state.users.map((u) => (u.id === user.id ? user : u)),
-    })),
-  deleteUser: (userId) =>
-    set((state) => ({
-      users: state.users.filter((u) => u.id !== userId),
-    })),
-}));
+      // CRUD Users
+      addUser: (user) => set((state) => ({ users: [...state.users, user] })),
+      updateUser: (user) =>
+        set((state) => ({
+          users: state.users.map((u) => (u.id === user.id ? user : u)),
+        })),
+      deleteUser: (userId) =>
+        set((state) => ({
+          users: state.users.filter((u) => u.id !== userId),
+        })),
+    }),
+    {
+      name: "story-canvas-dashboard-storage",
+      partialize: (state) => ({
+        stories: state.stories,
+        sections: state.sections,
+        selectedStory: state.selectedStory,
+        selectedSection: state.selectedSection,
+      }),
+    }
+  )
+);

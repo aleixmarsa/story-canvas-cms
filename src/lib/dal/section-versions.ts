@@ -1,3 +1,4 @@
+import "server-only";
 import prisma from "@/lib/prisma";
 import { slugify } from "../utils";
 import { Prisma } from "@prisma/client";

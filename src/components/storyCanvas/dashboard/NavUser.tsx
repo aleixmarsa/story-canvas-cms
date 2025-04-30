@@ -19,11 +19,13 @@ import {
 import { logout } from "@/lib/actions/auth/login";
 import { CurrentUser } from "@/types/auth";
 import { getInitialsFromEmail } from "@/lib/utils";
+import { useDashboardStore } from "@/stores/dashboard-store";
 
 export function NavUser({ user }: { user: CurrentUser }) {
   const { isMobile } = useSidebar();
 
   const handleLogout = async () => {
+    useDashboardStore.persist.clearStorage();
     await logout();
   };
 
