@@ -143,6 +143,7 @@ const StoryPage = () => {
               columnKey: "name",
               placeholder: "Search by Name...",
             }}
+            enableSorting={true}
           />
         </div>
         <AnimatePresence>
