@@ -1,23 +1,23 @@
-# 🪶 Story Canvas – Roadmap & Feature Tracker
+# Story Canvas – Roadmap & Feature Tracker
 
 This document outlines the current state and remaining tasks of the headless CMS project.
 
-## ✅ Completed Features
+## Completed Features
 
-### 🌏 General
+### General
 - Authentication
 - Admin setup flow
 - Route protection middleware
 - Role-based access control (admin/editor)
 
-### 🧠 Database Schema (Prisma)
+### Database Schema (Prisma)
 - `User` model with `role` (`admin`, `editor`)
 - `Story` and `StoryVersion` with version control (`draft`, `published`)
 - `Section` and `SectionVersion` using the same versioning strategy
 - Bidirectional relations between entities and their versions (`currentDraft`, `publishedVersion`)
 - Metadata fields: `createdBy`, `lockedBy`, `lastEditedBy`, `publishedAt`
 
-### 🧩 Backend (API Routes)
+### Backend (API Routes)
 
 #### `Auth`
 - `POST /api/auth/login` → authenticate user
@@ -43,7 +43,7 @@ This document outlines the current state and remaining tasks of the headless CMS
 - `POST /api/section-versions/:id/publish` → publish and create new draft
 - `PATCH /api/sections/:id` → update metadata (e.g., `lockedBy`)
 
-### 🖼️ Frontend (Dashboard)
+### Frontend (Dashboard)
 - Story list using `DataTable`
 - StoryVersion creation/edit form (title, slug, createdBy, etc.)
 - SectionVersion edit form with dynamic field rendering
@@ -56,6 +56,8 @@ This document outlines the current state and remaining tasks of the headless CMS
 - User management panel (list + create user form)
 - Toast notifications for all forms
 - Full CRUD UI with role-based access
+- Live preview system (e.g., `/preview/[slug]`)
+- Add section order using drag and drop
 
 ### 🛠️ Other Improvements
 - Unit/API tests (middleware, auth, entities)
@@ -65,19 +67,18 @@ This document outlines the current state and remaining tasks of the headless CMS
 
 ---
 
-## 🔜 Pending Features (TODO)
+## Pending Features (TODO)
 
-### 🧩 Backend
-- 🔜 `GET /api/section-versions/:id` → fetch full version info for editing
+### Backend
+- `GET /api/section-versions/:id` → fetch full version info for editing
 
-### 🖼️ Frontend
-- 🔜 Live preview system (e.g., `/preview/[slug]`)
-- 🔜 Confirmation dialogs before publish
-- 🔜 Support version `comment` field when publishing or duplicating
-- 🔜 Version history viewer per Story and Section
+### Frontend
+- Confirmation dialogs before publish
+- Support version `comment` field when publishing or duplicating
+- Version history viewer per Story and Section
 
-### 🛠️ Other Improvements
-- 🔜 Permission/lock control using `lockedBy`
-- 🔜 Story duplication interface
-- 🔜 Autosave mechanism for draft versions
+### Other Improvements
+- Permission/lock control using `lockedBy`
+- Story duplication interface
+- Autosave mechanism for draft versions
 
