@@ -63,18 +63,18 @@ export const columns = (
   {
     header: "Type",
     accessorKey: "type",
-    accessorFn: (row) => row.currentDraft?.type ?? "(untitled)",
+    accessorFn: (row) => row.currentDraft?.type ?? "-",
   },
   {
     accessorKey: "order",
     header: "Order",
-    accessorFn: (row) => row.currentDraft?.order ?? "(untitled)",
+    accessorFn: (row) => row.currentDraft?.order ?? "-",
   },
   {
-    accessorKey: "createdAt",
-    header: "Date",
+    header: "Updated At",
+    accessorFn: (row) => row.currentDraft?.updatedAt ?? "-",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
+      const date = new Date(row.getValue("Updated At") as string);
       return date.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
