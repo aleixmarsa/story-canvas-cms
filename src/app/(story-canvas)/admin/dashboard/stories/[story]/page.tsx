@@ -142,12 +142,10 @@ const StoryPage = () => {
     <>
       <DashboardHeader
         title={`${title} Sections`}
-        addHref={`${slug}/new-section`}
         breadcrumbs={[
           { label: "Dashboard", href: ROUTES.dashboard },
           { label: "Stories", href: ROUTES.stories },
         ]}
-        addButtonLabel="New Section"
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
         isPublishing={isPublishing}
@@ -166,6 +164,8 @@ const StoryPage = () => {
             data={sections}
             enableSorting={true}
             isPreviewVisible={previewVisible}
+            addHref={`${slug}/new-section`}
+            addButtonLabel="New Section"
           />
         </div>
         <AnimatePresence>

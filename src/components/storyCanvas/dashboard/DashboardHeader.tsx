@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Plus, Rocket, Save, Loader2, Eye, EyeOff } from "lucide-react";
+import { Rocket, Save, Loader2, Eye, EyeOff } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 type Breadcrumb = { label: string; href?: string };
 
-type BaseDashboardHeaderProps = {
+type DashboardHeaderProps = {
   title: string;
   breadcrumbs: Breadcrumb[];
   onSaveDraft?: () => void;
@@ -28,35 +28,9 @@ type BaseDashboardHeaderProps = {
   previewVisible?: boolean;
 };
 
-type AddButtonWithHref = {
-  addButtonLabel: string;
-  addHref: string;
-  onAddClick?: never;
-};
-
-type AddButtonWithClick = {
-  addButtonLabel: string;
-  onAddClick: () => void;
-  addHref?: never;
-};
-
-type NoAddButton = {
-  addButtonLabel?: undefined;
-  addHref?: undefined;
-  onAddClick?: undefined;
-};
-
-type DashboardHeaderProps =
-  | (BaseDashboardHeaderProps & AddButtonWithHref)
-  | (BaseDashboardHeaderProps & AddButtonWithClick)
-  | (BaseDashboardHeaderProps & NoAddButton);
-
 const DashboardHeader = ({
   title,
   breadcrumbs,
-  addButtonLabel,
-  addHref,
-  onAddClick,
   onSaveDraft,
   onPublish,
   saveDisabled,
@@ -104,28 +78,6 @@ const DashboardHeader = ({
       </div>
 
       <div className="flex items-center gap-2">
-        {addButtonLabel &&
-          (addHref || onAddClick) &&
-          (addHref ? (
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="text-sm"
-              data-testid="header-add-button"
-            >
-              <Link href={addHref}>
-                <Plus className="w-4 h-4 mr-1" />
-                {addButtonLabel}
-              </Link>
-            </Button>
-          ) : (
-            <Button variant="ghost" size="sm" onClick={onAddClick}>
-              <Plus className="w-4 h-4 mr-1" />
-              {addButtonLabel}
-            </Button>
-          ))}
-
         {onTogglePreview && (
           <Button
             variant="ghost"

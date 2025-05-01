@@ -20,8 +20,6 @@ const StoriesPage = async () => {
         <DashboardHeader
           title="Stories"
           breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-          addHref={ROUTES.newStory}
-          addButtonLabel="New Story"
         />
       )}
       {!isAdmin && (

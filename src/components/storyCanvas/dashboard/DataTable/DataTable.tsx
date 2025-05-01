@@ -48,12 +48,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import DataTablePagination from "./DataTablePagination";
-
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useEffect, useRef, useState } from "react";
 import { DraftSectionPreviewData } from "@/types/section";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
-type DataTableProps<TData extends { id: number }, TValue> = {
+type BaseProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   getRowLink?: (row: TData) => string;
@@ -61,18 +62,40 @@ type DataTableProps<TData extends { id: number }, TValue> = {
     columnKey: string;
     placeholder: string;
   };
-  enableSorting?: boolean;
   isPreviewVisible?: boolean;
+  addButtonLabel?: string;
+  addHref?: string;
+  onAddClick?: () => void;
 };
 
-const DataTable = <TData extends { id: number }, TValue>({
-  columns,
-  data,
-  getRowLink,
-  filterConfig,
-  enableSorting = false,
-  isPreviewVisible,
-}: DataTableProps<TData, TValue>) => {
+// If `enableSorting` is true, `id` is required
+//
+type SortableProps<TData, TValue> = {
+  enableSorting: true;
+} & BaseProps<TData, TValue>;
+
+// If `enableSorting` is false, `id` is not required
+type NonSortableProps<TData, TValue> = {
+  enableSorting?: false;
+} & BaseProps<TData, TValue>;
+
+// The `DataTableProps` type is a union of `SortableProps` and `NonSortableProps`.
+type DataTableProps<TData, TValue> =
+  | SortableProps<TData, TValue>
+  | NonSortableProps<TData, TValue>;
+
+const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
+  const {
+    columns,
+    data,
+    getRowLink,
+    filterConfig,
+    enableSorting = false,
+    isPreviewVisible,
+    addButtonLabel,
+    addHref,
+    onAddClick,
+  } = props;
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -175,10 +198,11 @@ const DataTable = <TData extends { id: number }, TValue>({
               ));
 
             if (enableSorting) {
+              const sortableRow = row.original as { id: number };
               return (
                 <SortableRowWrapper
-                  key={row.original.id}
-                  id={row.original.id}
+                  key={sortableRow.id}
+                  id={sortableRow.id}
                   onClick={() => rowLink && router.push(rowLink)}
                 >
                   {rowContent}
@@ -211,7 +235,7 @@ const DataTable = <TData extends { id: number }, TValue>({
 
   return (
     <div className="w-full">
-      <div className="flex items-center pb-4">
+      <div className="flex items-center justify-between pb-4">
         {filterConfig && (
           <Input
             placeholder={filterConfig.placeholder}
@@ -228,28 +252,53 @@ const DataTable = <TData extends { id: number }, TValue>({
             className="max-w-sm"
           />
         )}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2 ml-auto">
+          {(addHref || onAddClick) &&
+            addButtonLabel &&
+            (addHref ? (
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                data-testid="header-add-button"
+                className="h-[36px]"
+              >
+                <Link href={addHref}>
+                  <Plus className="w-4 h-4 mr-1" />
+                  {addButtonLabel}
+                </Link>
+              </Button>
+            ) : (
+              <Button variant="ghost" size="sm" onClick={onAddClick}>
+                <Plus className="w-4 h-4 mr-1" />
+                {addButtonLabel}
+              </Button>
+            ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border mb-6">
         {enableSorting ? (

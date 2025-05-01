@@ -54,6 +54,8 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           columnKey: "title",
           placeholder: "Search by Title...",
         }}
+        addHref={ROUTES.newStory}
+        addButtonLabel="New Story"
       />
     </div>
   );

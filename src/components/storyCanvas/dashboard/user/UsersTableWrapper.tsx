@@ -7,6 +7,7 @@ import DataTable from "../DataTable/DataTable";
 import { CurrentUser } from "@/types/auth";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { toast } from "sonner";
+import { ROUTES } from "@/lib/constants/storyCanvas";
 
 const UsersTableWrapper = ({
   users,
@@ -63,6 +64,8 @@ const UsersTableWrapper = ({
           columnKey: "email",
           placeholder: "Search by Email...",
         }}
+        addHref={ROUTES.newUser}
+        addButtonLabel="New User"
       />
     </div>
   );
