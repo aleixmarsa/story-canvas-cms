@@ -24,10 +24,10 @@ const SIZE_PRESETS: Record<PreviewSize, { width: number; height: number }> = {
 
 type LivePreviewPanelProps = {
   slug: string;
-  draftData: SectionVersion | null;
+  draftSection: SectionVersion | null;
 };
 
-const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
+const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [size, setSize] = useState<PreviewSize>("desktop");
   const [customSize, setCustomSize] = useState({ width: 1000, height: 800 });
@@ -38,23 +38,23 @@ const LivePreviewPanel = ({ slug, draftData }: LivePreviewPanelProps) => {
   const previewPath = `/preview/${slug}`;
 
   useEffect(() => {
-    if (draftData && iframeRef.current?.contentWindow) {
+    if (draftSection && iframeRef.current?.contentWindow) {
       const previewDraftSectionData: DraftSectionPreviewData = {
-        id: draftData.id,
-        name: draftData.name,
-        type: draftData.type,
-        order: draftData.order,
-        content: draftData.content,
+        id: draftSection.id,
+        name: draftSection.name,
+        type: draftSection.type,
+        order: draftSection.order,
+        content: draftSection.content,
       };
       iframeRef.current.contentWindow.postMessage(
         {
-          type: "preview:update",
+          type: "preview:single_section_update",
           payload: previewDraftSectionData,
         },
         "*"
       );
     }
-  }, [draftData]);
+  }, [draftSection]);
 
   const zoomScale = zoom / 100;
 

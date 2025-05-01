@@ -86,7 +86,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
     if (!iframeRef.current?.contentWindow) return;
     iframeRef.current.contentWindow.postMessage(
       {
-        type: "preview:update",
+        type: "preview:single_section_update",
         payload: {
           ...data,
           type,

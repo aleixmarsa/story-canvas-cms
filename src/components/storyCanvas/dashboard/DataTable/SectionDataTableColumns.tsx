@@ -4,8 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { SectionWithVersions } from "@/types/section";
 import { Badge } from "@/components/ui/badge";
 import { StoryStatus } from "@prisma/client";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { GripVertical } from "lucide-react";
 import RowActionsMenu from "./RowActionsMenu";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import DeleteDialog from "../DeleteDialog";
@@ -15,19 +14,15 @@ export const columns = (
   handleDelete: (story: SectionWithVersions) => Promise<void>
 ): ColumnDef<SectionWithVersions>[] => [
   {
+    id: "dragHandle",
+    header: () => null,
+    cell: () => <GripVertical />,
+    enableHiding: false,
+  },
+  {
     id: "name",
     enableHiding: false,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown />
-        </Button>
-      );
-    },
+    header: "Name",
     accessorFn: (row) => row.currentDraft?.name ?? "(untitled)",
   },
   {
@@ -66,11 +61,13 @@ export const columns = (
     accessorFn: (row) => row.currentDraft?.slug ?? "-",
   },
   {
+    header: "Type",
     accessorKey: "type",
     accessorFn: (row) => row.currentDraft?.type ?? "(untitled)",
   },
   {
     accessorKey: "order",
+    header: "Order",
     accessorFn: (row) => row.currentDraft?.order ?? "(untitled)",
   },
   {

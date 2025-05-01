@@ -14,6 +14,7 @@ import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -139,28 +140,27 @@ const StoryPage = () => {
           <DataTable
             columns={columns(slug, handleDelete)}
             data={sections}
-            filterConfig={{
-              columnKey: "name",
-              placeholder: "Search by Name...",
-            }}
             enableSorting={true}
+            isPreviewVisible={previewVisible}
           />
         </div>
         <AnimatePresence>
-          {previewVisible && (
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0"
-            >
-              <LivePreviewPanel
-                slug={selectedStory.currentDraft?.slug ?? ""}
-                draftData={null}
-              />
-            </motion.div>
-          )}
+          <motion.div
+            animate={{
+              opacity: previewVisible ? 1 : 0,
+              x: previewVisible ? 0 : 100,
+            }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className={cn(
+              "flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0",
+              !previewVisible && "pointer-events-none"
+            )}
+          >
+            <LivePreviewPanel
+              slug={selectedStory.currentDraft?.slug ?? ""}
+              draftSection={null}
+            />
+          </motion.div>
         </AnimatePresence>
       </div>
     </>

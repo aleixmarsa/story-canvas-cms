@@ -13,16 +13,25 @@ const LivePreviewRenderer = ({
   initialStoryData,
 }: LivePreviewRendererProps) => {
   const [storyData, setStoryData] = useState(initialStoryData);
+  console.log("🚀 ~ storyData:", storyData);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.data.type === "preview:update") {
+      console.log("🚀 ~ handleMessage ~ event:", event);
+      if (event.data.type === "preview:single_section_update") {
         const updatedSection = event.data.payload;
         setStoryData((prev) => ({
           ...prev,
           sections: prev.sections.map((section) =>
             section.id === updatedSection.id ? updatedSection : section
           ),
+        }));
+      }
+      if (event.data.type === "preview:sections_update") {
+        const updatedSections = event.data.payload;
+        setStoryData((prev) => ({
+          ...prev,
+          sections: updatedSections,
         }));
       }
     };

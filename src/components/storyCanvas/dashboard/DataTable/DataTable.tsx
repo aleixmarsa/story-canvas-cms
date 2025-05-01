@@ -17,7 +17,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import SortableRowWrapper from "./SortableRowWrapper";
-
 import {
   ColumnDef,
   getCoreRowModel,
@@ -30,7 +29,7 @@ import {
   SortingState,
   VisibilityState,
 } from "@tanstack/react-table";
-
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   Table,
   TableBody,
@@ -39,7 +38,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +50,8 @@ import { Input } from "@/components/ui/input";
 import DataTablePagination from "./DataTablePagination";
 
 import { useDashboardStore } from "@/stores/dashboard-store";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { DraftSectionPreviewData } from "@/types/section";
 
 type DataTableProps<TData extends { id: number }, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -63,6 +62,7 @@ type DataTableProps<TData extends { id: number }, TValue> = {
     placeholder: string;
   };
   enableSorting?: boolean;
+  isPreviewVisible?: boolean;
 };
 
 const DataTable = <TData extends { id: number }, TValue>({
@@ -71,6 +71,7 @@ const DataTable = <TData extends { id: number }, TValue>({
   getRowLink,
   filterConfig,
   enableSorting = false,
+  isPreviewVisible,
 }: DataTableProps<TData, TValue>) => {
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -113,6 +114,34 @@ const DataTable = <TData extends { id: number }, TValue>({
       },
     }));
     setSections(updatedWithOrder);
+    const previewData: DraftSectionPreviewData[] = updatedWithOrder.map(
+      (s) => ({
+        id: s.currentDraftId || 0,
+        name: s.currentDraft?.name || "",
+        order: s.currentDraft?.order || 0,
+        type: s.currentDraft?.type,
+        content: s.currentDraft?.content,
+      })
+    );
+    sendPreviewUpdate(previewData);
+  };
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    iframeRef.current = window.parent.document.querySelector(
+      'iframe[src*="/preview/"]'
+    );
+  }, [isPreviewVisible]);
+
+  const sendPreviewUpdate = (data: DraftSectionPreviewData[]) => {
+    if (!iframeRef.current?.contentWindow) return;
+    iframeRef.current.contentWindow.postMessage(
+      {
+        type: "preview:sections_update",
+        payload: data,
+      },
+      "*"
+    );
   };
 
   const tableContent = (
@@ -228,6 +257,7 @@ const DataTable = <TData extends { id: number }, TValue>({
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
           >
             <SortableContext
               items={sections.map((s) => s.id)}

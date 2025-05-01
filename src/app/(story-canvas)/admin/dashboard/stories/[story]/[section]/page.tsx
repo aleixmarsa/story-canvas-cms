@@ -122,7 +122,7 @@ const EditSectionPage = () => {
             >
               <LivePreviewPanel
                 slug={selectedStory.currentDraft?.slug ?? ""}
-                draftData={sectionDraftData}
+                draftSection={sectionDraftData}
               />
             </motion.div>
           )}
