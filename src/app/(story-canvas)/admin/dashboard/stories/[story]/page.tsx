@@ -152,8 +152,10 @@ const StoryPage = () => {
             }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className={cn(
-              "flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0",
-              !previewVisible && "pointer-events-none"
+              previewVisible
+                ? "relative visible w-full lg:w-[100px] lg:min-w-0"
+                : "absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden",
+              "flex-1 overflow-hidden h-max-full min-w-full"
             )}
           >
             <LivePreviewPanel
