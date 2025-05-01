@@ -260,7 +260,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
                 asChild
                 variant="outline"
                 size="sm"
-                data-testid="header-add-button"
+                data-testid="table-add-button"
                 className="h-[36px]"
               >
                 <Link href={addHref}>

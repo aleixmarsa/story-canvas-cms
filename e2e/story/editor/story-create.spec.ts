@@ -7,7 +7,7 @@ test.describe("Create story form (editor)", () => {
   test("should NOT display 'Add story' button", async ({ page }) => {
     await page.goto(ROUTES.stories);
 
-    await expect(page.getByTestId("header-add-button")).not.toBeVisible();
+    await expect(page.getByTestId("table-add-button")).not.toBeVisible();
   });
 
   test("should redirect if editor navigates to new story route", async ({

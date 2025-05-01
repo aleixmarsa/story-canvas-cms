@@ -6,7 +6,7 @@ test.use({ storageState: "playwright/.auth/editor.json" });
 test.describe("Create section form (editor)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${ROUTES.stories}/editor-story-list`);
-    await page.getByTestId("header-add-button").click();
+    await page.getByTestId("table-add-button").click();
   });
 
   test("should create a new section and redirect to section list", async ({
