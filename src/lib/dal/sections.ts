@@ -51,13 +51,15 @@ export const createSectionWithDraftVersion = async (input: {
   storyId: number;
   name: string;
   type: SectionCategory;
-  order: number;
   content: unknown;
   createdBy: string;
 }) => {
   const slug = slugify(input.name);
 
   return prisma.$transaction(async (tx) => {
+    const numberOfSections = await tx.section.count({
+      where: { storyId: input.storyId },
+    });
     const section = await tx.section.create({
       data: {
         storyId: input.storyId,
@@ -88,7 +90,7 @@ export const createSectionWithDraftVersion = async (input: {
         name: input.name,
         slug,
         type: input.type,
-        order: input.order,
+        order: numberOfSections,
         content: input.content || {},
         createdBy: input.createdBy,
         status: StoryStatus.draft,
