@@ -13,11 +13,9 @@ const LivePreviewRenderer = ({
   initialStoryData,
 }: LivePreviewRendererProps) => {
   const [storyData, setStoryData] = useState(initialStoryData);
-  console.log("🚀 ~ storyData:", storyData);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      console.log("🚀 ~ handleMessage ~ event:", event);
       if (event.data.type === "preview:single_section_update") {
         const updatedSection = event.data.payload;
         setStoryData((prev) => ({
