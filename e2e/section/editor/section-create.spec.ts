@@ -18,7 +18,6 @@ test.describe("Create section form (editor)", () => {
 
     // Fill in the form fields
     await page.getByTestId("create-section-name-input").fill("Test Section");
-    await page.getByTestId("create-section-order-input").fill("1");
     await page
       .getByTestId("create-section-createdBy-input")
       .fill("playwright-e2e");
