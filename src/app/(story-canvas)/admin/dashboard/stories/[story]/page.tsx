@@ -15,6 +15,7 @@ import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePre
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { updateSectionVersionOrders } from "@/lib/actions/sections/update-section-orders";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -40,7 +41,12 @@ const StoryPage = () => {
     const fetchSections = async () => {
       const res = await fetch(`/api/stories/${story.id}/sections`);
       const data: SectionWithVersions[] = await res.json();
-      setSections(data);
+      const orderedSections = [...data].sort((a, b) => {
+        const orderA = a.currentDraft?.order ?? 0;
+        const orderB = b.currentDraft?.order ?? 0;
+        return orderA - orderB;
+      });
+      setSections(orderedSections);
     };
 
     fetchSections();
@@ -115,6 +121,23 @@ const StoryPage = () => {
 
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
+  const handleSaveDraft = async () => {
+    const updates = sections
+      .filter((s) => s.currentDraft)
+      .map((s) => ({
+        versionId: s.currentDraft!.id,
+        order: s.currentDraft!.order,
+      }));
+
+    const res = await updateSectionVersionOrders(updates);
+
+    if ("error" in res) {
+      toast.error(res.error);
+    } else {
+      toast.success("Order saved successfully");
+    }
+  };
+
   return (
     <>
       <DashboardHeader
@@ -130,6 +153,7 @@ const StoryPage = () => {
         isPublishing={isPublishing}
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
+        onSaveDraft={handleSaveDraft}
       />
       <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
         <div
