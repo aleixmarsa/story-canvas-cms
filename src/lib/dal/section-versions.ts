@@ -8,7 +8,6 @@ type UpdateSectionVersion = {
   name: string;
   slug: string;
   type: SectionCategory;
-  order: number;
   createdBy: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   content: Record<string, any>;
