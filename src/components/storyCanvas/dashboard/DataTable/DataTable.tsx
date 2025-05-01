@@ -148,7 +148,7 @@ const DataTable = <TData extends { id: number }, TValue>({
             if (enableSorting) {
               return (
                 <SortableRowWrapper
-                  key={row.id}
+                  key={row.original.id}
                   id={row.original.id}
                   onClick={() => rowLink && router.push(rowLink)}
                 >
