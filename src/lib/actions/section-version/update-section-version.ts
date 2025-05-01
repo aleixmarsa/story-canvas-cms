@@ -39,7 +39,7 @@ export const updateSectionVersion = async (
     };
   }
 
-  const { name, type, order, content, comment } = parsed.data;
+  const { name, type, content, comment } = parsed.data;
 
   const slug = slugify(name);
 
@@ -52,7 +52,6 @@ export const updateSectionVersion = async (
       name,
       slug: slugify(name),
       type: type as SectionCategory,
-      order,
       createdBy,
       content,
       comment,

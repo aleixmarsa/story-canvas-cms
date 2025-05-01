@@ -14,6 +14,8 @@ import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { updateSectionVersionOrders } from "@/lib/actions/sections/update-section-orders";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -39,7 +41,12 @@ const StoryPage = () => {
     const fetchSections = async () => {
       const res = await fetch(`/api/stories/${story.id}/sections`);
       const data: SectionWithVersions[] = await res.json();
-      setSections(data);
+      const orderedSections = [...data].sort((a, b) => {
+        const orderA = a.currentDraft?.order ?? 0;
+        const orderB = b.currentDraft?.order ?? 0;
+        return orderA - orderB;
+      });
+      setSections(orderedSections);
     };
 
     fetchSections();
@@ -114,21 +121,37 @@ const StoryPage = () => {
 
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
+  const handleSaveDraft = async () => {
+    const updates = sections
+      .filter((s) => s.currentDraft)
+      .map((s) => ({
+        versionId: s.currentDraft!.id,
+        order: s.currentDraft!.order,
+      }));
+
+    const res = await updateSectionVersionOrders(updates);
+
+    if ("error" in res) {
+      toast.error(res.error);
+    } else {
+      toast.success("Order saved successfully");
+    }
+  };
+
   return (
     <>
       <DashboardHeader
         title={`${title} Sections`}
-        addHref={`${slug}/new-section`}
         breadcrumbs={[
           { label: "Dashboard", href: ROUTES.dashboard },
           { label: "Stories", href: ROUTES.stories },
         ]}
-        addButtonLabel="New Section"
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
         isPublishing={isPublishing}
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
+        onSaveDraft={handleSaveDraft}
       />
       <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
         <div
@@ -139,27 +162,31 @@ const StoryPage = () => {
           <DataTable
             columns={columns(slug, handleDelete)}
             data={sections}
-            filterConfig={{
-              columnKey: "name",
-              placeholder: "Search by Name...",
-            }}
+            enableSorting={true}
+            isPreviewVisible={previewVisible}
+            addHref={`${slug}/new-section`}
+            addButtonLabel="New Section"
           />
         </div>
         <AnimatePresence>
-          {previewVisible && (
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0"
-            >
-              <LivePreviewPanel
-                slug={selectedStory.currentDraft?.slug ?? ""}
-                draftData={null}
-              />
-            </motion.div>
-          )}
+          <motion.div
+            animate={{
+              opacity: previewVisible ? 1 : 0,
+              x: previewVisible ? 0 : 100,
+            }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className={cn(
+              previewVisible
+                ? "relative visible w-full lg:w-[100px] lg:min-w-0"
+                : "absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden",
+              "flex-1 overflow-hidden h-max-full min-w-full"
+            )}
+          >
+            <LivePreviewPanel
+              slug={selectedStory.currentDraft?.slug ?? ""}
+              draftSection={null}
+            />
+          </motion.div>
         </AnimatePresence>
       </div>
     </>

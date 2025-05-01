@@ -86,7 +86,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
     if (!iframeRef.current?.contentWindow) return;
     iframeRef.current.contentWindow.postMessage(
       {
-        type: "preview:update",
+        type: "preview:single_section_update",
         payload: {
           ...data,
           type,
@@ -104,12 +104,12 @@ const SectionCategoryForm = <T extends SectionCategory>({
       watchedSection[key] = watchedValues[i];
     });
 
-    const { name, order } = watchedSection;
+    const { name } = watchedSection;
 
     const previewDraftSectionData: DraftSectionPreviewData = {
       id: selectedSection.currentDraftId || 0,
       name: name as string,
-      order: order as number,
+      order: selectedSection.currentDraft?.order || 0,
       type,
       content: watchedSection,
     };

@@ -74,7 +74,7 @@ export const columns = (
 
   {
     header: "Updated At",
-    accessorFn: (row) => row.updatedAt,
+    accessorFn: (row) => row.currentDraft?.updatedAt ?? "-",
     cell: ({ row }) => {
       const date = new Date(row.getValue("Updated At"));
       return date.toLocaleDateString("en-GB", {

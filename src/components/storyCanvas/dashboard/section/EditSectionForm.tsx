@@ -64,7 +64,7 @@ const EditSectionForm = ({
     data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => {
     const selectedStoryId = selectedStory?.id;
-    const { name, order, createdBy, ...content } = data;
+    const { name, createdBy, ...content } = data;
 
     if (!type || !selectedStoryId || !selectedSection?.currentDraft?.id) {
       throw new Error("Missing type, story ID or section ID");
@@ -75,7 +75,6 @@ const EditSectionForm = ({
         selectedSection.currentDraft.id,
         {
           name,
-          order,
           createdBy,
           content,
           type,

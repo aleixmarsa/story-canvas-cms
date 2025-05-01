@@ -42,7 +42,10 @@ const RowActionsMenu = <T,>({
           <MoreHorizontal />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        onPointerDown={(event) => event.stopPropagation()}
+      >
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
         {editHref && (

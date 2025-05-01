@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const EditSectionPage = () => {
   const {
@@ -19,7 +20,7 @@ const EditSectionPage = () => {
     selectSection,
     updateSection,
   } = useDashboardStore();
-  const [previewVisible, setPreviewVisible] = useState(true);
+  const [previewVisible, setPreviewVisible] = useState(false);
   const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
@@ -112,20 +113,24 @@ const EditSectionPage = () => {
           />
         </div>
         <AnimatePresence>
-          {previewVisible && (
-            <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="flex-1 overflow-hidden h-max-full min-w-full w-[100px] lg:w-[100px] lg:min-w-0"
-            >
-              <LivePreviewPanel
-                slug={selectedStory.currentDraft?.slug ?? ""}
-                draftData={sectionDraftData}
-              />
-            </motion.div>
-          )}
+          <motion.div
+            animate={{
+              opacity: previewVisible ? 1 : 0,
+              x: previewVisible ? 0 : 100,
+            }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className={cn(
+              previewVisible
+                ? "relative visible w-full lg:w-[100px] lg:min-w-0"
+                : "absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden",
+              "flex-1 overflow-hidden h-max-full min-w-full"
+            )}
+          >
+            <LivePreviewPanel
+              slug={selectedStory.currentDraft?.slug ?? ""}
+              draftSection={sectionDraftData}
+            />
+          </motion.div>
         </AnimatePresence>
       </div>
     </>

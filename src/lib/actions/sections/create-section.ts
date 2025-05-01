@@ -19,7 +19,6 @@ export const createSection = async (formData: FormData) => {
     storyId: Number(formData.get("storyId")),
     name: formData.get("name"),
     type: formData.get("type"),
-    order: Number(formData.get("order")),
     content: JSON.parse(formData.get("content") as string),
     createdBy: formData.get("createdBy"),
   };

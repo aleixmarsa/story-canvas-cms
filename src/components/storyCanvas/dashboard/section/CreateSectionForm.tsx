@@ -54,13 +54,12 @@ const CreateSectionForm = ({
       throw new Error("Section type or story ID is not selected");
     }
 
-    const { name, order, createdBy, ...content } = data;
+    const { name, createdBy, ...content } = data;
 
     try {
       const formData = new FormData();
       formData.set("storyId", selectedStoryId.toString());
       formData.set("name", name);
-      formData.set("order", order.toString());
       formData.set("createdBy", createdBy);
       formData.set("content", JSON.stringify(content));
       formData.set("type", selectedType);

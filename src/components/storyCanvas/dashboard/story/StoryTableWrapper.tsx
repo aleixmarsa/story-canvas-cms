@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { StoryWithVersions } from "@/types/story";
 import { deleteStory } from "@/lib/actions/stories/delete-story";
 import { ROUTES } from "@/lib/constants/storyCanvas";
+import { Role } from "@prisma/client";
 
 const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
   const {
@@ -15,6 +16,8 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
     deleteStory: deleteStoryFromStore,
     addStory,
   } = useDashboardStore();
+
+  const isAdmin = currentUser.role === Role.ADMIN;
 
   const handleDelete = async (story: StoryWithVersions) => {
     //Delete story from the store
@@ -46,15 +49,30 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
 
   return (
     <div className="px-6">
-      <DataTable
-        columns={columns(currentUser, handleDelete)}
-        data={stories}
-        getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
-        filterConfig={{
-          columnKey: "title",
-          placeholder: "Search by Title...",
-        }}
-      />
+      {isAdmin ? (
+        <DataTable
+          columns={columns(currentUser, handleDelete)}
+          data={stories}
+          getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
+          filterConfig={{
+            columnKey: "title",
+            placeholder: "Search by Title...",
+          }}
+          addHref={ROUTES.newStory}
+          addButtonLabel="New Story"
+        />
+      ) : (
+        <DataTable
+          columns={columns(currentUser, handleDelete)}
+          data={stories}
+          getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
+          filterConfig={{
+            columnKey: "title",
+            placeholder: "Search by Title...",
+          }}
+          addHref={ROUTES.newStory}
+        />
+      )}
     </div>
   );
 };

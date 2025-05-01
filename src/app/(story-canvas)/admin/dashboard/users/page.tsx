@@ -23,8 +23,6 @@ const UsersPage = async () => {
         <DashboardHeader
           title="Users"
           breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-          addHref={ROUTES.newUser}
-          addButtonLabel="New User"
         />
       )}
       {!isAdmin && (

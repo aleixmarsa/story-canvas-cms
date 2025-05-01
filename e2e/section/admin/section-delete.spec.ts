@@ -8,7 +8,7 @@ test.describe("Delete section behavior (admin)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`${ROUTES.stories}/story-list`);
     await page
-      .getByRole("row", { name: "Section to delete" })
+      .getByRole("button", { name: "Section to delete draft section" })
       .getByTestId("row-actions-menu")
       .click();
     await page.getByTestId("delete-dialog-trigger").click();
@@ -34,7 +34,7 @@ test.describe("Delete section behavior (admin)", () => {
 
     // Check if the section is restored
     await expect(
-      page.getByRole("row", { name: "Section to delete" })
+      page.getByRole("button", { name: "Section to delete draft" })
     ).toBeVisible();
   });
 
@@ -43,7 +43,7 @@ test.describe("Delete section behavior (admin)", () => {
     await page.waitForTimeout(5000); // Wait for the toast to auto-close
     await expect(page.getByText("Section has been removed")).not.toBeVisible();
     await expect(
-      page.getByRole("row", { name: "Section to delete" })
+      page.getByRole("button", { name: "Section to delete draft" })
     ).not.toBeVisible();
   });
 });

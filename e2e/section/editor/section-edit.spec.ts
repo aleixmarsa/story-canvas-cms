@@ -9,7 +9,7 @@ test.describe("Edit section (editor)", () => {
     await page.goto(`${ROUTES.stories}/editor-story-list`);
     // Clicks on edit button
     await page
-      .getByRole("row", { name: "Editor Section to edit" })
+      .getByRole("button", { name: "Editor Section to edit draft" })
       .getByTestId("row-actions-menu")
       .click();
     await page.getByTestId("action-edit-button").click();
@@ -25,13 +25,11 @@ test.describe("Edit section (editor)", () => {
     // Empty the form
     await page.getByTestId("create-section-name-input").fill("");
     await page.getByTestId("create-section-createdBy-input").fill("");
-    await page.getByTestId("create-section-order-input").fill("");
     await page.getByTestId("create-section-text-input").fill("");
     await page.getByTestId("header-save-button").click();
 
     await expect(page.getByText("Name is required")).toBeVisible();
     await expect(page.getByText("Author is required")).toBeVisible();
-    await expect(page.getByText("Expected number")).toBeVisible();
     await expect(page.getByText("Title cannot be empty")).toBeVisible();
   });
 

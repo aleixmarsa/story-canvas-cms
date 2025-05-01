@@ -8,12 +8,6 @@ export const baseUI: Record<keyof BaseFields, FieldMeta> = {
     required: true,
     placeholder: "Name of the section",
   },
-  order: {
-    label: "Order",
-    type: "number",
-    required: true,
-    placeholder: "Order number",
-  },
   createdBy: {
     label: "Created by",
     type: "text",

@@ -1,21 +1,43 @@
+// components/storyCanvas/dashboard/DataTable/DataTable.tsx
 "use client";
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-
-import DataTablePagination from "./DataTablePagination";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableRowWrapper from "./SortableRowWrapper";
 import {
   ColumnDef,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  useReactTable,
+  flexRender,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
 } from "@tanstack/react-table";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,16 +47,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import DataTablePagination from "./DataTablePagination";
+import { useDashboardStore } from "@/stores/dashboard-store";
+import { useEffect, useRef, useState } from "react";
+import { DraftSectionPreviewData } from "@/types/section";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
-type DataTableProps<TData, TValue> = {
+type BaseProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   getRowLink?: (row: TData) => string;
@@ -42,21 +62,45 @@ type DataTableProps<TData, TValue> = {
     columnKey: string;
     placeholder: string;
   };
+  isPreviewVisible?: boolean;
+  addButtonLabel?: string;
+  addHref?: string;
+  onAddClick?: () => void;
 };
 
-const DataTable = <TData, TValue>({
-  columns,
-  data,
-  getRowLink,
-  filterConfig,
-}: DataTableProps<TData, TValue>) => {
+// If `enableSorting` is true, `id` is required
+//
+type SortableProps<TData, TValue> = {
+  enableSorting: true;
+} & BaseProps<TData, TValue>;
+
+// If `enableSorting` is false, `id` is not required
+type NonSortableProps<TData, TValue> = {
+  enableSorting?: false;
+} & BaseProps<TData, TValue>;
+
+// The `DataTableProps` type is a union of `SortableProps` and `NonSortableProps`.
+type DataTableProps<TData, TValue> =
+  | SortableProps<TData, TValue>
+  | NonSortableProps<TData, TValue>;
+
+const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
+  const {
+    columns,
+    data,
+    getRowLink,
+    filterConfig,
+    enableSorting = false,
+    isPreviewVisible,
+    addButtonLabel,
+    addHref,
+    onAddClick,
+  } = props;
   const router = useRouter();
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { setSections, sections } = useDashboardStore();
 
   const table = useReactTable({
     data,
@@ -75,9 +119,123 @@ const DataTable = <TData, TValue>({
     },
   });
 
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sections.findIndex((s) => s.id === active.id);
+    const newIndex = sections.findIndex((s) => s.id === over.id);
+    const newSections = arrayMove(sections, oldIndex, newIndex);
+
+    const updatedWithOrder = newSections.map((s, i) => ({
+      ...s,
+      currentDraft: {
+        ...s.currentDraft!,
+        order: i,
+      },
+    }));
+    setSections(updatedWithOrder);
+    const previewData: DraftSectionPreviewData[] = updatedWithOrder.map(
+      (s) => ({
+        id: s.currentDraftId || 0,
+        name: s.currentDraft?.name || "",
+        order: s.currentDraft?.order || 0,
+        type: s.currentDraft?.type,
+        content: s.currentDraft?.content,
+      })
+    );
+    sendPreviewUpdate(previewData);
+  };
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  useEffect(() => {
+    iframeRef.current = window.parent.document.querySelector(
+      'iframe[src*="/preview/"]'
+    );
+  }, [isPreviewVisible]);
+
+  const sendPreviewUpdate = (data: DraftSectionPreviewData[]) => {
+    if (!iframeRef.current?.contentWindow) return;
+    iframeRef.current.contentWindow.postMessage(
+      {
+        type: "preview:sections_update",
+        payload: data,
+      },
+      "*"
+    );
+  };
+
+  const tableContent = (
+    <Table>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <TableHead key={header.id}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+              </TableHead>
+            ))}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows.length ? (
+          table.getRowModel().rows.map((row) => {
+            const rowLink = getRowLink?.(row.original);
+            const rowContent = row
+              .getVisibleCells()
+              .map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ));
+
+            if (enableSorting) {
+              const sortableRow = row.original as { id: number };
+              return (
+                <SortableRowWrapper
+                  key={sortableRow.id}
+                  id={sortableRow.id}
+                  onClick={() => rowLink && router.push(rowLink)}
+                >
+                  {rowContent}
+                </SortableRowWrapper>
+              );
+            } else {
+              return (
+                <TableRow
+                  key={row.id}
+                  onClick={() => rowLink && router.push(rowLink)}
+                  className={`${
+                    rowLink ? "cursor-pointer" : ""
+                  } hover:bg-muted/50 transition-colors`}
+                >
+                  {rowContent}
+                </TableRow>
+              );
+            }
+          })
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-24 text-center">
+              No results.
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  );
+
   return (
     <div className="w-full">
-      <div className="flex items-center pb-4">
+      <div className="flex items-center justify-between pb-4">
         {filterConfig && (
           <Input
             placeholder={filterConfig.placeholder}
@@ -94,18 +252,39 @@ const DataTable = <TData, TValue>({
             className="max-w-sm"
           />
         )}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
+        <div className="flex items-center gap-2 ml-auto">
+          {(addHref || onAddClick) &&
+            addButtonLabel &&
+            (addHref ? (
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                data-testid="table-add-button"
+                className="h-[36px]"
+              >
+                <Link href={addHref}>
+                  <Plus className="w-4 h-4 mr-1" />
+                  {addButtonLabel}
+                </Link>
+              </Button>
+            ) : (
+              <Button variant="ghost" size="sm" onClick={onAddClick}>
+                <Plus className="w-4 h-4 mr-1" />
+                {addButtonLabel}
+              </Button>
+            ))}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
                   <DropdownMenuCheckboxItem
                     key={column.id}
                     className="capitalize"
@@ -116,67 +295,29 @@ const DataTable = <TData, TValue>({
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border mb-6">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
-                const rowLink = getRowLink?.(row.original);
-                return (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    onClick={() => rowLink && router.push(rowLink)}
-                    className={`${
-                      rowLink ? "cursor-pointer" : ""
-                    } hover:bg-muted/50 transition-colors`}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              })
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        {enableSorting ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext
+              items={sections.map((s) => s.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {tableContent}
+            </SortableContext>
+          </DndContext>
+        ) : (
+          tableContent
+        )}
       </div>
       <DataTablePagination table={table} />
     </div>
