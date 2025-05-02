@@ -31,3 +31,23 @@ export const getInitialsFromEmail = (email: string): string => {
 
   return initials || email[0]?.toUpperCase() || "?";
 };
+
+export const normalizeLinks = (html: string): string => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  const links = doc.querySelectorAll("a[href]");
+  links.forEach((link) => {
+    const href = link.getAttribute("href");
+    if (
+      href &&
+      !href.startsWith("http://") &&
+      !href.startsWith("https://") &&
+      !href.startsWith("/")
+    ) {
+      link.setAttribute("href", `https://${href}`);
+    }
+  });
+
+  return doc.body.innerHTML;
+};
