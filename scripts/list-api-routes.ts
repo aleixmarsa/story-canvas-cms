@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 
-// Ruta al teu directori d'API
 const apiPath = path.join(process.cwd(), "src/app/(story-canvas)/api");
 
 function listApiRoutes(dir: string, prefix = "") {
