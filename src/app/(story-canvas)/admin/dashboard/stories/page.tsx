@@ -17,12 +17,6 @@ const StoriesPage = async () => {
         title="Stories"
         breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
       />
-
-      <DashboardHeader
-        title="Stories"
-        breadcrumbs={[{ label: "Dashboard", href: ROUTES.dashboard }]}
-      />
-
       <StoryTableWrapper currentUser={currentUser} />
     </>
   );
