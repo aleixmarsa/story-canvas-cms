@@ -12,6 +12,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDashboardStore } from "@/stores/dashboard-store";
@@ -197,6 +198,36 @@ const SectionCategoryForm = <T extends SectionCategory>({
                 value={field.value || ""}
                 onChange={field.onChange}
               />
+            )}
+          />
+        );
+        break;
+      case "radio":
+        inputElement = (
+          <Controller
+            name={key as keyof FormData}
+            control={control}
+            render={({ field }) => (
+              <RadioGroup
+                onValueChange={field.onChange}
+                value={field.value}
+                className="flex gap-4"
+              >
+                {(config.options ?? []).map((option) => (
+                  <div
+                    key={option.value}
+                    className="flex items-center space-x-2"
+                  >
+                    <RadioGroupItem
+                      value={option.value}
+                      id={`${id}-${option.value}`}
+                    />
+                    <Label htmlFor={`${id}-${option.value}`}>
+                      {option.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             )}
           />
         );
