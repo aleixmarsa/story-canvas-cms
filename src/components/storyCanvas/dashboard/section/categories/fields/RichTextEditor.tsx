@@ -1,7 +1,12 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import "quill/dist/quill.snow.css";
+import { Parchment } from "quill";
 import Quill from "quill";
+const AlignStyle = Quill.import(
+  "attributors/style/align"
+) as Parchment.Attributor;
+Quill.register(AlignStyle, true);
 
 type RichTextEditorProps = {
   value: string;
@@ -25,6 +30,7 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
               ["bold", "italic", "underline", "strike"],
               ["link"],
               ["clean"],
+              [{ align: [] }],
             ],
           },
           placeholder: "Write something...",
