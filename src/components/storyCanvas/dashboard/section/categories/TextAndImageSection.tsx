@@ -11,7 +11,7 @@ const TextAndImageSection = ({
   return (
     <section className="py-8 max-w-3xl mx-auto">
       <div
-        className={`flex flex-col md:flex-row ${
+        className={`flex flex-col md:flex-row md:justify-between ${
           isLeft ? "md:flex-row-reverse" : ""
         } gap-6 items-center`}
       >
