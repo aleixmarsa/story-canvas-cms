@@ -85,17 +85,14 @@ const DashboardHeader = ({
             onClick={onTogglePreview}
             className="text-sm flex items-center gap-1"
           >
-            {previewVisible ? (
-              <>
+            <>
+              {previewVisible ? (
                 <EyeOff className="w-4 h-4" />
-                Hide Preview
-              </>
-            ) : (
-              <>
+              ) : (
                 <Eye className="w-4 h-4" />
-                Show Preview
-              </>
-            )}
+              )}
+              Live Preview
+            </>
           </Button>
         )}
 
