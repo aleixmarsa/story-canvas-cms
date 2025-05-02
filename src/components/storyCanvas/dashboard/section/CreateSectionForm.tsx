@@ -112,7 +112,7 @@ const CreateSectionForm = ({
           <SelectContent>
             {Object.keys(sectionCategoriesSchemasWithUI).map((type) => (
               <SelectItem key={type} value={type}>
-                {type}
+                {type.replaceAll("_", " ")}
               </SelectItem>
             ))}
           </SelectContent>
