@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, ".env.test") });
 const prisma = new PrismaClient();
 
 export const cleanupTestDatabase = async () => {
-  console.log("🧹 Cleaning up database...");
+  console.log("Cleaning up database...");
 
   try {
     await prisma.$transaction([
@@ -15,12 +15,11 @@ export const cleanupTestDatabase = async () => {
       prisma.section.deleteMany({}),
       prisma.story.deleteMany({}),
       prisma.user.deleteMany({}),
-      // Afegiu aquí qualsevol altra taula del vostre esquema
     ]);
 
-    console.log("✅ Database cleanup complete.");
+    console.log("Database cleanup complete.");
   } catch (error) {
-    console.error("❌ Failed to clean up database:", error);
+    console.error("Failed to clean up database:", error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();
