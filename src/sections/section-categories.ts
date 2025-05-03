@@ -1,33 +1,43 @@
 import z from "zod";
+// Schema with UI
 import { titleSectionSchemaWithUI } from "./ui/title-section-ui";
 import { paragraphSectionSchemaWithUI } from "./ui/paragraph-section-ui";
 import { imageSectionSchemaWithUI } from "./ui/image-section-ui";
 import { videoSectionSchemaWithUI } from "./ui/video-section-ui";
 import { textAndImageSectionSchemaWithUI } from "./ui/text-and-image-section-ui";
+import { chartSectionSchemaWithUI } from "./ui/chart-section-schema-ui";
+
+//Schemas
 import { TitleSectionSchema } from "./validation/title-section-schema";
 import { ParagraphSectionSchema } from "./validation/paragraph-section-schema";
 import { ImageSectionSchema } from "./validation/image-section-schema";
 import { VideoSectionSchema } from "./validation/video-section-schema";
 import { TextAndImageSectionSchema } from "./validation/text-and-image-section-schema";
+import { ChartSectionSchema } from "./validation/chart-section-schema";
+
+//Props
 import { TitleSectionProps } from "./validation/title-section-schema";
 import { ParagraphSectionProps } from "./validation/paragraph-section-schema";
 import { ImageSectionProps } from "./validation/image-section-schema";
 import { VideoSectionProps } from "./validation/video-section-schema";
 import { TextAndImageSectionProps } from "./validation/text-and-image-section-schema";
+import { ChartSectionProps } from "./validation/chart-section-schema";
 
 export type SectionSchemas =
   | TitleSectionSchema
   | ParagraphSectionSchema
   | ImageSectionSchema
   | VideoSectionSchema
-  | TextAndImageSectionSchema;
+  | TextAndImageSectionSchema
+  | ChartSectionSchema;
 
 export type SectionSchemasWithUI =
   | typeof titleSectionSchemaWithUI
   | typeof paragraphSectionSchemaWithUI
   | typeof imageSectionSchemaWithUI
   | typeof videoSectionSchemaWithUI
-  | typeof textAndImageSectionSchemaWithUI;
+  | typeof textAndImageSectionSchemaWithUI
+  | typeof chartSectionSchemaWithUI;
 
 export const sectionCategoriesSchemasWithUI: Record<
   string,
@@ -38,6 +48,7 @@ export const sectionCategoriesSchemasWithUI: Record<
   IMAGE: imageSectionSchemaWithUI,
   VIDEO: videoSectionSchemaWithUI,
   TEXT_AND_IMAGE: textAndImageSectionSchemaWithUI,
+  CHART: chartSectionSchemaWithUI,
 };
 export const SectionCategoryEnum = z.enum(
   Object.keys(sectionCategoriesSchemasWithUI) as [
@@ -57,4 +68,5 @@ export type SectionContentByCategory = {
   IMAGE: ImageSectionProps;
   VIDEO: VideoSectionProps;
   TEXT_AND_IMAGE: TextAndImageSectionProps;
+  CHART: ChartSectionProps;
 };
