@@ -1,8 +1,8 @@
-import { getCurrentDraftStories } from "@/lib/actions/internal/get-draft-stories";
 import { NextResponse } from "next/server";
+import { getPublishedStories } from "@/lib/actions/published/get-published-stories";
 
 /**
- * GET /api/internal/stories/draft
+ * GET /api/public/stories
  * Fetches all published stories metadata
  *
  * @returns The list of published stories with their metadata
@@ -10,7 +10,7 @@ import { NextResponse } from "next/server";
  */
 export async function GET() {
   try {
-    const result = await getCurrentDraftStories();
+    const result = await getPublishedStories();
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(

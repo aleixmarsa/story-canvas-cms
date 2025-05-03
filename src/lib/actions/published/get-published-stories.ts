@@ -1,5 +1,5 @@
 "use server";
-import { getPublishedStoryMetadata } from "@/lib/dal/public";
+import { getPublishedStoryMetadata } from "@/lib/dal/published";
 
 export const getPublishedStories = async () => {
   try {

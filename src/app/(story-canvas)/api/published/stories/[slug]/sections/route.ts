@@ -1,6 +1,6 @@
-import { fetchPublishedSections } from "@/lib/actions/public/get-published-sections-by-slug";
+import { fetchPublishedSections } from "@/lib/actions/published/get-published-sections-by-slug";
 import { NextResponse } from "next/server";
-import { getPublishedStoryByPublicSlug } from "@/lib/dal/public";
+import { getPublishedStoryByPublicSlug } from "@/lib/dal/published";
 
 /**
  * GET /api/public/stories/:slug/sections

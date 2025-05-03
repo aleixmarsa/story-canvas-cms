@@ -1,6 +1,6 @@
-import { fetchDraftSections } from "@/lib/actions/internal/get-draft-sections-by-id";
+import { fetchDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
 import { NextResponse } from "next/server";
-import { getDraftStoryByStoryId } from "@/lib/dal/internal";
+import { getDraftStoryByStoryId } from "@/lib/dal/draft";
 
 /**
  * GET /api/internal/stories/:id/sections

@@ -1,6 +1,6 @@
 "use server";
 
-import { getDraftSectionsById } from "@/lib/dal/internal";
+import { getDraftSectionsById } from "@/lib/dal/draft";
 
 export const fetchDraftSections = async (slug: number) => {
   try {

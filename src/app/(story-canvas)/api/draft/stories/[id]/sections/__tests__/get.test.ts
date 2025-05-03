@@ -3,8 +3,8 @@
  */
 import { GET } from "../route";
 import { NextRequest } from "next/server";
-import { getDraftStoryByStoryId } from "@/lib/dal/internal";
-import { fetchDraftSections } from "@/lib/actions/internal/get-draft-sections-by-id";
+import { getDraftStoryByStoryId } from "@/lib/dal/draft";
+import { fetchDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
 
 jest.mock("@/lib/dal/internal", () => ({
   getDraftStoryByStoryId: jest.fn(),

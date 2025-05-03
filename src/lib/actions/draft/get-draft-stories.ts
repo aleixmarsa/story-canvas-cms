@@ -1,6 +1,6 @@
 "use server";
 
-import { getAllStoriesWithCurrentDraftMetadata } from "@/lib/dal/internal";
+import { getAllStoriesWithCurrentDraftMetadata } from "@/lib/dal/draft";
 
 export const getCurrentDraftStories = async () => {
   try {

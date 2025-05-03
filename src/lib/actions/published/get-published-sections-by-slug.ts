@@ -1,6 +1,6 @@
 "use server";
 
-import { getPublishedSectionsBySlug } from "@/lib/dal/public";
+import { getPublishedSectionsBySlug } from "@/lib/dal/published";
 
 export const fetchPublishedSections = async (slug: string) => {
   try {

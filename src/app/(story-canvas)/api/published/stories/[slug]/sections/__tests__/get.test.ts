@@ -4,8 +4,8 @@
 import { GET } from "../route";
 import { NextRequest } from "next/server";
 
-import { getPublishedStoryByPublicSlug } from "@/lib/dal/public";
-import { fetchPublishedSections } from "@/lib/actions/public/get-published-sections-by-slug";
+import { getPublishedStoryByPublicSlug } from "@/lib/dal/published";
+import { fetchPublishedSections } from "@/lib/actions/published/get-published-sections-by-slug";
 
 jest.mock("@/lib/dal/public", () => ({
   getPublishedStoryByPublicSlug: jest.fn(),

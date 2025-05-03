@@ -10,7 +10,6 @@ type Props = {
 
 const LivePreviewRenderer = ({ initialStoryData }: Props) => {
   const [storyData, setStoryData] = useState(initialStoryData);
-  console.log("🚀 ~ LivePreviewRenderer ~ storyData:", storyData.sections);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {

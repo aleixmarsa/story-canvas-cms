@@ -2,7 +2,7 @@ import { getPublishedSlugs } from "@/lib/dal/stories";
 import {
   getPublishedSectionsBySlug,
   getPublishedStoryByPublicSlug,
-} from "@/lib/dal/public";
+} from "@/lib/dal/published";
 import { notFound } from "next/navigation";
 import StoryRenderer from "@/components/storyCanvas/renderer/StoryRenderer";
 
