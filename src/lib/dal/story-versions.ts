@@ -54,7 +54,7 @@ export const updateStoryVersionById = async (
 };
 
 /**
- * Publishes a story version and creates a new draft copy.
+ * Publishes the story version (metadata) and creates a new draft copy.
  *
  * @param versionId - The ID of the version to publish.
  * @returns The updated story with current draft and published versions.
