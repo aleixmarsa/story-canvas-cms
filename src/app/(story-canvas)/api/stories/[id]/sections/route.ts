@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 
 /**
  * GET /api/stories/:id/sections
- * Fetches all sections for a given story ID.
+ * Fetches all sections (draft and published) for a given story ID.
  * @param req - The request object.
  * @param params - The parameters object containing the story ID.
  * @returns A JSON response with the sections or an error message.
