@@ -33,21 +33,15 @@ export const getInitialsFromEmail = (email: string): string => {
 };
 
 export const normalizeLinks = (html: string): string => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-
-  const links = doc.querySelectorAll("a[href]");
-  links.forEach((link) => {
-    const href = link.getAttribute("href");
+  return html.replace(/<a\s+[^>]*href="([^"]+)"[^>]*>/g, (match, href) => {
     if (
-      href &&
-      !href.startsWith("http://") &&
-      !href.startsWith("https://") &&
-      !href.startsWith("/")
+      href.startsWith("http://") ||
+      href.startsWith("https://") ||
+      href.startsWith("/")
     ) {
-      link.setAttribute("href", `https://${href}`);
+      return match;
     }
+    const normalized = `https://${href}`;
+    return match.replace(href, normalized);
   });
-
-  return doc.body.innerHTML;
 };

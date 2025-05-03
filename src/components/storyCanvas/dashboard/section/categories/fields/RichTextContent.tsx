@@ -1,4 +1,5 @@
-import DOMPurify from "dompurify";
+"use client";
+import DOMPurify from "isomorphic-dompurify";
 import { normalizeLinks } from "@/lib/utils";
 
 type RichTextContentProps = {
