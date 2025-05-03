@@ -5,6 +5,7 @@ import { getDraftStoryByStoryId } from "@/lib/dal/draft";
 /**
  * GET /api/internal/stories/:id/sections
  * Returns all the current drafts sections of a story
+ * ID is used in draft stories because slug can be changed between story versions
  * @param req - The request object.
  * @param params - The parameters object containing the story ID.
  * @returns The published version of the story or an error response.
