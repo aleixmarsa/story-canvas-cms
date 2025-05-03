@@ -10,12 +10,13 @@ import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
-import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
+import { publishStoryAndSections } from "@/lib/actions/stories/publish-story-and-sections";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateSectionVersionOrders } from "@/lib/actions/sections/update-section-orders";
+import { publishSection } from "@/lib/actions/section-version/publish-section-version";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -29,6 +30,7 @@ const StoryPage = () => {
     selectSection,
     updateStory,
     addSection,
+    updateSection,
     deleteSection: deleteSectionFromStore,
   } = useDashboardStore();
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -69,7 +71,11 @@ const StoryPage = () => {
       if (!selectedStory?.currentDraftId) {
         throw new Error("No current draft ID found for the selected story");
       }
-      const result = await publishStoryVersion(selectedStory?.currentDraftId);
+
+      const result = await publishStoryAndSections(
+        selectedStory.currentDraftId,
+        selectedStory.id
+      );
 
       if ("error" in result) {
         toast.error(result.error);
@@ -138,6 +144,34 @@ const StoryPage = () => {
     }
   };
 
+  const handlePublishSection = async (currentDraftId: number | undefined) => {
+    setIsPublishing(true);
+    try {
+      if (!currentDraftId) {
+        throw new Error("Missing section ID");
+      }
+
+      const result = await publishSection(currentDraftId);
+
+      if ("error" in result) {
+        throw new Error(result.error);
+      }
+
+      updateSection(result.section);
+      toast.success("Section published successfully", {
+        description: `Your section is now live!`,
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("An unknown error occurred while publishing the section");
+      }
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   return (
     <>
       <DashboardHeader
@@ -160,7 +194,7 @@ const StoryPage = () => {
           }`}
         >
           <DataTable
-            columns={columns(slug, handleDelete)}
+            columns={columns(slug, handleDelete, handlePublishSection)}
             data={sections}
             enableSorting={true}
             isPreviewVisible={previewVisible}

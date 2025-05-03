@@ -4,7 +4,7 @@ import { publishStoryVersion as publishInDb } from "@/lib/dal/story-versions";
 import { verifySession } from "@/lib/dal/auth";
 
 /**
- * Publishes a story version and creates a new draft copy.
+ * Publishes a story version (metadata) and creates a new draft copy.
  *
  * @param versionId - The ID of the story version to publish.
  * @returns The updated story object or an error.

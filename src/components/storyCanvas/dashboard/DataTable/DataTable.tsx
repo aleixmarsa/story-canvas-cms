@@ -50,7 +50,7 @@ import { Input } from "@/components/ui/input";
 import DataTablePagination from "./DataTablePagination";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { useEffect, useRef, useState } from "react";
-import { DraftSectionPreviewData } from "@/types/section";
+import { RenderSectionData } from "@/types/section";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
@@ -137,15 +137,13 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
       },
     }));
     setSections(updatedWithOrder);
-    const previewData: DraftSectionPreviewData[] = updatedWithOrder.map(
-      (s) => ({
-        id: s.currentDraftId || 0,
-        name: s.currentDraft?.name || "",
-        order: s.currentDraft?.order || 0,
-        type: s.currentDraft?.type,
-        content: s.currentDraft?.content,
-      })
-    );
+    const previewData: RenderSectionData[] = updatedWithOrder.map((s) => ({
+      id: s.currentDraftId || 0,
+      name: s.currentDraft?.name || "",
+      order: s.currentDraft?.order || 0,
+      type: s.currentDraft?.type,
+      content: s.currentDraft?.content,
+    }));
     sendPreviewUpdate(previewData);
   };
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -156,7 +154,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     );
   }, [isPreviewVisible]);
 
-  const sendPreviewUpdate = (data: DraftSectionPreviewData[]) => {
+  const sendPreviewUpdate = (data: RenderSectionData[]) => {
     if (!iframeRef.current?.contentWindow) return;
     iframeRef.current.contentWindow.postMessage(
       {

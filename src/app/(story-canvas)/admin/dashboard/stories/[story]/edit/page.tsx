@@ -84,7 +84,7 @@ const EditStoryPage = () => {
         onSaveDraft={() => formRef.current?.requestSubmit()}
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
-        publishButtonLabel="Publish changes"
+        publishButtonLabel="Publish Story Metadata"
         isPublishing={isPublishing}
       />
       <div className="px-6">

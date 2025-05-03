@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ type RowActionsMenuProps<T> = {
   renderDeleteButton?: (item: T) => React.ReactNode;
   additionalItems?: React.ReactNode;
   item: T;
+  onPublish?: () => void;
 };
 
 const RowActionsMenu = <T,>({
@@ -25,6 +26,7 @@ const RowActionsMenu = <T,>({
   renderDeleteButton,
   additionalItems,
   item,
+  onPublish,
 }: RowActionsMenuProps<T>) => {
   return (
     <DropdownMenu>
@@ -82,6 +84,24 @@ const RowActionsMenu = <T,>({
                 </Button>
               </DropdownMenuItem>
             )}
+        {onPublish && (
+          <DropdownMenuItem asChild>
+            <Button
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPublish();
+              }}
+              className="px-2 w-full justify-start"
+              data-testid="action-delete-button"
+            >
+              <span className="flex items-center justify-start gap-2">
+                <Rocket className="h-4 w-4" color="black" />
+                Publish
+              </span>
+            </Button>
+          </DropdownMenuItem>
+        )}
 
         {additionalItems}
       </DropdownMenuContent>

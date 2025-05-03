@@ -11,7 +11,8 @@ import DeleteDialog from "../DeleteDialog";
 
 export const columns = (
   storySlug: string,
-  handleDelete: (story: SectionWithVersions) => Promise<void>
+  handleDelete: (story: SectionWithVersions) => Promise<void>,
+  handlePublish: (currentDraftId: number | undefined) => Promise<void>
 ): ColumnDef<SectionWithVersions>[] => [
   {
     id: "dragHandle",
@@ -91,6 +92,7 @@ export const columns = (
         <RowActionsMenu
           item={section}
           editHref={`${ROUTES.stories}/${storySlug}/${section.currentDraft?.slug}`}
+          onPublish={() => handlePublish(section.currentDraft?.id)}
           renderDeleteButton={(section) => {
             return (
               <div onClick={(e) => e.stopPropagation()}>

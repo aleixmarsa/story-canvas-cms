@@ -16,7 +16,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDashboardStore } from "@/stores/dashboard-store";
-import { DraftSectionPreviewData } from "@/types/section";
+import { RenderSectionData } from "@/types/section";
 import { JsonValue } from "@prisma/client/runtime/library";
 import RichTextEditor from "./categories/fields/RichTextEditor";
 interface SectionFormProps<T extends SectionCategory> {
@@ -84,7 +84,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
   });
 
   // This function is used to send the updated section data to the iframe for live preview
-  const sendPreviewUpdate = debounce((data: DraftSectionPreviewData) => {
+  const sendPreviewUpdate = debounce((data: RenderSectionData) => {
     if (!iframeRef.current?.contentWindow) return;
     iframeRef.current.contentWindow.postMessage(
       {
@@ -108,7 +108,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
 
     const { name } = watchedSection;
 
-    const previewDraftSectionData: DraftSectionPreviewData = {
+    const previewDraftSectionData: RenderSectionData = {
       id: selectedSection.currentDraftId || 0,
       name: name as string,
       order: selectedSection.currentDraft?.order || 0,

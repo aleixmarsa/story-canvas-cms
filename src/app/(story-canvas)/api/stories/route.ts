@@ -1,22 +1,16 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { getAllStories } from "@/lib/dal/stories";
 
 /**
  * GET /api/stories
- * Fetches all stories with their current draft and published version.
+ * Fetches all stories with their current draft and published version metadata.
  *
- * @returns The list of stories with their current draft and published version.
+ * @returns The list of stories with their current draft and published version metadata.
  * @throws 500 - Internal server error.
  */
 export async function GET() {
   try {
-    const stories = await prisma.story.findMany({
-      include: {
-        currentDraft: true,
-        publishedVersion: true,
-      },
-    });
-
+    const stories = await getAllStories();
     return NextResponse.json(stories);
   } catch (error) {
     return NextResponse.json(

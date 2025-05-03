@@ -3,7 +3,22 @@ import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
 import { StoryStatus } from "@prisma/client";
 import { StoryFormData } from "../validation/story-schemas";
-import { DraftStoryPreviewData } from "@/types/story";
+import { RenderStoryData } from "@/types/story";
+
+/**
+ * Fetches all stories with their current draft and published version.
+ *
+ * @returns An array of stories including current draft and published versions.
+ */
+export const getAllStories = async () => {
+  return prisma.story.findMany({
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+    },
+  });
+};
+
 /**
  * Gets a story by its ID, including its sections and versions.
  *
@@ -28,8 +43,8 @@ export const getStoryWithSectionsAndVersions = async (storyId: number) => {
  * Deletes a story and all its related sections and versions.
  *
  * @param storyId - The ID of the story to delete.
- * @returns A promise that resolves when the deletion is complete.
- * @throws Prisma.PrismaClientKnownRequestError if deletion fails.
+ * @returns A transaction that removes all linked data (section versions, sections, story versions, story).
+ * @throws Prisma.PrismaClientKnownRequestError if any deletion fails.
  */
 export const deleteStoryAndRelated = async (storyId: number) => {
   return prisma.$transaction([
@@ -51,13 +66,11 @@ export const deleteStoryAndRelated = async (storyId: number) => {
 };
 
 /**
- * Creates a new story and its initial draft version.
+ * Creates a new Story and an initial draft StoryVersion linked to it.
  *
- * @param data - The data used to create the StoryVersion and link it to the Story.
- *
- * @returns The created story with the draft version linked as currentDraft.
- *
- * @throws ConflictError if the slug already exists for another story.
+ * @param data - The form data including title, slug, content, theme, createdBy, etc.
+ * @returns The created Story including its current draft and published version (null).
+ * @throws ConflictError if the slug is already used by another story version.
  */
 export const createStoryWithDraft = async (data: StoryFormData) => {
   return await prisma.$transaction(async (tx) => {
@@ -100,9 +113,15 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
   });
 };
 
+/**
+ * Fetches a draft story by its current draft slug, including all draft sections.
+ *
+ * @param slug - The slug of the current draft story version.
+ * @returns A flattened object structure for use in live preview rendering.
+ */
 export async function getDraftStoryBySlug(
   slug: string
-): Promise<DraftStoryPreviewData | null> {
+): Promise<RenderStoryData | null> {
   const story = await prisma.story.findFirst({
     where: {
       currentDraft: {
@@ -121,7 +140,6 @@ export async function getDraftStoryBySlug(
 
   if (!story || !story.currentDraft) return null;
 
-  // Transformem el resultat en una estructura plana usable per al renderer
   return {
     title: story.currentDraft.title,
     description: story.currentDraft.description,
@@ -136,3 +154,19 @@ export async function getDraftStoryBySlug(
     })),
   };
 }
+
+/**
+ * Fetches all public slugs for stories with a published version.
+ *
+ * @returns An array of objects containing public slugs for stories.
+ */
+export const getPublishedSlugs = async () => {
+  return prisma.story.findMany({
+    where: {
+      publishedVersion: { status: "published" },
+    },
+    select: {
+      publicSlug: true,
+    },
+  });
+};

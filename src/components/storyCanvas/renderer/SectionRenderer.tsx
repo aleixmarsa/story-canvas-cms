@@ -1,11 +1,11 @@
 import { SectionContentByCategory } from "@/sections/section-categories";
 
-import TitleSection from "../section/categories/TitleSection";
-import ParagraphSection from "../section/categories/ParagraphSection";
-import ImageSection from "../section/categories/ImageSection";
-import VideoSection from "../section/categories/VideoSection";
-import ParagraphAndImageSection from "../section/categories/ParagraphAndImageSection";
-import ChartSection from "../section/categories/ChartSection";
+import TitleSection from "../dashboard/section/categories/TitleSection";
+import ParagraphSection from "../dashboard/section/categories/ParagraphSection";
+import ImageSection from "../dashboard/section/categories/ImageSection";
+import VideoSection from "../dashboard/section/categories/VideoSection";
+import ParagraphAndImageSection from "../dashboard/section/categories/ParagraphAndImageSection";
+import ChartSection from "../dashboard/section/categories/ChartSection";
 
 type SectionRendererProps<T extends keyof SectionContentByCategory> = {
   type: T;
