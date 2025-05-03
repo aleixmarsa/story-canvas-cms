@@ -5,6 +5,7 @@ import ParagraphSection from "../section/categories/ParagraphSection";
 import ImageSection from "../section/categories/ImageSection";
 import VideoSection from "../section/categories/VideoSection";
 import TextAndImageSection from "../section/categories/TextAndImageSection";
+import ChartSection from "../section/categories/ChartSection";
 
 type SectionRendererProps<T extends keyof SectionContentByCategory> = {
   type: T;
@@ -39,6 +40,10 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
         <TextAndImageSection
           {...(content as SectionContentByCategory["TEXT_AND_IMAGE"])}
         />
+      );
+    case "CHART":
+      return (
+        <ChartSection {...(content as SectionContentByCategory["CHART"])} />
       );
     default:
       return <div className="text-red-500">Unknown section type: {type}</div>;
