@@ -257,13 +257,13 @@ async function main() {
   });
 
   console.log(
-    "✅ Seeded: user + 6 stories (list, edit, delete) + 6 sections (list, edit, delete)"
+    "Seeded: user + 6 stories (list, edit, delete) + 6 sections (list, edit, delete)"
   );
 }
 
 main()
   .catch(async (e) => {
-    console.error("❌ Seed error:", e);
+    console.error("Seed error:", e);
     process.exit(1);
   })
   .finally(async () => {
