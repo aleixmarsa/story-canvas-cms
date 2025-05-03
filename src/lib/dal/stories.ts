@@ -20,6 +20,26 @@ export const getAllStories = async () => {
 };
 
 /**
+ * Gets a story by its ID, including its sections and versions.
+ *
+ * @param storyId - The ID of the story to retrieve.
+ * @returns The story with its sections and versions, or null if not found.
+ */
+export const getStoryWithSectionsAndVersions = async (storyId: number) => {
+  return prisma.story.findUnique({
+    where: { id: storyId },
+    include: {
+      versions: true,
+      sections: {
+        include: {
+          versions: true,
+        },
+      },
+    },
+  });
+};
+
+/**
  * Deletes a story and all its related sections and versions.
  *
  * @param storyId - The ID of the story to delete.
@@ -147,26 +167,6 @@ export const getPublishedSlugs = async () => {
     },
     select: {
       publicSlug: true,
-    },
-  });
-};
-
-/**
- * Fetches a story by its public slug, including only the published version and published sections.
- *
- * @param slug - The public-facing slug of the story.
- * @returns The story with its published version and published sections, or null if not found.
- */
-export const getStoryByPublicSlug = async (slug: string) => {
-  return prisma.story.findUnique({
-    where: { publicSlug: slug },
-    include: {
-      publishedVersion: true,
-      sections: {
-        include: {
-          publishedVersion: true,
-        },
-      },
     },
   });
 };
