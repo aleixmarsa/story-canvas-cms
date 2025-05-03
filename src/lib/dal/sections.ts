@@ -138,3 +138,22 @@ export const checkSectionSlugConflict = async (
     throw new ConflictError("Slug already exists");
   }
 };
+
+/**
+ * Fetches all sections for a given story, including their current draft and published versions.
+ *
+ * @param storyId - The ID of the story.
+ * @returns A list of sections with their current draft and published versions.
+ */
+export const getSectionsByStoryId = async (storyId: number) => {
+  return prisma.section.findMany({
+    where: { storyId },
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+    },
+    orderBy: {
+      id: "asc", // o potser `createdAt` si tens aquest camp
+    },
+  });
+};
