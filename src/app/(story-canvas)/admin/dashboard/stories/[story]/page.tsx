@@ -10,7 +10,7 @@ import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
-import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
+import { publishStoryAndSections } from "@/lib/actions/stories/publish-story-and-sections";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -69,7 +69,11 @@ const StoryPage = () => {
       if (!selectedStory?.currentDraftId) {
         throw new Error("No current draft ID found for the selected story");
       }
-      const result = await publishStoryVersion(selectedStory?.currentDraftId);
+
+      const result = await publishStoryAndSections(
+        selectedStory.currentDraftId,
+        selectedStory.id
+      );
 
       if ("error" in result) {
         toast.error(result.error);
