@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { X, SquareArrowOutUpRight } from "lucide-react";
 import { SectionVersion } from "@prisma/client";
-import { DraftSectionPreviewData } from "@/types/section";
+import { RenderSectionData } from "@/types/section";
 
 type PreviewSize = "desktop" | "tablet" | "mobile" | "custom";
 
@@ -39,7 +39,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
 
   useEffect(() => {
     if (draftSection && iframeRef.current?.contentWindow) {
-      const previewDraftSectionData: DraftSectionPreviewData = {
+      const previewDraftSectionData: RenderSectionData = {
         id: draftSection.id,
         name: draftSection.name,
         type: draftSection.type,

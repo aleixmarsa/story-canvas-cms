@@ -1,5 +1,5 @@
 import { Story, StoryVersion } from "@prisma/client";
-import { DraftSectionPreviewData } from "./section";
+import { RenderSectionData } from "./section";
 /**
  * StoryWithVersions represents a Story that includes its
  * current draft and published version objects (via relation includes).
@@ -18,11 +18,11 @@ export type StoryDraft = StoryVersion & {
 };
 
 /**
- * Represents preview data for a Story,
+ * Represents render data for a Story,
  */
-export type DraftStoryPreviewData = Pick<
+export type RenderStoryData = Pick<
   StoryVersion,
   "title" | "description" | "theme" | "slug"
 > & {
-  sections: DraftSectionPreviewData[];
+  sections: RenderSectionData[];
 };

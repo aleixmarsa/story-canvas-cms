@@ -18,9 +18,9 @@ export type SectionDraft = SectionVersion & {
 };
 
 /**
- * Represents preview data for a Section,
+ * Represents render data for a Section,
  */
-export type DraftSectionPreviewData = Pick<
+export type RenderSectionData = Pick<
   SectionVersion,
   "id" | "name" | "type" | "order" | "content"
 >;

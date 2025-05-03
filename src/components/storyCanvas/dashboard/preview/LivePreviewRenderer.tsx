@@ -1,18 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import SectionRenderer from "./SectionRenderer";
-import type { DraftStoryPreviewData } from "@/types/story";
-import { SectionContentByCategory } from "@/sections/section-categories";
+import type { RenderStoryData } from "@/types/story";
+import StoryRenderer from "../../renderer/StoryRenderer";
 
-type LivePreviewRendererProps = {
-  initialStoryData: DraftStoryPreviewData;
+type Props = {
+  initialStoryData: RenderStoryData;
 };
 
-const LivePreviewRenderer = ({
-  initialStoryData,
-}: LivePreviewRendererProps) => {
+const LivePreviewRenderer = ({ initialStoryData }: Props) => {
   const [storyData, setStoryData] = useState(initialStoryData);
+  console.log("🚀 ~ LivePreviewRenderer ~ storyData:", storyData.sections);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -37,40 +35,7 @@ const LivePreviewRenderer = ({
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
-  const sortedSections = [...(storyData.sections ?? [])].sort(
-    (a, b) => a.order - b.order
-  );
-
-  return (
-    <div className="p-8 max-w-3xl mx-auto">
-      <div className="space-y-10">
-        {sortedSections.map((section) => {
-          if (
-            typeof section.content !== "object" ||
-            section.content === null ||
-            Array.isArray(section.content)
-          ) {
-            console.error("Invalid section content:", section.content);
-            return (
-              <div key={section.id} className="text-red-500">
-                Invalid section content
-              </div>
-            );
-          }
-
-          return (
-            <SectionRenderer
-              key={section.id}
-              type={section.type as keyof SectionContentByCategory}
-              content={
-                section.content as SectionContentByCategory[keyof SectionContentByCategory]
-              }
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
+  return <StoryRenderer sections={storyData.sections} />;
 };
 
 export default LivePreviewRenderer;
