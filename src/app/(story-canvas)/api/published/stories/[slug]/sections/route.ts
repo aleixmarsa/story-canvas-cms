@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getPublishedStoryByPublicSlug } from "@/lib/dal/published";
 
 /**
- * GET /api/public/stories/:slug/sections
+ * GET /api/published/stories/:slug/sections
  * Returns all the published sections of a published story
  * @param req - The request object.
  * @param params - The parameters object containing the story slug.

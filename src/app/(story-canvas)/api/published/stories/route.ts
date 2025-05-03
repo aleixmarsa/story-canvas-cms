@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getPublishedStories } from "@/lib/actions/published/get-published-stories";
 
 /**
- * GET /api/public/stories
+ * GET /api/published/stories
  * Fetches all published stories metadata
  *
  * @returns The list of published stories with their metadata
