@@ -6,21 +6,15 @@ import { StoryFormData } from "../validation/story-schemas";
 import { RenderStoryData } from "@/types/story";
 
 /**
- * Gets a story by its ID, including all its versions and the sections with their versions.
+ * Fetches all stories with their current draft and published version.
  *
- * @param storyId - The ID of the story to retrieve.
- * @returns The full story with sections and their versions, or null if not found.
+ * @returns An array of stories including current draft and published versions.
  */
-export const getStoryWithSectionsAndVersions = async (storyId: number) => {
-  return prisma.story.findUnique({
-    where: { id: storyId },
+export const getAllStories = async () => {
+  return prisma.story.findMany({
     include: {
-      versions: true,
-      sections: {
-        include: {
-          versions: true,
-        },
-      },
+      currentDraft: true,
+      publishedVersion: true,
     },
   });
 };

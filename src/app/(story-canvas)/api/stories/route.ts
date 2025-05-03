@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { getAllStories } from "@/lib/dal/stories";
 
 /**
  * GET /api/stories
@@ -10,13 +10,7 @@ import prisma from "@/lib/prisma";
  */
 export async function GET() {
   try {
-    const stories = await prisma.story.findMany({
-      include: {
-        currentDraft: true,
-        publishedVersion: true,
-      },
-    });
-
+    const stories = await getAllStories();
     return NextResponse.json(stories);
   } catch (error) {
     return NextResponse.json(
