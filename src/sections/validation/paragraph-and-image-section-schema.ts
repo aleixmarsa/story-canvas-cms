@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { baseFields } from "@/lib/validation/section-base-fields-schema";
 
-export const textAndimageSectionSchema = baseFields.extend({
+export const paragraphAndimageSectionSchema = baseFields.extend({
   body: z.string().min(1, "Text cannot be empty"),
   url: z.string().url("Invalid image URL"),
   alt: z.string().optional(),
@@ -11,7 +11,8 @@ export const textAndimageSectionSchema = baseFields.extend({
   }),
 });
 
-export type TextAndImageSectionSchema = typeof textAndimageSectionSchema;
-export type TextAndImageSectionProps = z.infer<
-  typeof textAndimageSectionSchema
+export type ParagraphAndImageSectionSchema =
+  typeof paragraphAndimageSectionSchema;
+export type ParagraphAndImageSectionProps = z.infer<
+  typeof paragraphAndimageSectionSchema
 >;

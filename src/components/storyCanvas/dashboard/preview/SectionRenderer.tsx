@@ -4,7 +4,7 @@ import TitleSection from "../section/categories/TitleSection";
 import ParagraphSection from "../section/categories/ParagraphSection";
 import ImageSection from "../section/categories/ImageSection";
 import VideoSection from "../section/categories/VideoSection";
-import TextAndImageSection from "../section/categories/TextAndImageSection";
+import ParagraphAndImageSection from "../section/categories/ParagraphAndImageSection";
 import ChartSection from "../section/categories/ChartSection";
 
 type SectionRendererProps<T extends keyof SectionContentByCategory> = {
@@ -35,10 +35,10 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
       return (
         <VideoSection {...(content as SectionContentByCategory["VIDEO"])} />
       );
-    case "TEXT_AND_IMAGE":
+    case "PARAGRAPH_AND_IMAGE":
       return (
-        <TextAndImageSection
-          {...(content as SectionContentByCategory["TEXT_AND_IMAGE"])}
+        <ParagraphAndImageSection
+          {...(content as SectionContentByCategory["PARAGRAPH_AND_IMAGE"])}
         />
       );
     case "CHART":

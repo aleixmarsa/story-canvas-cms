@@ -1,12 +1,13 @@
-import { TextAndImageSectionProps } from "@/sections/validation/text-and-image-section-schema";
+import { ParagraphAndImageSectionProps } from "@/sections/validation/paragraph-and-image-section-schema";
 import RichTextContent from "./fields/RichTextContent";
-const TextAndImageSection = ({
+
+const ParagraphAndImageSection = ({
   body,
   url,
   alt,
   caption,
   layout,
-}: TextAndImageSectionProps) => {
+}: ParagraphAndImageSectionProps) => {
   const isLeft = layout === "left";
   return (
     <section className="py-8 max-w-3xl mx-auto">
@@ -34,4 +35,4 @@ const TextAndImageSection = ({
   );
 };
 
-export default TextAndImageSection;
+export default ParagraphAndImageSection;

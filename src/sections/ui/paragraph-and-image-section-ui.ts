@@ -1,15 +1,15 @@
-import { textAndimageSectionSchema } from "../validation/text-and-image-section-schema";
+import { paragraphAndimageSectionSchema } from "../validation/paragraph-and-image-section-schema";
 import { baseUI } from "@/sections/ui/base-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 
-export const textAndImageSectionSchemaWithUI: SchemaWithUI<
-  typeof textAndimageSectionSchema
+export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
+  typeof paragraphAndimageSectionSchema
 > = {
-  schema: textAndimageSectionSchema,
+  schema: paragraphAndimageSectionSchema,
   ui: {
     ...baseUI,
     layout: {
-      label: "Text position",
+      label: "Paragraph position",
       type: "radio",
       required: true,
       options: [
