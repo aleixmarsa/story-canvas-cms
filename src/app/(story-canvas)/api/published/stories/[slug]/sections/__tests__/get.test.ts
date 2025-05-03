@@ -7,15 +7,15 @@ import { NextRequest } from "next/server";
 import { getPublishedStoryByPublicSlug } from "@/lib/dal/published";
 import { fetchPublishedSections } from "@/lib/actions/published/get-published-sections-by-slug";
 
-jest.mock("@/lib/dal/public", () => ({
+jest.mock("@/lib/dal/published", () => ({
   getPublishedStoryByPublicSlug: jest.fn(),
 }));
 
-jest.mock("@/lib/actions/public/get-published-sections-by-slug", () => ({
+jest.mock("@/lib/actions/published/get-published-sections-by-slug", () => ({
   fetchPublishedSections: jest.fn(),
 }));
 
-describe("GET /api/public/stories/:slug/sections", () => {
+describe("GET /api/published/stories/:slug/sections", () => {
   const req = new NextRequest("http://localhost");
 
   it("returns 404 if story is not found", async () => {

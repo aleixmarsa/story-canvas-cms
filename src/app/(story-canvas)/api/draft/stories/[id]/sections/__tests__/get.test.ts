@@ -6,15 +6,15 @@ import { NextRequest } from "next/server";
 import { getDraftStoryByStoryId } from "@/lib/dal/draft";
 import { fetchDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
 
-jest.mock("@/lib/dal/internal", () => ({
+jest.mock("@/lib/dal/draft", () => ({
   getDraftStoryByStoryId: jest.fn(),
 }));
 
-jest.mock("@/lib/actions/internal/get-draft-sections-by-id", () => ({
+jest.mock("@/lib/actions/draft/get-draft-sections-by-id", () => ({
   fetchDraftSections: jest.fn(),
 }));
 
-describe("GET /api/internal/stories/:id/sections", () => {
+describe("GET /api/draft/stories/:id/sections", () => {
   const mockParams = Promise.resolve({ id: 123 });
 
   afterEach(() => {
