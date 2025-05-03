@@ -6,13 +6,15 @@ export type FieldTypes =
   | "textarea"
   | "url"
   | "image"
-  | "richtext";
+  | "richtext"
+  | "radio";
 
 export type FieldMeta = {
   label: string;
   type: FieldTypes;
   required?: boolean;
   placeholder?: string;
+  options?: { value: string; label: string }[];
 };
 
 export type SchemaWithUI<T extends z.ZodTypeAny> = {

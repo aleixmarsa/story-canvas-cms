@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, Controller } from "react-hook-form";
 import { debounce } from "lodash";
 import type {
   SectionCategory,
@@ -12,11 +12,13 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { DraftSectionPreviewData } from "@/types/section";
 import { JsonValue } from "@prisma/client/runtime/library";
+import RichTextEditor from "./categories/fields/RichTextEditor";
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
   defaultValues?: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>;
@@ -183,6 +185,50 @@ const SectionCategoryForm = <T extends SectionCategory>({
             placeholder={config.placeholder}
             {...register(key, { valueAsNumber: true })}
             data-testid={`create-section-${key}-input`}
+          />
+        );
+        break;
+      case "richtext":
+        inputElement = (
+          <Controller
+            name={key as keyof typeof ui}
+            control={control}
+            render={({ field }) => (
+              <RichTextEditor
+                value={field.value || ""}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        );
+        break;
+      case "radio":
+        inputElement = (
+          <Controller
+            name={key as keyof FormData}
+            control={control}
+            render={({ field }) => (
+              <RadioGroup
+                onValueChange={field.onChange}
+                value={field.value}
+                className="flex gap-4"
+              >
+                {(config.options ?? []).map((option) => (
+                  <div
+                    key={option.value}
+                    className="flex items-center space-x-2"
+                  >
+                    <RadioGroupItem
+                      value={option.value}
+                      id={`${id}-${option.value}`}
+                    />
+                    <Label htmlFor={`${id}-${option.value}`}>
+                      {option.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            )}
           />
         );
         break;

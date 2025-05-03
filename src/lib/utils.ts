@@ -31,3 +31,17 @@ export const getInitialsFromEmail = (email: string): string => {
 
   return initials || email[0]?.toUpperCase() || "?";
 };
+
+export const normalizeLinks = (html: string): string => {
+  return html.replace(/<a\s+[^>]*href="([^"]+)"[^>]*>/g, (match, href) => {
+    if (
+      href.startsWith("http://") ||
+      href.startsWith("https://") ||
+      href.startsWith("/")
+    ) {
+      return match;
+    }
+    const normalized = `https://${href}`;
+    return match.replace(href, normalized);
+  });
+};

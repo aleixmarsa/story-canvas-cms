@@ -10,7 +10,7 @@ export const paragraphSectionSchemaWithUI: SchemaWithUI<
     ...baseUI,
     body: {
       label: "Body",
-      type: "textarea",
+      type: "richtext",
       required: true,
       placeholder: "Write your paragraph...",
     },

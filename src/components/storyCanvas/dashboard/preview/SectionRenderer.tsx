@@ -4,6 +4,8 @@ import TitleSection from "../section/categories/TitleSection";
 import ParagraphSection from "../section/categories/ParagraphSection";
 import ImageSection from "../section/categories/ImageSection";
 import VideoSection from "../section/categories/VideoSection";
+import ParagraphAndImageSection from "../section/categories/ParagraphAndImageSection";
+import ChartSection from "../section/categories/ChartSection";
 
 type SectionRendererProps<T extends keyof SectionContentByCategory> = {
   type: T;
@@ -32,6 +34,16 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
     case "VIDEO":
       return (
         <VideoSection {...(content as SectionContentByCategory["VIDEO"])} />
+      );
+    case "PARAGRAPH_AND_IMAGE":
+      return (
+        <ParagraphAndImageSection
+          {...(content as SectionContentByCategory["PARAGRAPH_AND_IMAGE"])}
+        />
+      );
+    case "CHART":
+      return (
+        <ChartSection {...(content as SectionContentByCategory["CHART"])} />
       );
     default:
       return <div className="text-red-500">Unknown section type: {type}</div>;
