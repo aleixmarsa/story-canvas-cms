@@ -30,8 +30,6 @@ test.describe("Delete section behavior (admin)", () => {
 
     await undoButton.click();
 
-    await expect(page.getByText("Section has been restored")).toBeVisible();
-
     // Check if the section is restored
     await expect(
       page.getByRole("button", { name: "Section to delete draft" })

@@ -32,6 +32,8 @@ test.describe("Create section form (admin)", () => {
 
     await page.waitForURL(new RegExp(`/admin/dashboard/stories/story-list`));
 
+    await page.reload();
+
     await expect(page.getByText("Test Section")).toBeVisible();
   });
 
