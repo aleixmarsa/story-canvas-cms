@@ -4,7 +4,7 @@ import { columns } from "@/components/storyCanvas/dashboard/DataTable/StoryDataT
 import DataTable from "../DataTable/DataTable";
 import { CurrentUser } from "@/types/auth";
 import { toast } from "sonner";
-import { StoryMetadata } from "@/lib/dal/draft";
+import { StoryDraftMetadata } from "@/lib/dal/draft";
 import { deleteStory } from "@/lib/actions/stories/delete-story";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { Role } from "@prisma/client";
@@ -15,7 +15,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
 
   const isAdmin = currentUser.role === Role.ADMIN;
 
-  const handleDelete = async (story: StoryMetadata) => {
+  const handleDelete = async (story: StoryDraftMetadata) => {
     // Optimistically remove from UI
     mutate(
       (prev: Response | undefined) => {

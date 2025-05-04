@@ -1,6 +1,6 @@
 import useSWR, { KeyedMutator } from "swr";
 import { getCurrentDraftStories } from "@/lib/actions/draft/get-draft-stories";
-import type { StoryMetadata } from "@/lib/dal/draft";
+import type { StoryDraftMetadata } from "@/lib/dal/draft";
 
 export type Response = Awaited<ReturnType<typeof getCurrentDraftStories>>;
 
@@ -11,7 +11,7 @@ const fetcher = (url: string): Promise<Response> =>
   });
 
 export function useStories(): {
-  stories: StoryMetadata[];
+  stories: StoryDraftMetadata[];
   isLoading: boolean;
   isError: boolean;
   mutate: KeyedMutator<Response>;

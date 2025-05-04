@@ -15,10 +15,10 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDashboardStore } from "@/stores/dashboard-store";
 import { RenderSectionData } from "@/types/section";
 import { JsonValue } from "@prisma/client/runtime/library";
 import RichTextEditor from "./categories/fields/RichTextEditor";
+import { SectionDraftMetadata } from "@/lib/dal/draft";
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
   defaultValues?: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>;
@@ -35,6 +35,7 @@ interface SectionFormProps<T extends SectionCategory> {
   formSubmitRef?: React.MutableRefObject<(() => void) | undefined>;
   onDirtyChange?: (dirty: boolean) => void;
   onSubmittingChange?: (submitting: boolean) => void;
+  section?: SectionDraftMetadata;
 }
 
 const SectionCategoryForm = <T extends SectionCategory>({
@@ -45,6 +46,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
   formSubmitRef,
   onDirtyChange,
   onSubmittingChange,
+  section,
 }: SectionFormProps<T>) => {
   const { ui } = sectionCategoriesSchemasWithUI[type];
   const schema = sectionCategoriesSchemasWithUI[type].schema as z.ZodType<
@@ -62,8 +64,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
     resolver: zodResolver(schema),
     defaultValues,
   });
-
-  const { selectedSection } = useDashboardStore();
 
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -100,7 +100,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
 
   // Send the updated section data to the iframe for live preview
   useEffect(() => {
-    if (!watchedValues || !selectedSection) return;
+    if (!watchedValues || !section) return;
     const watchedSection: { [key: string]: JsonValue } = {};
     fieldNames.forEach((key, i) => {
       watchedSection[key] = watchedValues[i];
@@ -109,9 +109,9 @@ const SectionCategoryForm = <T extends SectionCategory>({
     const { name } = watchedSection;
 
     const previewDraftSectionData: RenderSectionData = {
-      id: selectedSection.currentDraftId || 0,
+      id: section.currentDraftId || 0,
       name: name as string,
-      order: selectedSection.currentDraft?.order || 0,
+      order: section.currentDraft?.order || 0,
       type,
       content: watchedSection,
     };

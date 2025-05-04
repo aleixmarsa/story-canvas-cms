@@ -35,7 +35,6 @@ const EditStoryPage = () => {
       toast.error("No current draft ID found for this story");
       return;
     }
-
     setIsPublishing(true);
     try {
       const result = await publishStoryVersion(selectedStory.currentDraftId);
@@ -44,7 +43,7 @@ const EditStoryPage = () => {
         return;
       }
 
-      // Actualitza la llista SWR
+      // Update the SWR list
       mutateStories();
 
       toast.success("Story published successfully", {

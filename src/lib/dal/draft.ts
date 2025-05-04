@@ -21,7 +21,7 @@ export const getAllStoriesWithCurrentDraftMetadata = async () => {
   });
 };
 
-export type StoryMetadata = Awaited<
+export type StoryDraftMetadata = Awaited<
   ReturnType<typeof getAllStoriesWithCurrentDraftMetadata>
 >[number];
 
@@ -42,14 +42,26 @@ export const getDraftSectionsById = async (id: number) => {
   return story.sections
     .filter((s) => s.currentDraft)
     .map((s) => ({
-      id: s.currentDraft!.id,
-      name: s.currentDraft!.name,
-      type: s.currentDraft!.type,
-      order: s.currentDraft!.order,
-      content: s.currentDraft!.content,
+      id: s.id,
+      publishedAt: s.publishedAt,
+      currentDraftId: s.currentDraftId,
+      currentDraft: {
+        id: s.currentDraft!.id,
+        name: s.currentDraft!.name,
+        type: s.currentDraft!.type,
+        order: s.currentDraft!.order,
+        content: s.currentDraft!.content,
+        updatedAt: s.currentDraft!.updatedAt,
+        slug: s.currentDraft!.slug,
+        createdBy: s.currentDraft!.createdBy,
+      },
     }))
-    .sort((a, b) => a.order - b.order);
+    .sort((a, b) => a.currentDraft.order - b.currentDraft.order);
 };
+
+export type SectionDraftMetadata = Awaited<
+  ReturnType<typeof getDraftSectionsById>
+>[number];
 
 /**
  * Fetches a story by its public slug, including only the published version and published sections.

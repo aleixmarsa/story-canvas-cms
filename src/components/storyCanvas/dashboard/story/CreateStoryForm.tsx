@@ -12,7 +12,7 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { createStory } from "@/lib/actions/stories/create-story";
 import { useStories } from "@/lib/swr/useStories";
-import { StoryMetadata } from "@/lib/dal/draft";
+import { StoryDraftMetadata } from "@/lib/dal/draft";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -73,7 +73,7 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           return;
         }
 
-        const newStory: StoryMetadata = result.story;
+        const newStory: StoryDraftMetadata = result.story;
         mutateStories(
           (prev) =>
             prev && "success" in prev && prev.stories

@@ -1,6 +1,5 @@
 "use client";
 
-import { useDashboardStore } from "@/stores/dashboard-store";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
@@ -11,22 +10,34 @@ import { publishSection } from "@/lib/actions/section-version/publish-section-ve
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useStories } from "@/lib/swr/useStories";
+import { useSections } from "@/lib/swr/useSections";
+import { Loader2 } from "lucide-react";
 
 const EditSectionPage = () => {
-  const {
-    sections,
-    selectedStory,
-    selectedSection,
-    selectSection,
-    updateSection,
-  } = useDashboardStore();
   const [previewVisible, setPreviewVisible] = useState(false);
-  const { section: sectionSlug } = useParams();
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formIsSubmitting, setFormIsSubmitting] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const formRef = useRef<(() => void) | undefined>(undefined);
+  const skipNotFoundRedirect = useRef(false);
+  const { story: storySlug, section: sectionSlug } = useParams();
+  const { stories, isLoading: isLoadingStories } = useStories();
+  const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
+  console.log("🚀 ~ EditSectionPage ~ selectedStory:", selectedStory);
+
+  const {
+    sections,
+    isLoading: isLoadingSections,
+    mutate: mutateSections,
+  } = useSections(selectedStory?.id);
+  const selectedSection = sections.find(
+    (s) => s.currentDraft?.slug === sectionSlug
+  );
+  console.log("🚀 ~ EditSectionPage ~ sectionSlug:", sectionSlug);
+
+  console.log("🚀 ~ EditSectionPage ~ selectedSection:", selectedSection);
 
   const handlePublishSection = async () => {
     setIsPublishing(true);
@@ -41,16 +52,17 @@ const EditSectionPage = () => {
         throw new Error(result.error);
       }
 
-      updateSection(result.section);
+      // Update the SWR list
+      mutateSections();
       toast.success("Section published successfully", {
         description: `Your section is now live!`,
       });
     } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error("An unknown error occurred while publishing the section");
-      }
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while publishing the section"
+      );
     } finally {
       setIsPublishing(false);
     }
@@ -59,37 +71,39 @@ const EditSectionPage = () => {
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
   useEffect(() => {
-    if (!sectionSlug) return;
-    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
-    if (found) {
-      selectSection(found);
-    }
-  }, [sections, sectionSlug]);
+    if (
+      !sectionSlug ||
+      isLoadingSections ||
+      isLoadingStories ||
+      skipNotFoundRedirect.current
+    )
+      return;
 
-  useEffect(() => {
-    if (!sectionSlug || !sections.length) return;
-    const found = sections.find((s) => s.currentDraft?.slug === sectionSlug);
-
-    if (!found) {
-      router.push(ROUTES.dashboard);
+    if (!selectedSection || !selectedStory) {
+      router.push(ROUTES.stories);
     }
-  }, [sectionSlug]);
+  }, [selectedSection, isLoadingSections]);
 
   const handleSaveDraft = async () => {
     if (formRef.current) {
       await formRef.current();
     }
   };
-  if (!selectedStory) return null;
-  if (!selectedSection) return null;
-  const sectionDraftData = selectedSection?.currentDraft;
 
+  if (isLoadingSections || !selectedSection || !selectedStory) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  }
   return (
     <>
       <DashboardHeader
         title="Edit Section"
         breadcrumbs={[
           { label: "Dashboard", href: ROUTES.dashboard },
+          { label: "Stories", href: ROUTES.stories },
           {
             label: selectedStory.currentDraft?.title ?? "Untitled",
             href: `${ROUTES.stories}/${selectedStory.currentDraft?.slug}`,
@@ -110,6 +124,9 @@ const EditSectionPage = () => {
             formRef={formRef}
             onDirtyChange={setFormIsDirty}
             onSubmittingChange={setFormIsSubmitting}
+            story={selectedStory}
+            section={selectedSection}
+            skipNotFoundRedirect={skipNotFoundRedirect}
           />
         </div>
         <AnimatePresence>
@@ -128,7 +145,7 @@ const EditSectionPage = () => {
           >
             <LivePreviewPanel
               slug={selectedStory.currentDraft?.slug ?? ""}
-              draftSection={sectionDraftData}
+              draftSection={null}
             />
           </motion.div>
         </AnimatePresence>

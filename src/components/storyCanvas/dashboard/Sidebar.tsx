@@ -3,7 +3,6 @@
 import { Feather, ScrollText, User2 } from "lucide-react";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
-import { useDashboardStore } from "@/stores/dashboard-store";
 import {
   Sidebar,
   SidebarContent,
@@ -33,7 +32,6 @@ export function DashboardSidebar({
   const { stories, isLoading, isError } = useStories();
 
   const handleLogout = async () => {
-    useDashboardStore.persist.clearStorage();
     await logout();
   };
 

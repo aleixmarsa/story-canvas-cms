@@ -12,10 +12,10 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { updateStoryVersion } from "@/lib/actions/story-versions/update-story-version";
 import { useStories, Response } from "@/lib/swr/useStories";
-import { StoryMetadata } from "@/lib/dal/draft";
+import { StoryDraftMetadata } from "@/lib/dal/draft";
 
 type EditStoryFormProps = {
-  story: StoryMetadata;
+  story: StoryDraftMetadata;
   setDirty?: (dirty: boolean) => void;
   setIsSubmitting?: (submitting: boolean) => void;
   skipNotFoundRedirect: React.MutableRefObject<boolean>;

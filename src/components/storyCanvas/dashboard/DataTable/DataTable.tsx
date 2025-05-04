@@ -47,7 +47,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import DataTablePagination from "./DataTablePagination";
-import { useDashboardStore } from "@/stores/dashboard-store";
+import { useSections } from "@/lib/swr/useSections";
+
 import { useEffect, useRef, useState } from "react";
 import { RenderSectionData } from "@/types/section";
 import { Plus } from "lucide-react";
@@ -73,11 +74,13 @@ type BaseProps<TData, TValue> = {
 //
 type SortableProps<TData, TValue> = {
   enableSorting: true;
+  selectedStoryId: number;
 } & BaseProps<TData, TValue>;
 
 // If `enableSorting` is false, `id` is not required
 type NonSortableProps<TData, TValue> = {
   enableSorting?: false;
+  selectedStoryId?: number;
 } & BaseProps<TData, TValue>;
 
 // The `DataTableProps` type is a union of `SortableProps` and `NonSortableProps`.
@@ -98,12 +101,14 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     onAddClick,
     dataFetchingError,
     dataIsLoading,
+    selectedStoryId,
   } = props;
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { setSections, sections } = useDashboardStore();
+  const { sections = [], mutate: mutateSections } =
+    useSections(selectedStoryId);
 
   const table = useReactTable({
     data,
@@ -127,7 +132,6 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-
     const oldIndex = sections.findIndex((s) => s.id === active.id);
     const newIndex = sections.findIndex((s) => s.id === over.id);
     const newSections = arrayMove(sections, oldIndex, newIndex);
@@ -139,7 +143,14 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
         order: i,
       },
     }));
-    setSections(updatedWithOrder);
+    mutateSections((prev) => {
+      if (!prev || !("success" in prev)) return prev;
+
+      return {
+        success: true,
+        sections: updatedWithOrder,
+      };
+    }, false);
     const previewData: RenderSectionData[] = updatedWithOrder.map((s) => ({
       id: s.currentDraftId || 0,
       name: s.currentDraft?.name || "",

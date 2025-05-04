@@ -2,7 +2,7 @@
 
 import { getDraftSectionsById } from "@/lib/dal/draft";
 
-export const fetchDraftSections = async (slug: number) => {
+export const getDraftSections = async (slug: number) => {
   try {
     const sections = await getDraftSectionsById(slug);
     return { success: true, sections };

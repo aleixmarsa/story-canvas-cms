@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { z } from "zod";
-import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
@@ -11,22 +10,28 @@ import type {
   SectionCategory,
   SectionCategoriesSchemasWithUI,
 } from "@/sections/section-categories";
-import SectionTypeForm from "./SectionCategoryForm";
+import SectionCategoryForm from "./SectionCategoryForm";
 import { defaultContentByType } from "@/sections/lib/default-content-by-type";
+import { SectionDraftMetadata, StoryDraftMetadata } from "@/lib/dal/draft";
+import { useSections, Response } from "@/lib/swr/useSections";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;
   onDirtyChange: (dirty: boolean) => void;
   onSubmittingChange?: (submitting: boolean) => void;
+  story: StoryDraftMetadata;
+  section: SectionDraftMetadata;
+  skipNotFoundRedirect: React.MutableRefObject<boolean>;
 };
 
 const EditSectionForm = ({
   formRef,
   onDirtyChange,
   onSubmittingChange,
+  story,
+  section,
+  skipNotFoundRedirect,
 }: EditSectionFormProps) => {
-  const { updateSection, selectedStory, selectedSection, selectSection } =
-    useDashboardStore();
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
   const [externalError, setExternalError] = useState<{
@@ -36,6 +41,8 @@ const EditSectionForm = ({
     message: string;
   } | null>(null);
 
+  const { mutate: mutateSections } = useSections(story.id);
+
   useEffect(() => {
     formRef.current = async () => {
       if (formSubmitRef.current) {
@@ -44,8 +51,8 @@ const EditSectionForm = ({
     };
   }, [formRef]);
 
-  if (!selectedSection) return null;
-  const { currentDraft: currentSectionDraft } = selectedSection;
+  if (!section) return null;
+  const { currentDraft: currentSectionDraft } = section;
   if (!currentSectionDraft) return null;
   const { name, order, type, content, createdBy } = currentSectionDraft;
 
@@ -63,25 +70,22 @@ const EditSectionForm = ({
   const submitHandler = async <T extends SectionCategory>(
     data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => {
-    const selectedStoryId = selectedStory?.id;
+    const selectedStoryId = story.id;
     const { name, createdBy, ...content } = data;
 
-    if (!type || !selectedStoryId || !selectedSection?.currentDraft?.id) {
+    if (!type || !selectedStoryId || !section.currentDraft.id) {
       throw new Error("Missing type, story ID or section ID");
     }
 
     try {
-      const result = await updateSectionVersion(
-        selectedSection.currentDraft.id,
-        {
-          name,
-          createdBy,
-          content,
-          type,
-          storyId: selectedStoryId,
-          sectionId: selectedSection.id,
-        }
-      );
+      const result = await updateSectionVersion(section.currentDraft.id, {
+        name,
+        createdBy,
+        content,
+        type,
+        storyId: selectedStoryId,
+        sectionId: section.id,
+      });
 
       if ("error" in result) {
         if (result.type === "slug") {
@@ -99,19 +103,51 @@ const EditSectionForm = ({
         return false;
       }
 
-      const updatedSection = result.section;
+      if (!result.section.currentDraft) {
+        throw new Error("Missing current draft in section result");
+      }
+      const updatedSection: SectionDraftMetadata = {
+        ...result.section,
+        currentDraft: {
+          id: result.section.currentDraft.id,
+          name: result.section.currentDraft.name,
+          type: result.section.currentDraft.type,
+          order: result.section.currentDraft.order,
+          content: result.section.currentDraft.content,
+          updatedAt: result.section.currentDraft.updatedAt,
+          slug: result.section.currentDraft.slug,
+          createdBy: result.section.currentDraft.createdBy,
+        },
+      };
 
-      if (
-        updatedSection?.currentDraft?.name !==
-        selectedSection?.currentDraft?.name
-      ) {
+      mutateSections(
+        (prev): Response => {
+          if (prev && "success" in prev && prev.sections) {
+            return {
+              success: true,
+              sections: prev.sections.map((s) =>
+                s.id === section.id
+                  ? { ...s, currentDraft: updatedSection.currentDraft }
+                  : s
+              ),
+            };
+          }
+          // Fallback
+          return {
+            success: true,
+            sections: [],
+          };
+        },
+        { revalidate: false }
+      );
+
+      if (updatedSection?.currentDraft?.name !== section.currentDraft?.name) {
+        skipNotFoundRedirect.current = true;
         router.replace(
-          `${ROUTES.stories}/${selectedStory.currentDraft?.slug}/${updatedSection?.currentDraft?.slug}`
+          `${ROUTES.stories}/${story.currentDraft?.slug}/${updatedSection?.currentDraft?.slug}`
         );
       }
 
-      updateSection(updatedSection);
-      selectSection(updatedSection);
       toast.success("Section updated successfully");
       return true;
     } catch (err) {
@@ -126,7 +162,7 @@ const EditSectionForm = ({
 
   return (
     <div className="space-y-4 max-w-lg">
-      <SectionTypeForm
+      <SectionCategoryForm
         type={type}
         defaultValues={defaultValues}
         onSubmit={submitHandler}
@@ -135,6 +171,7 @@ const EditSectionForm = ({
         formSubmitRef={formSubmitRef}
         onDirtyChange={onDirtyChange}
         onSubmittingChange={onSubmittingChange}
+        section={section}
       />
     </div>
   );

@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useDashboardStore } from "@/stores/dashboard-store";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
-import { SectionWithVersions } from "@/types/section";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
@@ -17,109 +15,132 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateSectionVersionOrders } from "@/lib/actions/sections/update-section-orders";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
+import { useStories } from "@/lib/swr/useStories";
+import { useSections, Response } from "@/lib/swr/useSections";
+import { SectionDraftMetadata } from "@/lib/dal/draft";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
   const [isPublishing, setIsPublishing] = useState(false);
-  const {
-    stories,
-    selectedStory,
-    sections,
-    setSections,
-    selectStory,
-    selectSection,
-    updateStory,
-    addSection,
-    updateSection,
-    deleteSection: deleteSectionFromStore,
-  } = useDashboardStore();
   const [previewVisible, setPreviewVisible] = useState(false);
 
-  useEffect(() => {
-    const story = stories.find((s) => s.currentDraft?.slug === storySlug);
-    if (!story) return;
-    selectStory(story);
-    selectSection(null);
-    const fetchSections = async () => {
-      const res = await fetch(`/api/stories/${story.id}/sections`);
-      const data: SectionWithVersions[] = await res.json();
-      const orderedSections = [...data].sort((a, b) => {
-        const orderA = a.currentDraft?.order ?? 0;
-        const orderB = b.currentDraft?.order ?? 0;
-        return orderA - orderB;
-      });
-      setSections(orderedSections);
-    };
+  const { stories, isLoading: storiesLoading } = useStories();
+  const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
+  const {
+    sections,
+    isLoading: sectionsLoading,
+    isError: sectionsError,
+    mutate: mutateSections,
+  } = useSections(selectedStory?.id);
 
-    fetchSections();
-  }, [storySlug, stories, selectStory, selectSection, setSections]);
-
-  if (!selectedStory)
+  if (storiesLoading)
     return (
       <div className="flex justify-center items-center h-full">
         <Loader2 className="animate-spin" />
       </div>
     );
 
-  const { currentDraft } = selectedStory;
-  if (!currentDraft) return <p className="p-6">No draft found</p>;
-  const { title, slug } = currentDraft;
+  if (!selectedStory || !selectedStory.currentDraft)
+    return <p className="p-6">No story found</p>;
+
+  const { title, slug } = selectedStory.currentDraft;
 
   const handlePublishStory = async () => {
+    if (!selectedStory?.currentDraftId) {
+      toast.error("No current draft ID found for this story");
+      return;
+    }
     setIsPublishing(true);
     try {
-      if (!selectedStory?.currentDraftId) {
-        throw new Error("No current draft ID found for the selected story");
-      }
-
       const result = await publishStoryAndSections(
         selectedStory.currentDraftId,
         selectedStory.id
       );
-
       if ("error" in result) {
         toast.error(result.error);
         return;
       }
 
-      updateStory(result.story);
+      // Update the SWR list
+      mutateSections();
+
       toast.success("Story published successfully", {
         description: `Your story is now live!`,
       });
     } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error("An unknown error occurred while publishing the story");
-      }
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while publishing"
+      );
     } finally {
       setIsPublishing(false);
     }
   };
 
-  const handleDelete = async (section: SectionWithVersions) => {
-    //Delete section from the store
-    deleteSectionFromStore(section.id);
+  const handleDelete = async (section: SectionDraftMetadata) => {
+    // Optimistically remove from UI
+    mutateSections(
+      (prev: Response | undefined) => {
+        if (!prev || !("success" in prev) || !prev.sections) return prev;
+        return {
+          ...prev,
+          sections: prev.sections.filter(
+            (s) => s.currentDraft.id !== section.currentDraft.id
+          ),
+        };
+      },
+      { revalidate: false }
+    );
 
     toast.success("Section has been removed", {
-      description: `${section.currentDraft?.name} has been removed.`,
+      description: `${section.currentDraft.name} has been removed.`,
       action: {
         label: "Undo",
         onClick: () => {
-          // Add the story back to the store
-          addSection(section);
-          toast.dismiss();
-          toast.success("Section has been restored", {
-            description: `${section.currentDraft?.name} has been restored.`,
-          });
+          // Optimistically add back on Undo click
+          mutateSections(
+            (prev): Response => {
+              if (prev && "success" in prev) {
+                return {
+                  success: true,
+                  sections: [...(prev.sections ?? []), section],
+                };
+              }
+
+              return {
+                success: true,
+                sections: [section],
+              };
+            },
+            { revalidate: false }
+          );
         },
       },
       onAutoClose: async () => {
-        // Delete user from the database when the toast is closed
+        // Remove drom DB
         const res = await deleteSection(section.id);
         if (!res.success) {
           toast.error("Failed to delete user");
-          addSection(section);
+          mutateSections(
+            (prev): Response => {
+              if (prev && "success" in prev && Array.isArray(prev.sections)) {
+                return {
+                  success: true,
+                  sections: [...prev.sections, section],
+                };
+              }
+              // Fallback
+              return {
+                success: true,
+                sections: [section],
+              };
+            },
+            { revalidate: false }
+          );
+        } else {
+          // Ensure backend is in sync
+          mutateSections();
         }
       },
     });
@@ -128,12 +149,10 @@ const StoryPage = () => {
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
   const handleSaveDraft = async () => {
-    const updates = sections
-      .filter((s) => s.currentDraft)
-      .map((s) => ({
-        versionId: s.currentDraft!.id,
-        order: s.currentDraft!.order,
-      }));
+    const updates = sections.map((s) => ({
+      versionId: s.currentDraft.id,
+      order: s.currentDraft.order,
+    }));
 
     const res = await updateSectionVersionOrders(updates);
 
@@ -156,17 +175,18 @@ const StoryPage = () => {
       if ("error" in result) {
         throw new Error(result.error);
       }
+      // Update the SWR list
+      mutateSections();
 
-      updateSection(result.section);
       toast.success("Section published successfully", {
         description: `Your section is now live!`,
       });
     } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error("An unknown error occurred while publishing the section");
-      }
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while publishing the section"
+      );
     } finally {
       setIsPublishing(false);
     }
@@ -200,6 +220,9 @@ const StoryPage = () => {
             isPreviewVisible={previewVisible}
             addHref={`${slug}/new-section`}
             addButtonLabel="New Section"
+            dataIsLoading={sectionsLoading}
+            dataFetchingError={sectionsError}
+            selectedStoryId={selectedStory.id}
           />
         </div>
         <AnimatePresence>

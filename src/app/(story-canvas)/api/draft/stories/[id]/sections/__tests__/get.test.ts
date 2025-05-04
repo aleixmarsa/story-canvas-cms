@@ -4,14 +4,14 @@
 import { GET } from "../route";
 import { NextRequest } from "next/server";
 import { getDraftStoryByStoryId } from "@/lib/dal/draft";
-import { fetchDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
+import { getDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
 
 jest.mock("@/lib/dal/draft", () => ({
   getDraftStoryByStoryId: jest.fn(),
 }));
 
 jest.mock("@/lib/actions/draft/get-draft-sections-by-id", () => ({
-  fetchDraftSections: jest.fn(),
+  getDraftSections: jest.fn(),
 }));
 
 describe("GET /api/draft/stories/:id/sections", () => {
@@ -40,7 +40,7 @@ describe("GET /api/draft/stories/:id/sections", () => {
     ];
 
     (getDraftStoryByStoryId as jest.Mock).mockResolvedValue(mockStory);
-    (fetchDraftSections as jest.Mock).mockResolvedValue(mockSections);
+    (getDraftSections as jest.Mock).mockResolvedValue(mockSections);
 
     const req = new NextRequest("http://localhost");
     const res = await GET(req, { params: mockParams });
