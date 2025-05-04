@@ -6,8 +6,10 @@ export const getAllStoriesWithCurrentDraftMetadata = async () => {
     select: {
       id: true,
       publishedAt: true,
+      currentDraftId: true,
       currentDraft: {
         select: {
+          id: true,
           title: true,
           slug: true,
           updatedAt: true,
