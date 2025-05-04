@@ -2,8 +2,7 @@
 import { z } from "zod";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDashboardStore } from "@/stores/dashboard-store";
-import SectionTypeForm from "./SectionCategoryForm";
+import SectionCategoryForm from "./SectionCategoryForm";
 import type {
   SectionCategory,
   SectionCategoriesSchemasWithUI,
@@ -19,20 +18,22 @@ import {
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { createSection } from "@/lib/actions/sections/create-section";
+import { StoryDraftMetadata } from "@/lib/dal/draft";
 
 const CreateSectionForm = ({
   onDirtyChange,
   onSubmittingChange,
   formRef,
+  story,
 }: {
   formRef: React.MutableRefObject<(() => void) | undefined>;
   onDirtyChange: (dirty: boolean) => void;
   onSubmittingChange?: (submitting: boolean) => void;
+  story: StoryDraftMetadata;
 }) => {
   const [selectedType, setSelectedType] = useState<SectionCategory | null>(
     null
   );
-  const { addSection, selectedStory } = useDashboardStore();
   const [externalError, setExternalError] = useState<{
     field: keyof z.infer<
       SectionCategoriesSchemasWithUI[SectionCategory]["schema"]
@@ -49,7 +50,7 @@ const CreateSectionForm = ({
   const handleSubmit = async <T extends SectionCategory>(
     data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => {
-    const selectedStoryId = selectedStory?.id;
+    const selectedStoryId = story.id;
     if (!selectedType || !selectedStoryId) {
       throw new Error("Section type or story ID is not selected");
     }
@@ -79,10 +80,9 @@ const CreateSectionForm = ({
         return false;
       }
 
-      addSection(result.section);
       setSelectedType(null);
       toast.success("Section created successfully");
-      router.push(`${ROUTES.stories}/${selectedStory.currentDraft?.slug}`);
+      router.push(`${ROUTES.stories}/${story.currentDraft?.slug}`);
       return true;
     } catch (err) {
       if (err instanceof Error) {
@@ -120,7 +120,7 @@ const CreateSectionForm = ({
       </div>
       {selectedType && (
         <div className="space-y-4">
-          <SectionTypeForm
+          <SectionCategoryForm
             type={selectedType}
             onSubmit={handleSubmit}
             externalError={externalError}

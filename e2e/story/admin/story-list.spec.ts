@@ -7,7 +7,7 @@ test.describe("Story list (admin)", () => {
   test("should display a seeded story in the list", async ({ page }) => {
     await page.goto(ROUTES.stories);
     await expect(
-      page.getByText("Story visible in list", { exact: true })
+      page.getByRole("cell", { name: "Editor story visible in list" })
     ).toBeVisible();
   });
 });

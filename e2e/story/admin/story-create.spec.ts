@@ -19,9 +19,9 @@ test.describe("Create story form (admin)", () => {
     await page.getByTestId("create-story-slug-input").fill(uniqueSlug);
     await page.getByTestId("header-save-button").click();
 
-    await page.waitForURL(new RegExp(`/admin/dashboard/stories/${uniqueSlug}`));
+    await page.waitForURL(new RegExp(ROUTES.stories));
 
-    await expect(page).toHaveURL(`/admin/dashboard/stories/${uniqueSlug}`);
+    await expect(page).toHaveURL(ROUTES.stories);
   });
 
   test("should show error if slug is already in use", async ({ page }) => {

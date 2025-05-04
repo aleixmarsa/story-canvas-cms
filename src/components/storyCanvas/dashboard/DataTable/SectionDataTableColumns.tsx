@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { SectionWithVersions } from "@/types/section";
+import { SectionDraftMetadata } from "@/lib/dal/draft";
 import { Badge } from "@/components/ui/badge";
 import { StoryStatus } from "@prisma/client";
 import { GripVertical } from "lucide-react";
@@ -11,9 +11,9 @@ import DeleteDialog from "../DeleteDialog";
 
 export const columns = (
   storySlug: string,
-  handleDelete: (story: SectionWithVersions) => Promise<void>,
+  handleDelete: (story: SectionDraftMetadata) => Promise<void>,
   handlePublish: (currentDraftId: number | undefined) => Promise<void>
-): ColumnDef<SectionWithVersions>[] => [
+): ColumnDef<SectionDraftMetadata>[] => [
   {
     id: "dragHandle",
     header: () => null,
@@ -24,7 +24,7 @@ export const columns = (
     id: "name",
     enableHiding: false,
     header: "Name",
-    accessorFn: (row) => row.currentDraft?.name ?? "(untitled)",
+    accessorFn: (row) => row.currentDraft.name ?? "(untitled)",
   },
   {
     header: "Status",
@@ -59,7 +59,7 @@ export const columns = (
   },
   {
     header: "Slug",
-    accessorFn: (row) => row.currentDraft?.slug ?? "-",
+    accessorFn: (row) => row.currentDraft.slug ?? "-",
   },
   {
     header: "Type",

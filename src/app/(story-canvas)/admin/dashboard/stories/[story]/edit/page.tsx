@@ -1,76 +1,72 @@
 "use client";
 
-import { useDashboardStore } from "@/stores/dashboard-store";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import EditStoryForm from "@/components/storyCanvas/dashboard/story/EditStoryForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import { ROUTES } from "@/lib/constants/storyCanvas";
-import { toast } from "sonner";
 import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
-import { Loader2 } from "lucide-react";
+import { useStories } from "@/lib/swr/useStories";
 
 const EditStoryPage = () => {
-  const { stories, selectStory, selectedStory, updateStory } =
-    useDashboardStore();
   const { story: storySlug } = useParams();
   const router = useRouter();
+  const { stories, isLoading, mutate: mutateStories } = useStories();
   const [isDirty, setDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
-
   const formRef = useRef<HTMLFormElement | null>(null);
+  const skipNotFoundRedirect = useRef(false);
+
+  const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
+
+  useEffect(() => {
+    if (!storySlug || isLoading || skipNotFoundRedirect.current) return;
+
+    if (!selectedStory) {
+      router.push(ROUTES.stories);
+    }
+  }, [selectedStory, isLoading]);
 
   const handlePublishStory = async () => {
+    if (!selectedStory?.currentDraftId) {
+      toast.error("No current draft ID found for this story");
+      return;
+    }
     setIsPublishing(true);
     try {
-      if (!selectedStory?.currentDraftId) {
-        throw new Error("No current draft ID found for the selected story");
-      }
-      const result = await publishStoryVersion(selectedStory?.currentDraftId);
-
+      const result = await publishStoryVersion(selectedStory.currentDraftId);
       if ("error" in result) {
         toast.error(result.error);
         return;
       }
 
-      updateStory(result.story);
+      // Update the SWR list
+      mutateStories();
+
       toast.success("Story published successfully", {
         description: `Your story is now live!`,
       });
     } catch (err) {
-      if (err instanceof Error) {
-        toast.error(err.message);
-      } else {
-        toast.error("An unknown error occurred while publishing the story");
-      }
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while publishing"
+      );
     } finally {
       setIsPublishing(false);
     }
   };
 
-  useEffect(() => {
-    if (!storySlug || stories.length === 0) return;
-    const found = stories.find((s) => s.currentDraft?.slug === storySlug);
-    if (found) {
-      selectStory(found);
-    }
-  }, [stories, storySlug]);
-
-  useEffect(() => {
-    if (!storySlug || stories.length === 0) return;
-    const found = stories.find((s) => s.currentDraft?.slug === storySlug);
-    if (!found) {
-      router.push(ROUTES.dashboard);
-    }
-  }, [storySlug]);
-
-  if (!selectedStory)
+  if (isLoading || !selectedStory) {
     return (
       <div className="flex justify-center items-center h-full">
         <Loader2 className="animate-spin" />
       </div>
     );
+  }
 
   return (
     <>
@@ -89,9 +85,11 @@ const EditStoryPage = () => {
       />
       <div className="px-6">
         <EditStoryForm
+          story={selectedStory}
           setDirty={setDirty}
           setIsSubmitting={setIsSubmitting}
           ref={formRef}
+          skipNotFoundRedirect={skipNotFoundRedirect}
         />
       </div>
     </>

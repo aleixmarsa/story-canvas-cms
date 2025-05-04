@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import { Feather, ScrollText, User2 } from "lucide-react";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
-import { useDashboardStore } from "@/stores/dashboard-store";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +21,7 @@ import { ROUTES } from "@/lib/constants/storyCanvas";
 import { CurrentUser } from "@/types/auth";
 import { logout } from "@/lib/actions/auth/login";
 import { LogOut } from "lucide-react";
+import { useStories } from "@/lib/swr/useStories";
 
 export function DashboardSidebar({
   user,
@@ -30,21 +29,9 @@ export function DashboardSidebar({
 }: {
   user: CurrentUser | null;
 } & React.ComponentProps<typeof Sidebar>) {
-  const { stories, setStories } = useDashboardStore();
-
-  useEffect(() => {
-    if (stories.length === 0) {
-      const fetchStories = async () => {
-        const res = await fetch("/api/stories");
-        const data = await res.json();
-        setStories(data);
-      };
-      fetchStories();
-    }
-  }, [setStories]);
+  const { stories, isLoading, isError } = useStories();
 
   const handleLogout = async () => {
-    useDashboardStore.persist.clearStorage();
     await logout();
   };
 
@@ -81,7 +68,7 @@ export function DashboardSidebar({
                 </Link>
               </SidebarMenuButton>
 
-              {stories.length > 0 && (
+              {!isLoading && !isError && (
                 <SidebarMenuSub>
                   {stories.map((story) => (
                     <SidebarMenuSubItem key={story.id}>
@@ -89,7 +76,7 @@ export function DashboardSidebar({
                         <Link
                           href={`${ROUTES.stories}/${story.currentDraft?.slug}`}
                         >
-                          {story.currentDraft?.slug}
+                          {story.currentDraft?.title}
                         </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>

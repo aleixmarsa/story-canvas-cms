@@ -1,4 +1,3 @@
-// components/storyCanvas/dashboard/DataTable/DataTable.tsx
 "use client";
 
 import * as React from "react";
@@ -38,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -48,7 +47,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import DataTablePagination from "./DataTablePagination";
-import { useDashboardStore } from "@/stores/dashboard-store";
+import { useSections } from "@/lib/swr/useSections";
+
 import { useEffect, useRef, useState } from "react";
 import { RenderSectionData } from "@/types/section";
 import { Plus } from "lucide-react";
@@ -66,17 +66,21 @@ type BaseProps<TData, TValue> = {
   addButtonLabel?: string;
   addHref?: string;
   onAddClick?: () => void;
+  dataIsLoading?: boolean;
+  dataFetchingError?: boolean;
 };
 
 // If `enableSorting` is true, `id` is required
 //
 type SortableProps<TData, TValue> = {
   enableSorting: true;
+  selectedStoryId: number;
 } & BaseProps<TData, TValue>;
 
 // If `enableSorting` is false, `id` is not required
 type NonSortableProps<TData, TValue> = {
   enableSorting?: false;
+  selectedStoryId?: number;
 } & BaseProps<TData, TValue>;
 
 // The `DataTableProps` type is a union of `SortableProps` and `NonSortableProps`.
@@ -95,12 +99,16 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     addButtonLabel,
     addHref,
     onAddClick,
+    dataFetchingError,
+    dataIsLoading,
+    selectedStoryId,
   } = props;
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { setSections, sections } = useDashboardStore();
+  const { sections = [], mutate: mutateSections } =
+    useSections(selectedStoryId);
 
   const table = useReactTable({
     data,
@@ -124,7 +132,6 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-
     const oldIndex = sections.findIndex((s) => s.id === active.id);
     const newIndex = sections.findIndex((s) => s.id === over.id);
     const newSections = arrayMove(sections, oldIndex, newIndex);
@@ -136,7 +143,14 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
         order: i,
       },
     }));
-    setSections(updatedWithOrder);
+    mutateSections((prev) => {
+      if (!prev || !("success" in prev)) return prev;
+
+      return {
+        success: true,
+        sections: updatedWithOrder,
+      };
+    }, false);
     const previewData: RenderSectionData[] = updatedWithOrder.map((s) => ({
       id: s.currentDraftId || 0,
       name: s.currentDraft?.name || "",
@@ -298,8 +312,12 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border mb-6">
-        {enableSorting ? (
+      <div className="rounded-md border mb-6 min-h-[120px] flex items-center justify-center">
+        {dataFetchingError ? (
+          <p className="text-destructive text-sm">Error loading data.</p>
+        ) : dataIsLoading ? (
+          <Loader2 className="animate-spin" />
+        ) : enableSorting ? (
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

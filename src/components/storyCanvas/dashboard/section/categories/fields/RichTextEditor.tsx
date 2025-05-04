@@ -1,12 +1,9 @@
 "use client";
+
 import React, { useEffect, useRef } from "react";
-import "quill/dist/quill.snow.css";
-import { Parchment } from "quill";
 import Quill from "quill";
-const AlignStyle = Quill.import(
-  "attributors/style/align"
-) as Parchment.Attributor;
-Quill.register(AlignStyle, true);
+import { Parchment } from "quill";
+import "quill/dist/quill.snow.css";
 
 type RichTextEditorProps = {
   value: string;
@@ -19,8 +16,14 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
 
   useEffect(() => {
     let mounted = true;
+
     const loadQuill = async () => {
-      const { default: Quill } = await import("quill");
+      const Quill = (await import("quill")).default;
+
+      const AlignStyle = Quill.import(
+        "attributors/style/align"
+      ) as Parchment.Attributor;
+      Quill.register(AlignStyle, true);
       if (editorRef.current && !quillRef.current && mounted) {
         const instance = new Quill(editorRef.current, {
           theme: "snow",
@@ -41,9 +44,12 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
         });
 
         instance.root.innerHTML = value;
+        quillRef.current = instance;
       }
     };
+
     loadQuill();
+
     return () => {
       mounted = false;
       quillRef.current = null;
@@ -52,4 +58,5 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
 
   return <div ref={editorRef} className="min-h-[300px]" />;
 };
+
 export default RichTextEditor;

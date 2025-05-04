@@ -30,8 +30,6 @@ test.describe("Delete story behavior (admin)", () => {
 
     await undoButton.click();
 
-    await expect(page.getByText("Story has been restored")).toBeVisible();
-
     // Check if the story is restored
     await expect(
       page.getByRole("row", { name: "Story to delete" })

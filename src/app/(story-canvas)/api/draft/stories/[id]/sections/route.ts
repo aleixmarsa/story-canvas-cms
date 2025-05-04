@@ -1,4 +1,4 @@
-import { fetchDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
+import { getDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
 import { NextResponse } from "next/server";
 import { getDraftStoryByStoryId } from "@/lib/dal/draft";
 
@@ -28,7 +28,7 @@ export async function GET(
     if (!story) {
       return NextResponse.json({ error: "Story Not Found" }, { status: 404 });
     }
-    const result = await fetchDraftSections(storyId);
+    const result = await getDraftSections(storyId);
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(

@@ -2,7 +2,7 @@ import { getCurrentDraftStories } from "@/lib/actions/draft/get-draft-stories";
 import { NextResponse } from "next/server";
 
 /**
- * GET /api/draft/stories/draft
+ * GET /api/draft/stories
  * Fetches all published stories metadata
  *
  * @returns The list of published stories with their metadata
