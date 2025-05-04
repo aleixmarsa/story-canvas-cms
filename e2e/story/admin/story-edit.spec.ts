@@ -48,28 +48,30 @@ test.describe("Edit story (admin)", () => {
     // Updates the form and saves
     await page
       .getByTestId("edit-story-title-input")
-      .fill("Story edited via test");
+      .fill("Admin Story edited via test");
     await page.getByTestId("edit-story-createdBy-input").fill("playwright-e2e");
-    await page.getByTestId("edit-story-slug-input").fill("story-edited-test");
+    await page
+      .getByTestId("edit-story-slug-input")
+      .fill("admin-story-edited-test");
     await page.getByTestId("header-save-button").click();
 
     // Wait for the success message and updated the URL
     await expect(page.getByText("Story updated successfully")).toBeVisible;
     await expect(page).toHaveURL(
-      "/admin/dashboard/stories/story-edited-test/edit"
+      "/admin/dashboard/stories/admin-story-edited-test/edit"
     );
 
     // Check if the story is updated in the list
     await page.goto(ROUTES.stories);
     await expect(
-      page.getByText("Story edited via test", { exact: true })
+      page.getByRole("cell", { name: "Admin Story edited via test" })
     ).toBeVisible();
     await expect(
       page.getByText("Story to edit", { exact: true })
     ).not.toBeVisible();
     await expect(page.getByText("playwright-e2e")).toBeVisible();
     await expect(
-      page.getByRole("cell", { name: "story-edited-test", exact: true })
+      page.getByRole("cell", { name: "admin-story-edited-test", exact: true })
     ).toBeVisible();
   });
 });

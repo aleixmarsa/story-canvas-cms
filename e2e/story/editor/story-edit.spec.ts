@@ -65,7 +65,9 @@ test.describe("Edit story (editor)", () => {
 
     // Check if the story is updated in the list
     await page.goto(ROUTES.stories);
-    await expect(page.getByText("Editor Story edited via test")).toBeVisible();
+    await expect(
+      page.getByRole("cell", { name: "Editor Story edited via test" })
+    ).toBeVisible();
     await expect(
       page.getByText("Editor Story to edit", { exact: true })
     ).not.toBeVisible();

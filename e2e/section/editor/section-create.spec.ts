@@ -36,8 +36,6 @@ test.describe("Create section form (editor)", () => {
       new RegExp(`/admin/dashboard/stories/editor-story-list`)
     );
 
-    await page.reload();
-
     await expect(page.getByText("Test Section")).toBeVisible();
   });
 });
