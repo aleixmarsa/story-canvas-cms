@@ -67,7 +67,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
                   stories: [...prev.stories, story],
                 };
               }
-
+              // Fallback
               return {
                 success: true,
                 stories: [story],

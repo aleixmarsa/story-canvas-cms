@@ -8,20 +8,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import FormErrorMessage from "../../FormErrorMessage";
 import { useRouter } from "next/navigation";
-import { useDashboardStore } from "@/stores/dashboard-store";
-import { StoryVersion } from "@prisma/client";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { updateStoryVersion } from "@/lib/actions/story-versions/update-story-version";
+import { useStories, Response } from "@/lib/swr/useStories";
+import { StoryMetadata } from "@/lib/dal/draft";
 
 type EditStoryFormProps = {
+  story: StoryMetadata;
   setDirty?: (dirty: boolean) => void;
   setIsSubmitting?: (submitting: boolean) => void;
+  skipNotFoundRedirect: React.MutableRefObject<boolean>;
 };
 
 const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
-  ({ setDirty, setIsSubmitting }, ref) => {
-    const { updateStory, selectedStory, selectStory } = useDashboardStore();
+  ({ story, setDirty, setIsSubmitting, skipNotFoundRedirect }, ref) => {
     const router = useRouter();
     const {
       register,
@@ -32,41 +33,40 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
     } = useForm<StoryFormData>({
       resolver: zodResolver(storySchema),
       defaultValues: {
-        title: selectedStory?.currentDraft?.title,
-        slug: selectedStory?.currentDraft?.slug,
-        createdBy: selectedStory?.currentDraft?.createdBy,
-        storyId: selectedStory?.id,
+        title: story.currentDraft?.title,
+        slug: story.currentDraft?.slug,
+        createdBy: story.currentDraft?.createdBy,
+        storyId: story.id,
       },
     });
+    const { mutate: mutateStories } = useStories();
 
     useEffect(() => {
-      if (selectedStory?.currentDraft) {
+      if (story?.currentDraft) {
         reset({
-          title: selectedStory.currentDraft.title,
-          slug: selectedStory.currentDraft.slug,
-          createdBy: selectedStory.currentDraft.createdBy,
-          storyId: selectedStory.id,
+          title: story.currentDraft.title,
+          slug: story.currentDraft.slug,
+          createdBy: story.currentDraft.createdBy,
+          storyId: story.id,
         });
       }
-    }, [selectedStory, reset]);
+    }, [story, reset]);
 
     useEffect(() => {
-      if (setDirty) setDirty(isDirty);
+      setDirty?.(isDirty);
     }, [isDirty, setDirty]);
 
     useEffect(() => {
-      if (setIsSubmitting) setIsSubmitting(isSubmitting);
+      setIsSubmitting?.(isSubmitting);
     }, [isSubmitting, setIsSubmitting]);
 
     const onSubmit = async (data: StoryFormData) => {
       try {
-        if (!selectedStory?.currentDraftId) {
+        if (!story?.currentDraftId) {
           throw new Error("No story is selected for editing");
         }
-        const result = await updateStoryVersion(
-          selectedStory.currentDraftId,
-          data
-        );
+
+        const result = await updateStoryVersion(story.currentDraftId, data);
 
         if ("error" in result) {
           if (result.type === "slug") {
@@ -80,29 +80,39 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
           return;
         }
 
-        const updatedStoryVersion: StoryVersion = result.version;
+        mutateStories(
+          (prev): Response => {
+            if (prev && "success" in prev && prev.stories) {
+              return {
+                success: true,
+                stories: prev.stories.map((s) =>
+                  s.id === story.id ? { ...s, currentDraft: result.version } : s
+                ),
+              };
+            }
+            // Fallback
+            return {
+              success: true,
+              stories: [],
+            };
+          },
+          { revalidate: false }
+        );
 
-        if (data.slug !== selectedStory?.currentDraft?.slug) {
+        //If slug changed, update the route
+        if (data.slug !== story.currentDraft?.slug) {
+          skipNotFoundRedirect.current = true;
           router.replace(`${ROUTES.stories}/${data.slug}/edit`);
-        }
-
-        if (selectedStory) {
-          const updatedStory = {
-            ...selectedStory,
-            currentDraft: updatedStoryVersion,
-          };
-          updateStory(updatedStory);
-          selectStory(updatedStory);
         }
 
         toast.success("Story updated successfully");
         reset(data);
       } catch (err) {
-        if (err instanceof Error) {
-          toast.error(err.message);
-        } else {
-          toast.error("An unknown error occurred while updating the story");
-        }
+        toast.error(
+          err instanceof Error
+            ? err.message
+            : "An unknown error occurred while updating the story"
+        );
       }
     };
 
