@@ -1,7 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { StoryWithVersions } from "@/types/story";
+import { StoryMetadata } from "@/lib/dal/draft";
 import { StoryStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
@@ -13,8 +13,8 @@ import { Role } from "@prisma/client";
 
 export const columns = (
   currentUser: CurrentUser,
-  handleDelete: (story: StoryWithVersions) => Promise<void>
-): ColumnDef<StoryWithVersions>[] => [
+  handleDelete: (story: StoryMetadata) => Promise<void>
+): ColumnDef<StoryMetadata>[] => [
   {
     id: "title",
     header: ({ column }) => {

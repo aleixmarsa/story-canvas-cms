@@ -1,4 +1,3 @@
-// components/storyCanvas/dashboard/DataTable/DataTable.tsx
 "use client";
 
 import * as React from "react";
@@ -38,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -66,6 +65,8 @@ type BaseProps<TData, TValue> = {
   addButtonLabel?: string;
   addHref?: string;
   onAddClick?: () => void;
+  dataIsLoading?: boolean;
+  dataFetchingError?: boolean;
 };
 
 // If `enableSorting` is true, `id` is required
@@ -95,6 +96,8 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     addButtonLabel,
     addHref,
     onAddClick,
+    dataFetchingError,
+    dataIsLoading,
   } = props;
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -298,8 +301,12 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border mb-6">
-        {enableSorting ? (
+      <div className="rounded-md border mb-6 min-h-[120px] flex items-center justify-center">
+        {dataFetchingError ? (
+          <p className="text-destructive text-sm">Error loading data.</p>
+        ) : dataIsLoading ? (
+          <Loader2 className="animate-spin" />
+        ) : enableSorting ? (
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
