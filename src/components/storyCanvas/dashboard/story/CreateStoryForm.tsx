@@ -6,13 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { storySchema, StoryFormData } from "@/lib/validation/story-schemas";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDashboardStore } from "@/stores/dashboard-store";
 import { useRouter } from "next/navigation";
-import { StoryWithVersions } from "@/types/story";
 import FormErrorMessage from "../../FormErrorMessage";
 import { ROUTES } from "@/lib/constants/storyCanvas";
 import { toast } from "sonner";
 import { createStory } from "@/lib/actions/stories/create-story";
+import { useStories } from "@/lib/swr/useStories";
+import { StoryMetadata } from "@/lib/dal/draft";
 
 type CreateStoryFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -21,7 +21,7 @@ type CreateStoryFormProps = {
 
 const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
   ({ setDirty, setIsSubmitting }, ref) => {
-    const { addStory } = useDashboardStore();
+    const { mutate: mutateStories } = useStories();
     const router = useRouter();
 
     const {
@@ -73,13 +73,25 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           return;
         }
 
-        const newStory: StoryWithVersions = result.story;
-        addStory(newStory);
+        const newStory: StoryMetadata = result.story;
+        mutateStories(
+          (prev) =>
+            prev && "success" in prev && prev.stories
+              ? {
+                  success: true,
+                  stories: [...prev.stories, newStory],
+                }
+              : {
+                  success: true,
+                  stories: [newStory],
+                },
+          { revalidate: false }
+        );
         reset();
         toast.success("Story created successfully", {
           description: "You can now start editing your story.",
         });
-        router.push(`${ROUTES.stories}/${newStory.currentDraft?.slug}`);
+        router.push(`${ROUTES.stories}`);
       } catch (err) {
         if (err instanceof Error) {
           toast.error(err.message);
