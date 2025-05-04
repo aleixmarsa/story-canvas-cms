@@ -6,14 +6,14 @@ import {
 import { notFound } from "next/navigation";
 import StoryRenderer from "@/components/storyCanvas/renderer/StoryRenderer";
 
-type PageProps = { params: { slug: string } };
+type Params = Promise<{ slug: string }>;
 
 export async function generateStaticParams() {
   const slugs = await getPublishedSlugs();
   return slugs.map(({ publicSlug }) => ({ slug: publicSlug }));
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
   const story = await getPublishedStoryByPublicSlug(slug);
   if (!story || !story.publishedVersion) return {};
@@ -23,7 +23,11 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default async function PublishedStoryPage({ params }: PageProps) {
+export default async function PublishedStoryPage({
+  params,
+}: {
+  params: Params;
+}) {
   const { slug } = await params;
   const story = await getPublishedStoryByPublicSlug(slug);
 

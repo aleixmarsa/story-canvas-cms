@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:test:e2e": "NODE_ENV=test next dev -p 3001",
+    "preview:test:e2e": "NODE_ENV=test pnpm build && next start -p 3001",
     "build": "pnpm run prisma:migrate:deploy && prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
