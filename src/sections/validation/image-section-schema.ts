@@ -2,7 +2,10 @@ import { z } from "zod";
 import { baseFields } from "@/lib/validation/section-base-fields-schema";
 
 export const imageSectionSchema = baseFields.extend({
-  url: z.string().url("Invalid image URL"),
+  image: z.object({
+    url: z.string().url("Invalid image URL"),
+    publicId: z.string(),
+  }),
   alt: z.string().optional(),
   caption: z.string().optional(),
 });

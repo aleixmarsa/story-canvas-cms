@@ -5,9 +5,9 @@ export type FieldTypes =
   | "number"
   | "textarea"
   | "url"
-  | "image"
   | "richtext"
-  | "radio";
+  | "radio"
+  | "media";
 
 export type FieldMeta = {
   label: string;
@@ -21,3 +21,5 @@ export type SchemaWithUI<T extends z.ZodTypeAny> = {
   schema: T;
   ui: { [K in keyof z.infer<T>]: FieldMeta };
 };
+
+export type MediaField = { url: string; publicId: string };

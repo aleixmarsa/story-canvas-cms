@@ -7,9 +7,9 @@ export const imageSectionSchemaWithUI: SchemaWithUI<typeof imageSectionSchema> =
     schema: imageSectionSchema,
     ui: {
       ...baseUI,
-      url: {
-        label: "Image URL",
-        type: "url",
+      image: {
+        label: "Image",
+        type: "media",
         required: true,
       },
       alt: {
