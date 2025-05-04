@@ -5,17 +5,23 @@ export const getAllStoriesWithCurrentDraftMetadata = async () => {
   return prisma.story.findMany({
     select: {
       id: true,
+      publishedAt: true,
       currentDraft: {
         select: {
           title: true,
           slug: true,
           updatedAt: true,
+          createdBy: true,
           description: true,
         },
       },
     },
   });
 };
+
+export type StoryMetadata = Awaited<
+  ReturnType<typeof getAllStoriesWithCurrentDraftMetadata>
+>[number];
 
 export const getDraftSectionsById = async (id: number) => {
   const story = await prisma.story.findUnique({
