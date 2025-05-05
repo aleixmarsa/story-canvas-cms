@@ -17,9 +17,9 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
         { value: "right", label: "Right" },
       ],
     },
-    url: {
-      label: "Image URL",
-      type: "url",
+    image: {
+      label: "Image",
+      type: "image",
       required: true,
     },
     alt: {

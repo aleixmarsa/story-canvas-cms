@@ -25,7 +25,6 @@ const EditSectionPage = () => {
   const { story: storySlug, section: sectionSlug } = useParams();
   const { stories, isLoading: isLoadingStories } = useStories();
   const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
-  console.log("🚀 ~ EditSectionPage ~ selectedStory:", selectedStory);
 
   const {
     sections,
@@ -35,9 +34,6 @@ const EditSectionPage = () => {
   const selectedSection = sections.find(
     (s) => s.currentDraft?.slug === sectionSlug
   );
-  console.log("🚀 ~ EditSectionPage ~ sectionSlug:", sectionSlug);
-
-  console.log("🚀 ~ EditSectionPage ~ selectedSection:", selectedSection);
 
   const handlePublishSection = async () => {
     setIsPublishing(true);

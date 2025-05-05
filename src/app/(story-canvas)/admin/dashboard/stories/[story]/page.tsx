@@ -121,7 +121,7 @@ const StoryPage = () => {
         // Remove drom DB
         const res = await deleteSection(section.id);
         if (!res.success) {
-          toast.error("Failed to delete user");
+          toast.error("Failed to delete section");
           mutateSections(
             (prev): Response => {
               if (prev && "success" in prev && Array.isArray(prev.sections)) {

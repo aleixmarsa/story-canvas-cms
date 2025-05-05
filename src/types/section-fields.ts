@@ -5,9 +5,12 @@ export type FieldTypes =
   | "number"
   | "textarea"
   | "url"
-  | "image"
   | "richtext"
-  | "radio";
+  | "radio"
+  | "image"
+  | "video";
+
+export type MediaFieldTypes = Extract<FieldTypes, "image" | "video">;
 
 export type FieldMeta = {
   label: string;

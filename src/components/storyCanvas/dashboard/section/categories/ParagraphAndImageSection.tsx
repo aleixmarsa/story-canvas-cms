@@ -3,7 +3,7 @@ import RichTextContent from "./fields/RichTextContent";
 
 const ParagraphAndImageSection = ({
   body,
-  url,
+  image,
   alt,
   caption,
   layout,
@@ -18,9 +18,9 @@ const ParagraphAndImageSection = ({
       >
         <div className="w-full md:w-1/2">
           <img
-            src={url}
-            alt={alt || ""}
-            className="rounded-lg w-full h-auto object-cover"
+            src={image.url}
+            alt={alt || "Image"}
+            className="mx-auto rounded-lg shadow-md"
           />
           {caption && (
             <p className="text-sm text-muted-foreground mt-2 text-center">

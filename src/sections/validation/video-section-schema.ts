@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { baseFields } from "@/lib/validation/section-base-fields-schema";
+import { mediaFieldSchema } from "./media-field-schema";
 
 export const videoSectionSchema = baseFields.extend({
-  embedUrl: z.string().url("Invalid video URL"),
+  video: mediaFieldSchema,
   title: z.string().min(1, "Title is required"),
 });
 

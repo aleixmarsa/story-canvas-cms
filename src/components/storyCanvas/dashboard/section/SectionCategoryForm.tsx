@@ -19,6 +19,9 @@ import { RenderSectionData } from "@/types/section";
 import { JsonValue } from "@prisma/client/runtime/library";
 import RichTextEditor from "./categories/fields/RichTextEditor";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
+import MediaUploader from "./categories/fields/MediaUploader";
+import type { MediaFieldTypes } from "@/types/section-fields";
+import type { MediaField } from "@/sections/validation/media-field-schema";
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
   defaultValues?: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>;
@@ -198,6 +201,28 @@ const SectionCategoryForm = <T extends SectionCategory>({
                 value={field.value || ""}
                 onChange={field.onChange}
               />
+            )}
+          />
+        );
+        break;
+      case "image":
+      case "video":
+        inputElement = (
+          <Controller
+            name={key}
+            control={control}
+            render={({ field }) => (
+              <>
+                <MediaUploader
+                  onUpload={field.onChange}
+                  currentValue={
+                    typeof field.value === "string"
+                      ? undefined
+                      : (field.value as MediaField)
+                  }
+                  type={config.type as MediaFieldTypes}
+                />
+              </>
             )}
           />
         );
