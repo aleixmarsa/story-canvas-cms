@@ -8,13 +8,19 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useState } from "react";
 import type { MediaField } from "@/types/section-fields";
+import { MediaFieldTypes } from "@/types/section-fields";
 
 type MediaUploaderProps = {
   onUpload: ({ url, publicId }: MediaField) => void;
   currentValue?: MediaField;
+  type: MediaFieldTypes;
 };
 
-const MediaUploader = ({ onUpload, currentValue }: MediaUploaderProps) => {
+const MediaUploader = ({
+  onUpload,
+  currentValue,
+  type,
+}: MediaUploaderProps) => {
   const [previewUrl, setPreviewUrl] = useState(currentValue?.url);
   const [publicId, setPublicId] = useState<string | undefined>(
     currentValue?.publicId
@@ -41,18 +47,25 @@ const MediaUploader = ({ onUpload, currentValue }: MediaUploaderProps) => {
     }
   };
 
+  /**
+   * Check widget options at:
+   * https://cloudinary.com/documentation/upload_widget_reference#parameterså
+   */
   return (
     <div className="space-y-2">
       <CldUploadWidget
+        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
         signatureEndpoint="/api/cloudinary/signature"
         options={{
           cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-          folder: "story-canvas",
+          folder: process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER,
           multiple: false,
-          resourceType: "image",
+          cropping: true,
+          croppingShowDimensions: true,
+          croppingShowBackButton: true,
+          maxFileSize: type === "image" ? 2_000_000 : 15_000_000, // 2MB for images, 15MB for videos
         }}
         onSuccess={(result) => {
-          console.log("🚀 ~ MediaUploader ~ result:", result);
           const info = result.info as CloudinaryUploadWidgetInfo;
           const url = info.secure_url;
           const id = info.public_id;
@@ -71,7 +84,7 @@ const MediaUploader = ({ onUpload, currentValue }: MediaUploaderProps) => {
         }}
       >
         {({ open }) => (
-          <Button type="button" onClick={() => open?.()}>
+          <Button type="button" onClick={() => open?.()} size={"sm"}>
             Upload
           </Button>
         )}

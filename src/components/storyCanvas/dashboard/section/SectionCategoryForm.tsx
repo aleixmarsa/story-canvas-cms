@@ -20,7 +20,7 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import RichTextEditor from "./categories/fields/RichTextEditor";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
 import MediaUploader from "./categories/fields/MediaUploader";
-import type { MediaField } from "@/types/section-fields";
+import type { MediaField, MediaFieldTypes } from "@/types/section-fields";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -205,7 +205,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "media":
+      case "image":
+      case "video":
         inputElement = (
           <Controller
             name={key}
@@ -219,6 +220,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
                       ? undefined
                       : (field.value as MediaField)
                   }
+                  type={config.type as MediaFieldTypes}
                 />
               </>
             )}
