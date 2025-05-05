@@ -24,5 +24,3 @@ export type SchemaWithUI<T extends z.ZodTypeAny> = {
   schema: T;
   ui: { [K in keyof z.infer<T>]: FieldMeta };
 };
-
-export type MediaField = { url: string; publicId: string };

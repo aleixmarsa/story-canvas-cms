@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { baseFields } from "@/lib/validation/section-base-fields-schema";
+import { mediaFieldSchema } from "./media-field-schema";
 
 export const imageSectionSchema = baseFields.extend({
-  image: z.object({
-    url: z.string().url("Invalid image URL"),
-    publicId: z.string(),
-  }),
+  image: mediaFieldSchema,
   alt: z.string().optional(),
   caption: z.string().optional(),
 });

@@ -20,8 +20,8 @@ import { JsonValue } from "@prisma/client/runtime/library";
 import RichTextEditor from "./categories/fields/RichTextEditor";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
 import MediaUploader from "./categories/fields/MediaUploader";
-import type { MediaField, MediaFieldTypes } from "@/types/section-fields";
-
+import type { MediaFieldTypes } from "@/types/section-fields";
+import type { MediaField } from "@/sections/validation/media-field-schema";
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
   defaultValues?: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>;
