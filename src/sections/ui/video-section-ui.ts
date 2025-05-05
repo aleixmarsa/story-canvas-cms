@@ -7,9 +7,9 @@ export const videoSectionSchemaWithUI: SchemaWithUI<typeof videoSectionSchema> =
     schema: videoSectionSchema,
     ui: {
       ...baseUI,
-      embedUrl: {
-        label: "Embed URL",
-        type: "url",
+      video: {
+        label: "Video",
+        type: "video",
         required: true,
       },
       title: {

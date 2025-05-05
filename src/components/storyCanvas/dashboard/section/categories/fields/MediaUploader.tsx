@@ -92,11 +92,19 @@ const MediaUploader = ({
 
       {previewUrl && (
         <div className="relative w-fit">
-          <img
-            src={previewUrl}
-            alt="Uploaded media"
-            className="max-w-xs rounded border"
-          />
+          {type === "image" ? (
+            <img
+              src={previewUrl}
+              alt="Uploaded media"
+              className="max-w-xs rounded border"
+            />
+          ) : (
+            <video
+              src={previewUrl}
+              controls
+              className="max-w-xs rounded border"
+            />
+          )}
           <button
             type="button"
             onClick={handleRemove}
