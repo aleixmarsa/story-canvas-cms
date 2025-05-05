@@ -9,7 +9,7 @@ export const imageSectionSchemaWithUI: SchemaWithUI<typeof imageSectionSchema> =
       ...baseUI,
       image: {
         label: "Image",
-        type: "media",
+        type: "image",
         required: true,
       },
       alt: {

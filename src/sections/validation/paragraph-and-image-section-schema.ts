@@ -3,7 +3,10 @@ import { baseFields } from "@/lib/validation/section-base-fields-schema";
 
 export const paragraphAndimageSectionSchema = baseFields.extend({
   body: z.string().min(1, "Text cannot be empty"),
-  url: z.string().url("Invalid image URL"),
+  image: z.object({
+    url: z.string().url("Invalid image URL"),
+    publicId: z.string(),
+  }),
   alt: z.string().optional(),
   caption: z.string().optional(),
   layout: z.enum(["left", "right"], {

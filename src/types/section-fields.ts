@@ -7,7 +7,10 @@ export type FieldTypes =
   | "url"
   | "richtext"
   | "radio"
-  | "media";
+  | "image"
+  | "video";
+
+export type MediaFieldTypes = Extract<FieldTypes, "image" | "video">;
 
 export type FieldMeta = {
   label: string;
