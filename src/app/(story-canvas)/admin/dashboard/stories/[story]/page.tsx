@@ -18,12 +18,12 @@ import { publishSection } from "@/lib/actions/section-version/publish-section-ve
 import { useStories } from "@/lib/swr/useStories";
 import { useSections, Response } from "@/lib/swr/useSections";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
+import { usePreviewIframe } from "@/hooks/use-preview-iframe";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
   const [isPublishing, setIsPublishing] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
-
   const { stories, isLoading: storiesLoading } = useStories();
   const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
   const {
@@ -32,6 +32,20 @@ const StoryPage = () => {
     isError: sectionsError,
     mutate: mutateSections,
   } = useSections(selectedStory?.id);
+  const iframeRef = usePreviewIframe();
+
+  const sendPreviewDeleteSection = (sectionId: number) => {
+    if (!iframeRef.current?.contentWindow) return;
+    iframeRef.current.contentWindow.postMessage(
+      {
+        type: "preview:delete_section",
+        payload: {
+          sectionId,
+        },
+      },
+      "*"
+    );
+  };
 
   if (storiesLoading)
     return (
@@ -139,6 +153,8 @@ const StoryPage = () => {
             { revalidate: false }
           );
         } else {
+          // Send message to the preview iframe to remove section
+          sendPreviewDeleteSection(section.currentDraft.id);
           // Ensure backend is in sync
           mutateSections();
         }

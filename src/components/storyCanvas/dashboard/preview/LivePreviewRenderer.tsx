@@ -29,6 +29,16 @@ const LivePreviewRenderer = ({ initialStoryData }: Props) => {
           sections: updatedSections,
         }));
       }
+
+      if (event.data.type === "preview:delete_section") {
+        const deletedSectionId = event.data.payload.sectionId;
+        setStoryData((prev) => ({
+          ...prev,
+          sections: prev.sections.filter(
+            (section) => section.id !== deletedSectionId
+          ),
+        }));
+      }
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
