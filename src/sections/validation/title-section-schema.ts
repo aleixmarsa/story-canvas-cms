@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { baseFields } from "@/lib/validation/section-base-fields-schema";
+import { baseFields } from "@/sections/validation/section-base-fields-schema";
 
 export const titleSectionSchema = baseFields.extend({
   text: z.string().min(1, "Title cannot be empty"),

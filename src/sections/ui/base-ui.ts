@@ -1,5 +1,5 @@
 import type { FieldMeta } from "@/types/section-fields";
-import type { BaseFields } from "@/lib/validation/section-base-fields-schema";
+import type { BaseFields } from "@/sections/validation/section-base-fields-schema";
 
 export const baseUI: Record<keyof BaseFields, FieldMeta> = {
   name: {
