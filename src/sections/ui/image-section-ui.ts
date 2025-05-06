@@ -1,5 +1,5 @@
 import { imageSectionSchema } from "../validation/image-section-schema";
-import { baseUI } from "@/sections/ui/base-ui";
+import { baseUI } from "@/sections/ui/base-fields-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 
 export const imageSectionSchemaWithUI: SchemaWithUI<typeof imageSectionSchema> =

@@ -1,5 +1,5 @@
 import { chartSectionSchema } from "../validation/chart-section-schema";
-import { baseUI } from "@/sections/ui/base-ui";
+import { baseUI } from "@/sections/ui/base-fields-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 
 export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =

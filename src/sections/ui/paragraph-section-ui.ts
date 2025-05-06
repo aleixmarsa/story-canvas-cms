@@ -1,4 +1,4 @@
-import { baseUI } from "@/sections/ui/base-ui";
+import { baseUI } from "@/sections/ui/base-fields-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 import { paragraphSectionSchema } from "../validation/paragraph-section-schema";
 

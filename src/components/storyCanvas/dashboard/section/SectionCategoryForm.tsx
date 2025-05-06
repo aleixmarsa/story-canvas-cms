@@ -16,13 +16,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RenderSectionData } from "@/types/section";
-import { JsonValue } from "@prisma/client/runtime/library";
 import RichTextEditor from "./categories/fields/RichTextEditor";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
 import MediaUploader from "./categories/fields/MediaUploader";
 import type { MediaFieldTypes } from "@/types/section-fields";
 import type { MediaField } from "@/sections/validation/media-field-schema";
 import { usePreviewIframe } from "@/hooks/use-preview-iframe";
+import type { AnimationProps } from "@/sections/validation/animation-field-schema";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -100,12 +100,30 @@ const SectionCategoryForm = <T extends SectionCategory>({
   // Send the updated section data to the iframe for live preview
   useEffect(() => {
     if (!watchedValues || !section) return;
-    const watchedSection: { [key: string]: JsonValue } = {};
+
+    const watchedSection: { [key: string]: string | AnimationProps } = {};
+
     fieldNames.forEach((key, i) => {
-      watchedSection[key] = watchedValues[i];
+      const value = watchedValues[i];
+
+      // Handle special cases for animation
+      if (
+        key === "animation" &&
+        typeof value === "object" &&
+        value !== null &&
+        "type" in value
+      ) {
+        watchedSection[key] = {
+          ...value,
+          delay: Number(value.delay),
+          duration: Number(value.duration),
+        };
+      } else {
+        watchedSection[key] = value as string;
+      }
     });
 
-    const { name } = watchedSection;
+    const name = watchedSection.name;
 
     const previewDraftSectionData: RenderSectionData = {
       id: section.currentDraftId || 0,
@@ -160,10 +178,16 @@ const SectionCategoryForm = <T extends SectionCategory>({
     key: keyof typeof ui,
     config: (typeof ui)[typeof key]
   ) => {
+    console.log("🚀 ~ key:", key);
+    console.log("🚀 ~ config:", config);
+
     const error = errors[key]?.message as string;
     const id = String(key);
-
     let inputElement: React.ReactNode;
+
+    if (!config) {
+      return null;
+    }
 
     switch (config.type) {
       case "textarea":
@@ -194,7 +218,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             control={control}
             render={({ field }) => (
               <RichTextEditor
-                value={field.value || ""}
+                value={(field.value as string) ?? ""}
                 onChange={field.onChange}
               />
             )}
@@ -207,19 +231,24 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Controller
             name={key}
             control={control}
-            render={({ field }) => (
-              <>
+            render={({ field }) => {
+              const value = field.value;
+              const isValidMediaField =
+                value &&
+                typeof value === "object" &&
+                "url" in value &&
+                "publicId" in value;
+
+              return (
                 <MediaUploader
                   onUpload={field.onChange}
                   currentValue={
-                    typeof field.value === "string"
-                      ? undefined
-                      : (field.value as MediaField)
+                    isValidMediaField ? (value as MediaField) : undefined
                   }
                   type={config.type as MediaFieldTypes}
                 />
-              </>
-            )}
+              );
+            }}
           />
         );
         break;
@@ -231,7 +260,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             render={({ field }) => (
               <RadioGroup
                 onValueChange={field.onChange}
-                value={field.value}
+                value={(field.value as string) ?? ""}
                 className="flex gap-4"
               >
                 {(config.options ?? []).map((option) => (
@@ -253,6 +282,15 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
+      case "composite":
+        inputElement = (
+          <div className="space-y-2">
+            {Object.entries(config.fields).map(([subKey, subConfig]) =>
+              renderField(`${key}.${subKey}` as keyof typeof ui, subConfig)
+            )}
+          </div>
+        );
+        break;
       case "text":
       case "url":
       default:
@@ -268,7 +306,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
     }
 
     return (
-      <div key={id} className="flex flex-col gap-1">
+      <div key={id} className="flex flex-col gap-1.5">
         <Label
           htmlFor={id}
           className="font-medium"

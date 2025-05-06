@@ -8,17 +8,28 @@ export type FieldTypes =
   | "richtext"
   | "radio"
   | "image"
-  | "video";
+  | "video"
+  | "animation";
 
 export type MediaFieldTypes = Extract<FieldTypes, "image" | "video">;
 
-export type FieldMeta = {
+export type CompositeFieldMeta = {
   label: string;
-  type: FieldTypes;
+  type: "composite";
+  subtype: FieldTypes;
   required?: boolean;
-  placeholder?: string;
-  options?: { value: string; label: string }[];
+  fields: Record<string, FieldMeta>;
 };
+
+export type FieldMeta =
+  | {
+      label: string;
+      type: FieldTypes;
+      required?: boolean;
+      placeholder?: string;
+      options?: { value: string; label: string }[];
+    }
+  | CompositeFieldMeta;
 
 export type SchemaWithUI<T extends z.ZodTypeAny> = {
   schema: T;
