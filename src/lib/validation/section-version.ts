@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SectionCategoryEnum } from "@/sections/section-categories";
-import { baseFields } from "@/sections/validation/section-base-fields-schema";
+import { baseFields } from "@/sections/validation/base-fields-schema";
 
 export const createSectionVersionSchema = baseFields.extend({
   storyId: z.number().min(1),
