@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm, useWatch, Controller } from "react-hook-form";
 import { debounce } from "lodash";
 import type {
@@ -22,6 +22,8 @@ import { SectionDraftMetadata } from "@/lib/dal/draft";
 import MediaUploader from "./categories/fields/MediaUploader";
 import type { MediaFieldTypes } from "@/types/section-fields";
 import type { MediaField } from "@/sections/validation/media-field-schema";
+import { usePreviewIframe } from "@/hooks/use-preview-iframe";
+
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
   defaultValues?: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>;
@@ -68,14 +70,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
     defaultValues,
   });
 
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
-
   // Setup the iframe reference to send messages to the live preview
-  useEffect(() => {
-    iframeRef.current = window.parent.document.querySelector(
-      'iframe[src*="/preview/"]'
-    );
-  }, []);
+  const iframeRef = usePreviewIframe();
 
   const fieldNames = Object.keys(ui) as (keyof FormData)[];
 
