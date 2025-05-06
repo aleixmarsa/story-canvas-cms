@@ -285,9 +285,11 @@ const SectionCategoryForm = <T extends SectionCategory>({
       case "composite":
         inputElement = (
           <div className="space-y-2">
-            {Object.entries(config.fields).map(([subKey, subConfig]) =>
-              renderField(`${key}.${subKey}` as keyof typeof ui, subConfig)
-            )}
+            {Object.entries(config.fields).map(([subKey, subConfig]) => (
+              <div key={`${key}.${subKey}`} className="ml-4">
+                {renderField(`${key}.${subKey}` as keyof typeof ui, subConfig)}
+              </div>
+            ))}
           </div>
         );
         break;
