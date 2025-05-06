@@ -48,11 +48,11 @@ import {
 import { Input } from "@/components/ui/input";
 import DataTablePagination from "./DataTablePagination";
 import { useSections } from "@/lib/swr/useSections";
-
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { RenderSectionData } from "@/types/section";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { usePreviewIframe } from "@/hooks/use-preview-iframe";
 
 type BaseProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -160,13 +160,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     }));
     sendPreviewUpdate(previewData);
   };
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
-
-  useEffect(() => {
-    iframeRef.current = window.parent.document.querySelector(
-      'iframe[src*="/preview/"]'
-    );
-  }, [isPreviewVisible]);
+  const iframeRef = usePreviewIframe([isPreviewVisible]);
 
   const sendPreviewUpdate = (data: RenderSectionData[]) => {
     if (!iframeRef.current?.contentWindow) return;
