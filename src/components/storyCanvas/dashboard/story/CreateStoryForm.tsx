@@ -107,7 +107,7 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 max-w-lg"
       >
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="title" required>
             Title
           </Label>
@@ -119,7 +119,7 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           {errors.title && <FormErrorMessage error={errors.title.message} />}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="createdBy" className="font-medium" required>
             Created by
           </Label>
@@ -133,7 +133,7 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="slug" required>
             Slug (URL)
           </Label>
