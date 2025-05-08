@@ -31,7 +31,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [size, setSize] = useState<PreviewSize>("desktop");
   const [customSize, setCustomSize] = useState({ width: 1000, height: 800 });
-  const [zoom, setZoom] = useState(100);
+  const [zoom, setZoom] = useState(50);
 
   const selectedSize = size === "custom" ? customSize : SIZE_PRESETS[size];
   const { width, height } = selectedSize;
