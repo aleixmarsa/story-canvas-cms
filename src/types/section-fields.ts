@@ -7,6 +7,7 @@ export type FieldTypes =
   | "url"
   | "richtext"
   | "radio"
+  | "select"
   | "image"
   | "video"
   | "animation";
@@ -25,6 +26,7 @@ export type FieldMeta =
   | {
       label: string;
       type: FieldTypes;
+      default?: number;
       required?: boolean;
       placeholder?: string;
       options?: { value: string; label: string }[];

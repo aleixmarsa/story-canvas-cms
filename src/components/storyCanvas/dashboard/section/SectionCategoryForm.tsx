@@ -13,6 +13,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RenderSectionData } from "@/types/section";
@@ -69,6 +76,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
     resolver: zodResolver(schema),
     defaultValues,
   });
+
+  type Errors = typeof errors;
 
   // Setup the iframe reference to send messages to the live preview
   const iframeRef = usePreviewIframe();
@@ -175,14 +184,27 @@ const SectionCategoryForm = <T extends SectionCategory>({
   }, [externalError, setError]);
 
   const renderField = (
+    config: (typeof ui)[typeof key],
     key: keyof typeof ui,
-    config: (typeof ui)[typeof key]
+    subkey?: keyof typeof ui,
+    compositeErrors?: Errors
   ) => {
-    console.log("🚀 ~ key:", key);
-    console.log("🚀 ~ config:", config);
+    console.log("🚀 ~ compositeErrors:", compositeErrors);
 
-    const error = errors[key]?.message as string;
-    const id = String(key);
+    const error =
+      compositeErrors && subkey
+        ? (compositeErrors[subkey]?.message as string)
+        : (errors[key]?.message as string);
+
+    const compositeError = errors[key];
+
+    let finalKey = key;
+
+    if (subkey) {
+      finalKey = `${key}.${subkey}` as keyof FormData;
+    }
+
+    const id = String(finalKey);
     let inputElement: React.ReactNode;
 
     if (!config) {
@@ -195,8 +217,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Textarea
             id={id}
             placeholder={config.placeholder}
-            {...register(key)}
-            data-testid={`create-section-${key}-input`}
+            {...register(finalKey)}
+            data-testid={`create-section-${finalKey}-input`}
           />
         );
         break;
@@ -205,8 +227,9 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Input
             id={id}
             type="number"
+            defaultValue={Number(config.default)}
             placeholder={config.placeholder}
-            {...register(key, { valueAsNumber: true })}
+            {...register(finalKey, { valueAsNumber: true })}
             data-testid={`create-section-${key}-input`}
           />
         );
@@ -229,7 +252,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
       case "video":
         inputElement = (
           <Controller
-            name={key}
+            name={finalKey}
             control={control}
             render={({ field }) => {
               const value = field.value;
@@ -255,7 +278,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
       case "radio":
         inputElement = (
           <Controller
-            name={key as keyof FormData}
+            name={finalKey as keyof FormData}
             control={control}
             render={({ field }) => (
               <RadioGroup
@@ -272,7 +295,10 @@ const SectionCategoryForm = <T extends SectionCategory>({
                       value={option.value}
                       id={`${id}-${option.value}`}
                     />
-                    <Label htmlFor={`${id}-${option.value}`}>
+                    <Label
+                      htmlFor={`${id}-${option.value}`}
+                      className="font-light"
+                    >
                       {option.label}
                     </Label>
                   </div>
@@ -282,12 +308,39 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
+      case "select":
+        inputElement = (
+          <Controller
+            name={finalKey}
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={config.placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                  {(config.options ?? []).map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        );
+        break;
       case "composite":
         inputElement = (
-          <div className="space-y-2">
+          <div className="ml-4 space-y-2 grid grid-cols-3 gap-4">
             {Object.entries(config.fields).map(([subKey, subConfig]) => (
-              <div key={`${key}.${subKey}`} className="ml-4">
-                {renderField(`${key}.${subKey}` as keyof typeof ui, subConfig)}
+              <div key={`${key}.${subKey}`}>
+                {renderField(
+                  subConfig,
+                  key as keyof typeof ui,
+                  subKey as keyof typeof ui,
+                  compositeError
+                )}
               </div>
             ))}
           </div>
@@ -301,8 +354,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
             id={id}
             type={config.type}
             placeholder={config.placeholder}
-            {...register(key)}
-            data-testid={`create-section-${key}-input`}
+            {...register(finalKey)}
+            data-testid={`create-section-${finalKey}-input`}
           />
         );
     }
@@ -335,7 +388,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
   return (
     <form onSubmit={handleSubmit(internalSubmitHandler)} className="space-y-4">
       {(Object.keys(ui) as (keyof typeof ui)[]).map((key) =>
-        renderField(key, ui[key])
+        renderField(ui[key], key)
       )}
     </form>
   );

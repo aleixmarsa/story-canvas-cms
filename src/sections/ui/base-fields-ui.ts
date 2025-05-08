@@ -1,5 +1,9 @@
 import type { FieldMeta } from "@/types/section-fields";
 import type { BaseFields } from "@/sections/validation/base-fields-schema";
+import {
+  ANIMATION_TYPES,
+  EASE_TYPES,
+} from "../validation/animation-field-schema";
 
 export const baseUI: Record<keyof BaseFields, FieldMeta> = {
   name: {
@@ -22,32 +26,35 @@ export const baseUI: Record<keyof BaseFields, FieldMeta> = {
     fields: {
       type: {
         label: "Type",
-        type: "radio",
+        type: "select",
         required: false,
-        options: [
-          { label: "None", value: "none" },
-          { label: "Fade", value: "fade" },
-          { label: "Slide up", value: "slide-up" },
-          { label: "Zoom in", value: "zoom-in" },
-        ],
+        options: ANIMATION_TYPES.map((type) => ({
+          value: type,
+          label: type.charAt(0).toUpperCase() + type.slice(1),
+        })),
       },
       delay: {
         label: "Delay",
         type: "number",
+        default: 0,
         required: false,
-        placeholder: "Delay in seconds",
+        placeholder: "In seconds",
       },
       duration: {
         label: "Duration",
         type: "number",
+        default: 0.1,
         required: false,
-        placeholder: "Duration in seconds",
+        placeholder: "In seconds",
       },
       easing: {
         label: "Easing",
-        type: "text",
+        type: "select",
         required: false,
-        placeholder: "e.g., easeOut",
+        options: EASE_TYPES.map((type) => ({
+          value: type,
+          label: type,
+        })),
       },
     },
   },
