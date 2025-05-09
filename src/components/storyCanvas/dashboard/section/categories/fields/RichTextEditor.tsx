@@ -29,12 +29,12 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
           theme: "snow",
           modules: {
             toolbar: [
-              [{ header: [2, 3, false] }],
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              ["blockquote"],
               [{ color: [] }, { background: [] }],
               ["bold", "italic", "underline", "strike"],
-              ["link"],
-              ["clean"],
               [{ align: [] }],
+              ["clean"],
             ],
           },
           placeholder: "Write something...",
