@@ -13,7 +13,7 @@ const StoryRenderer = ({ sections }: Props) => {
     (a, b) => a.order - b.order
   );
   return (
-    <div className="p-8 max-w-3xl mx-auto">
+    <div className="w-full h-full">
       <div className="space-y-10">
         {sortedSections.map((section) => {
           if (
