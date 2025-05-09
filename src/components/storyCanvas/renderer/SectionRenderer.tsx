@@ -6,7 +6,7 @@ import ImageSection from "../dashboard/section/categories/ImageSection";
 import VideoSection from "../dashboard/section/categories/VideoSection";
 import ParagraphAndImageSection from "../dashboard/section/categories/ParagraphAndImageSection";
 import ChartSection from "../dashboard/section/categories/ChartSection";
-import { AnimatedSection } from "../dashboard/section/categories/AnimatedSection";
+import { StyledSectionWrapper } from "../dashboard/section/categories/StyledSectionWrapper";
 
 type SectionRendererProps<T extends keyof SectionContentByCategory> = {
   type: T;
@@ -52,7 +52,11 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
     }
   };
 
-  return <AnimatedSection {...content}>{sectionComponent()}</AnimatedSection>;
+  return (
+    <StyledSectionWrapper {...content}>
+      {sectionComponent()}
+    </StyledSectionWrapper>
+  );
 };
 
 export default SectionRenderer;
