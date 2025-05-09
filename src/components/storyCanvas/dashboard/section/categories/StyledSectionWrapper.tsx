@@ -2,21 +2,26 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
+import type { PropsWithChildren } from "react";
+import type { StylesFields } from "@/sections/validation/fields/styles-fields-schema";
+import type { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
 
-type AnimatedSectionProps = {
-  children: React.ReactNode;
-} & AnimationFields;
+type StyledSectionWrapperProps = PropsWithChildren<
+  StylesFields & AnimationFields
+>;
 
-export const AnimatedSection = ({
+export const StyledSectionWrapper = ({
+  children,
   animationType,
   delay,
   duration,
   easing,
-  children,
-}: AnimatedSectionProps) => {
+  backgroundColor,
+  backgroundImage,
+}: StyledSectionWrapperProps) => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  // Handle GSAP animation
   useEffect(() => {
     if (!sectionRef.current || animationType === "none") return;
 
@@ -51,5 +56,17 @@ export const AnimatedSection = ({
     }
   }, [animationType, delay, duration, easing]);
 
-  return <div ref={sectionRef}>{children}</div>;
+  const inlineStyle: React.CSSProperties = {
+    backgroundColor: backgroundColor || undefined,
+    backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+    backgroundSize: backgroundImage ? "cover" : undefined,
+    backgroundPosition: backgroundImage ? "center" : undefined,
+  };
+  console.log("🚀 ~ inlineStyle:", inlineStyle);
+
+  return (
+    <section ref={sectionRef} className="p-8" style={inlineStyle}>
+      <div className="max-w-3xl mx-auto">{children}</div>
+    </section>
+  );
 };
