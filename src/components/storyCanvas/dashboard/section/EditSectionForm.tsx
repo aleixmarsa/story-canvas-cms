@@ -70,7 +70,6 @@ const EditSectionForm = ({
   const submitHandler = async <T extends SectionCategory>(
     data: z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   ) => {
-    console.log("🚀 ~ data:", data);
     const selectedStoryId = story.id;
     const { name, createdBy, ...content } = data;
 

@@ -128,7 +128,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
     });
 
     const name = watchedSection.name;
-    console.log("🚀 ~ useEffect ~ watchedSection:", watchedSection);
 
     const previewDraftSectionData: RenderSectionData = {
       id: section.currentDraftId || 0,
@@ -190,8 +189,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
     subkey?: keyof FormData;
     compositeErrors?: Errors;
   }) => {
-    console.log("🚀 ~ errors:", errors);
-
     const error =
       compositeErrors && subkey
         ? (compositeErrors[subkey]?.message as string)
