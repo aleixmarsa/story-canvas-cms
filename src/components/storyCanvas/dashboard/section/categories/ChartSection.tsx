@@ -1,6 +1,6 @@
 "use client";
 
-import { ChartSectionProps } from "@/sections/validation/chart-section-schema";
+import { ChartSectionProps } from "@/sections/validation/sections/chart-section-schema";
 import {
   LineChart,
   BarChart,

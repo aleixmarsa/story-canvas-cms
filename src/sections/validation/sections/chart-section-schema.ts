@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { baseFields } from "@/sections/validation/base-fields-schema";
+import { baseFields } from "@/sections/validation/fields/base-fields-schema";
+import { animationFields } from "../fields/animation-field-schema";
+import { stylesFields } from "../fields/styles-fields-schema";
 
 const isValidJson = (value: string) => {
   try {
@@ -11,24 +13,25 @@ const isValidJson = (value: string) => {
 };
 
 export const chartSectionSchema = baseFields.extend({
+  // DATA
   title: z.string().min(1, "Chart title is required"),
-
   type: z.enum(["line", "bar"], {
     required_error: "You must select a chart type",
   }),
-
   xKey: z.string().min(1, "You must specify the key for the X-axis"),
-
   yKeys: z
     .string()
     .regex(
       /^([a-zA-Z0-9_]+)(,[a-zA-Z0-9_]+)*$/,
       "Y keys must be comma-separated without spaces"
     ),
-
   data: z
     .string()
     .refine(isValidJson, { message: "Data must be a valid JSON array" }),
+  // STYLE
+  ...stylesFields,
+  // ANIMATION
+  ...animationFields,
 });
 
 export type ChartSectionSchema = typeof chartSectionSchema;

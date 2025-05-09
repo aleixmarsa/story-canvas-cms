@@ -1,4 +1,4 @@
-import { VideoSectionProps } from "@/sections/validation/video-section-schema";
+import { VideoSectionProps } from "@/sections/validation/sections/video-section-schema";
 
 const VideoSection = ({ video, title }: VideoSectionProps) => {
   return (

@@ -5,7 +5,7 @@ import {
   getSectionWithVersions,
   deleteSectionWithVersions,
 } from "@/lib/dal/sections";
-import { ImageSectionProps } from "@/sections/validation/image-section-schema";
+import { ImageSectionProps } from "@/sections/validation/sections/image-section-schema";
 import { deleteCloudinaryMedia } from "../cloudinary/delete-media";
 
 /**

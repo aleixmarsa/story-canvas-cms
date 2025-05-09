@@ -1,4 +1,4 @@
-import { ParagraphSectionProps } from "@/sections/validation/paragraph-section-schema";
+import { ParagraphSectionProps } from "@/sections/validation/sections/paragraph-section-schema";
 import RichTextContent from "./fields/RichTextContent";
 
 const ParagraphSection = ({ body }: ParagraphSectionProps) => {

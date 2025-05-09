@@ -52,11 +52,7 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
     }
   };
 
-  return (
-    <AnimatedSection animation={content.animation}>
-      {sectionComponent()}
-    </AnimatedSection>
-  );
+  return <AnimatedSection {...content}>{sectionComponent()}</AnimatedSection>;
 };
 
 export default SectionRenderer;

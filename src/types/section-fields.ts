@@ -1,5 +1,4 @@
 import { z } from "zod";
-
 export type FieldTypes =
   | "text"
   | "number"
@@ -26,7 +25,7 @@ export type FieldMeta =
   | {
       label: string;
       type: FieldTypes;
-      default?: number;
+      default?: number | string | boolean;
       required?: boolean;
       placeholder?: string;
       options?: { value: string; label: string }[];
@@ -35,5 +34,9 @@ export type FieldMeta =
 
 export type SchemaWithUI<T extends z.ZodTypeAny> = {
   schema: T;
-  ui: { [K in keyof z.infer<T>]: FieldMeta };
+  ui: {
+    data: { [K in keyof z.infer<T>]: FieldMeta };
+    style: Partial<{ [K in keyof z.infer<T>]: FieldMeta }>;
+    animation: Partial<{ [K in keyof z.infer<T>]: FieldMeta }>;
+  };
 };

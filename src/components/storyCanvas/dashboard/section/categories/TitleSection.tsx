@@ -1,4 +1,4 @@
-import { TitleSectionProps } from "@/sections/validation/title-section-schema";
+import { TitleSectionProps } from "@/sections/validation/sections/title-section-schema";
 
 const TitleSection = ({ text, backgroundImage }: TitleSectionProps) => {
   return (

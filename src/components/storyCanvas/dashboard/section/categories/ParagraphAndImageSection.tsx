@@ -1,4 +1,4 @@
-import { ParagraphAndImageSectionProps } from "@/sections/validation/paragraph-and-image-section-schema";
+import { ParagraphAndImageSectionProps } from "@/sections/validation/sections/paragraph-and-image-section-schema";
 import RichTextContent from "./fields/RichTextContent";
 
 const ParagraphAndImageSection = ({

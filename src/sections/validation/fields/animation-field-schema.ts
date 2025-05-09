@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const ANIMATION_TYPES = ["fade", "slide-up", "zoom-in", "none"] as const;
-
 export const EASE_TYPES = [
   "none",
   "power1",
@@ -44,13 +43,13 @@ export const EASE_TYPES = [
   "sine.in",
   "sine.out",
   "sine.inOut",
-];
+] as const;
 
 export type AnimationTypes = (typeof ANIMATION_TYPES)[number];
 export type EasingTypes = (typeof EASE_TYPES)[number];
 
-export const animationSchema = z.object({
-  type: z.enum(ANIMATION_TYPES).default("none"),
+export const animationFields = {
+  animationType: z.enum(ANIMATION_TYPES).default("none").optional(),
   delay: z
     .number({ invalid_type_error: "Value is not a number" })
     .min(0, { message: "Min value is 0" })
@@ -58,8 +57,8 @@ export const animationSchema = z.object({
     .optional(),
   duration: z
     .number({ invalid_type_error: "Value is not a number" })
-    .min(0.1, { message: "Min value  is 0.1" })
-    .max(10, { message: "Max value for is 10" })
+    .min(0.1, { message: "Min value is 0.1" })
+    .max(10, { message: "Max value is 10" })
     .optional(),
   easing: z
     .string({ invalid_type_error: "Value is not a string" })
@@ -67,7 +66,8 @@ export const animationSchema = z.object({
       message: "Invalid easing type",
     })
     .optional(),
-});
+};
 
-export type AnimationSchema = typeof animationSchema;
-export type AnimationProps = z.infer<typeof animationSchema>;
+export const animationSchema = z.object(animationFields);
+
+export type AnimationFields = z.infer<typeof animationSchema>;

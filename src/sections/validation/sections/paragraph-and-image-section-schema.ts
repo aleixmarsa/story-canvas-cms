@@ -1,8 +1,11 @@
 import { z } from "zod";
-import { baseFields } from "@/sections/validation/base-fields-schema";
-import { mediaFieldSchema } from "./media-field-schema";
+import { baseFields } from "@/sections/validation/fields/base-fields-schema";
+import { mediaFieldSchema } from "../fields/media-field-schema";
+import { animationFields } from "../fields/animation-field-schema";
+import { stylesFields } from "../fields/styles-fields-schema";
 
 export const paragraphAndimageSectionSchema = baseFields.extend({
+  //DATA
   body: z.string().min(1, "Text cannot be empty"),
   image: mediaFieldSchema,
   alt: z.string().optional(),
@@ -10,6 +13,10 @@ export const paragraphAndimageSectionSchema = baseFields.extend({
   layout: z.enum(["left", "right"], {
     errorMap: () => ({ message: "You need to select a layout." }),
   }),
+  // STYLE
+  ...stylesFields,
+  // ANIMATION
+  ...animationFields,
 });
 
 export type ParagraphAndImageSectionSchema =

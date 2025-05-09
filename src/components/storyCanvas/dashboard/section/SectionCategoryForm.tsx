@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, useWatch, Controller } from "react-hook-form";
 import { debounce } from "lodash";
 import type {
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FormErrorMessage from "../../FormErrorMessage";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RenderSectionData } from "@/types/section";
@@ -27,9 +28,10 @@ import RichTextEditor from "./categories/fields/RichTextEditor";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
 import MediaUploader from "./categories/fields/MediaUploader";
 import type { MediaFieldTypes } from "@/types/section-fields";
-import type { MediaField } from "@/sections/validation/media-field-schema";
+import type { MediaField } from "@/sections/validation/fields/media-field-schema";
 import { usePreviewIframe } from "@/hooks/use-preview-iframe";
-import type { AnimationProps } from "@/sections/validation/animation-field-schema";
+import type { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
+import { FieldMeta } from "@/types/section-fields";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -65,6 +67,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
     z.infer<SectionCategoriesSchemasWithUI[T]["schema"]>
   >;
   type FormData = z.infer<typeof schema>;
+
   const {
     register,
     handleSubmit,
@@ -82,7 +85,11 @@ const SectionCategoryForm = <T extends SectionCategory>({
   // Setup the iframe reference to send messages to the live preview
   const iframeRef = usePreviewIframe();
 
-  const fieldNames = Object.keys(ui) as (keyof FormData)[];
+  const fieldNames = [
+    ...Object.keys(ui.data),
+    ...Object.keys(ui.style),
+    ...Object.keys(ui.animation),
+  ] as (keyof FormData)[];
 
   // Watch the form fields to detect changes
   // This is used to send the updated section data to the iframe for live preview
@@ -110,29 +117,18 @@ const SectionCategoryForm = <T extends SectionCategory>({
   useEffect(() => {
     if (!watchedValues || !section) return;
 
-    const watchedSection: { [key: string]: string | AnimationProps } = {};
+    const watchedSection: { [key: string]: string | AnimationFields } = {};
 
     fieldNames.forEach((key, i) => {
       const value = watchedValues[i];
 
       // Handle special cases for animation
-      if (
-        key === "animation" &&
-        typeof value === "object" &&
-        value !== null &&
-        "type" in value
-      ) {
-        watchedSection[key] = {
-          ...value,
-          delay: Number(value.delay),
-          duration: Number(value.duration),
-        };
-      } else {
-        watchedSection[key] = value as string;
-      }
+
+      watchedSection[key] = value as string;
     });
 
     const name = watchedSection.name;
+    console.log("🚀 ~ useEffect ~ watchedSection:", watchedSection);
 
     const previewDraftSectionData: RenderSectionData = {
       id: section.currentDraftId || 0,
@@ -183,13 +179,18 @@ const SectionCategoryForm = <T extends SectionCategory>({
     }
   }, [externalError, setError]);
 
-  const renderField = (
-    config: (typeof ui)[typeof key],
-    key: keyof typeof ui,
-    subkey?: keyof typeof ui,
-    compositeErrors?: Errors
-  ) => {
-    console.log("🚀 ~ compositeErrors:", compositeErrors);
+  const renderField = ({
+    config,
+    key,
+    subkey,
+    compositeErrors,
+  }: {
+    config: FieldMeta;
+    key: keyof FormData;
+    subkey?: keyof FormData;
+    compositeErrors?: Errors;
+  }) => {
+    console.log("🚀 ~ errors:", errors);
 
     const error =
       compositeErrors && subkey
@@ -227,7 +228,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Input
             id={id}
             type="number"
-            defaultValue={Number(config.default)}
+            defaultValue={Number(config.default) || ""}
             placeholder={config.placeholder}
             {...register(finalKey, { valueAsNumber: true })}
             data-testid={`create-section-${key}-input`}
@@ -237,7 +238,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
       case "richtext":
         inputElement = (
           <Controller
-            name={key as keyof typeof ui}
+            name={key}
             control={control}
             render={({ field }) => (
               <RichTextEditor
@@ -261,7 +262,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
                 typeof value === "object" &&
                 "url" in value &&
                 "publicId" in value;
-
               return (
                 <MediaUploader
                   onUpload={field.onChange}
@@ -332,15 +332,15 @@ const SectionCategoryForm = <T extends SectionCategory>({
         break;
       case "composite":
         inputElement = (
-          <div className="ml-4 space-y-2 grid grid-cols-3 gap-4">
+          <div className="ml-4 space-y-2 grid grid-cols-2 gap-4">
             {Object.entries(config.fields).map(([subKey, subConfig]) => (
               <div key={`${key}.${subKey}`}>
-                {renderField(
-                  subConfig,
-                  key as keyof typeof ui,
-                  subKey as keyof typeof ui,
-                  compositeError
-                )}
+                {renderField({
+                  config: subConfig,
+                  key,
+                  subkey,
+                  compositeErrors: compositeError,
+                })}
               </div>
             ))}
           </div>
@@ -359,7 +359,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
     }
-
     return (
       <div key={id} className="flex flex-col gap-1.5">
         <Label
@@ -386,10 +385,32 @@ const SectionCategoryForm = <T extends SectionCategory>({
   }, [externalError, setError]);
 
   return (
-    <form onSubmit={handleSubmit(internalSubmitHandler)} className="space-y-4">
-      {(Object.keys(ui) as (keyof typeof ui)[]).map((key) =>
-        renderField(ui[key], key)
-      )}
+    <form onSubmit={handleSubmit(internalSubmitHandler)}>
+      <Tabs defaultValue={Object.keys(ui)[0]} className="space-y-2">
+        <TabsList className="w-full">
+          {Object.keys(ui).map((key) => {
+            return (
+              <TabsTrigger key={key} value={key}>
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
+
+        {Object.entries(ui).map(([key, value]) => {
+          return (
+            <TabsContent key={key} value={key} className="space-y-4">
+              {Object.entries(value).map(([key, config]) => {
+                if (!config) return null;
+                return renderField({
+                  config,
+                  key: key as keyof FormData,
+                });
+              })}
+            </TabsContent>
+          );
+        })}
+      </Tabs>
     </form>
   );
 };

@@ -1,4 +1,4 @@
-import { ImageSectionProps } from "@/sections/validation/image-section-schema";
+import { ImageSectionProps } from "@/sections/validation/sections/image-section-schema";
 
 const ImageSection = ({ image, alt, caption }: ImageSectionProps) => {
   return (

@@ -1,27 +1,27 @@
 import z from "zod";
 // Schema with UI
-import { titleSectionSchemaWithUI } from "./ui/title-section-ui";
-import { paragraphSectionSchemaWithUI } from "./ui/paragraph-section-ui";
-import { imageSectionSchemaWithUI } from "./ui/image-section-ui";
-import { videoSectionSchemaWithUI } from "./ui/video-section-ui";
-import { paragraphAndImageSectionSchemaWithUI } from "./ui/paragraph-and-image-section-ui";
-import { chartSectionSchemaWithUI } from "./ui/chart-section-schema-ui";
+import { titleSectionSchemaWithUI } from "./ui/sections/title-section-ui";
+import { paragraphSectionSchemaWithUI } from "./ui/sections/paragraph-section-ui";
+import { imageSectionSchemaWithUI } from "./ui/sections/image-section-ui";
+import { videoSectionSchemaWithUI } from "./ui/sections/video-section-ui";
+import { paragraphAndImageSectionSchemaWithUI } from "./ui/sections/paragraph-and-image-section-ui";
+import { chartSectionSchemaWithUI } from "./ui/sections/chart-section-schema-ui";
 
 //Schemas
-import { TitleSectionSchema } from "./validation/title-section-schema";
-import { ParagraphSectionSchema } from "./validation/paragraph-section-schema";
-import { ImageSectionSchema } from "./validation/image-section-schema";
-import { VideoSectionSchema } from "./validation/video-section-schema";
-import { ParagraphAndImageSectionSchema } from "./validation/paragraph-and-image-section-schema";
-import { ChartSectionSchema } from "./validation/chart-section-schema";
+import { TitleSectionSchema } from "./validation/sections/title-section-schema";
+import { ParagraphSectionSchema } from "./validation/sections/paragraph-section-schema";
+import { ImageSectionSchema } from "./validation/sections/image-section-schema";
+import { VideoSectionSchema } from "./validation/sections/video-section-schema";
+import { ParagraphAndImageSectionSchema } from "./validation/sections/paragraph-and-image-section-schema";
+import { ChartSectionSchema } from "./validation/sections/chart-section-schema";
 
 //Props
-import { TitleSectionProps } from "./validation/title-section-schema";
-import { ParagraphSectionProps } from "./validation/paragraph-section-schema";
-import { ImageSectionProps } from "./validation/image-section-schema";
-import { VideoSectionProps } from "./validation/video-section-schema";
-import { ParagraphAndImageSectionProps } from "./validation/paragraph-and-image-section-schema";
-import { ChartSectionProps } from "./validation/chart-section-schema";
+import { TitleSectionProps } from "./validation/sections/title-section-schema";
+import { ParagraphSectionProps } from "./validation/sections/paragraph-section-schema";
+import { ImageSectionProps } from "./validation/sections/image-section-schema";
+import { VideoSectionProps } from "./validation/sections/video-section-schema";
+import { ParagraphAndImageSectionProps } from "./validation/sections/paragraph-and-image-section-schema";
+import { ChartSectionProps } from "./validation/sections/chart-section-schema";
 
 export type SectionSchemas =
   | TitleSectionSchema

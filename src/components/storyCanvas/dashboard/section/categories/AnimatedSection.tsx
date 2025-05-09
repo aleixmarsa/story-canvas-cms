@@ -2,35 +2,31 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { AnimationTypes } from "@/sections/validation/animation-field-schema";
+import { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
 
 type AnimatedSectionProps = {
-  animation?: {
-    type?: AnimationTypes;
-    delay?: number;
-    duration?: number;
-    easing?: string;
-  };
   children: React.ReactNode;
-};
+} & AnimationFields;
 
 export const AnimatedSection = ({
-  animation,
+  animationType,
+  delay,
+  duration,
+  easing,
   children,
 }: AnimatedSectionProps) => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  console.log("🚀 ~ animation:", animation);
 
   useEffect(() => {
-    if (!sectionRef.current || animation?.type === "none") return;
+    if (!sectionRef.current || animationType === "none") return;
 
     const config = {
-      duration: animation?.duration ?? 0.5,
-      delay: animation?.delay ?? 0,
-      ease: animation?.easing ?? "power1.out",
+      duration: duration ?? 0.5,
+      delay: delay ?? 0,
+      ease: easing ?? "power1.out",
     };
 
-    switch (animation?.type) {
+    switch (animationType) {
       case "fade":
         gsap.fromTo(
           sectionRef.current,
@@ -53,7 +49,7 @@ export const AnimatedSection = ({
         );
         break;
     }
-  }, [animation]);
+  }, [animationType, delay, duration, easing]);
 
   return <div ref={sectionRef}>{children}</div>;
 };
