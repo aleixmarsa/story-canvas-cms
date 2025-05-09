@@ -1,5 +1,5 @@
 import { TitleSectionProps } from "@/sections/validation/sections/title-section-schema";
-
+import RichTextContent from "./fields/RichTextContent";
 const TitleSection = ({ text, backgroundImage }: TitleSectionProps) => {
   return (
     <div className={`py-8 `}>
@@ -9,7 +9,7 @@ const TitleSection = ({ text, backgroundImage }: TitleSectionProps) => {
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
       )}
-      <h1>{text}</h1>
+      <RichTextContent html={text} />
     </div>
   );
 };

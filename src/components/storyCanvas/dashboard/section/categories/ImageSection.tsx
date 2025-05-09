@@ -1,4 +1,5 @@
 import { ImageSectionProps } from "@/sections/validation/sections/image-section-schema";
+import RichTextContent from "./fields/RichTextContent";
 
 const ImageSection = ({ image, alt, caption }: ImageSectionProps) => {
   return (
@@ -8,7 +9,11 @@ const ImageSection = ({ image, alt, caption }: ImageSectionProps) => {
         alt={alt || "Image"}
         className="mx-auto rounded-lg shadow-md"
       />
-      {caption && <p className="mt-2 text-sm text-gray-600">{caption}</p>}
+      {caption && (
+        <div className="mt-2">
+          <RichTextContent html={caption} />
+        </div>
+      )}
     </div>
   );
 };

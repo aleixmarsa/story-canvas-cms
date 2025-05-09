@@ -22,11 +22,7 @@ const ParagraphAndImageSection = ({
             alt={alt || "Image"}
             className="mx-auto rounded-lg shadow-md"
           />
-          {caption && (
-            <p className="text-sm text-muted-foreground mt-2 text-center">
-              {caption}
-            </p>
-          )}
+          {caption && <RichTextContent html={caption} />}
         </div>
 
         <RichTextContent html={body} />

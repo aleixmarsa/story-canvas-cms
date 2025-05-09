@@ -27,13 +27,13 @@ export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =
         },
         xKey: {
           label: "X Axis Key",
-          type: "richtext",
+          type: "text",
           required: true,
           placeholder: "Enter the key for the X-axis, e.g year",
         },
         yKeys: {
           label: "Y Axis Keys",
-          type: "richtext",
+          type: "text",
           required: true,
           placeholder:
             "Enter comma-separated keys for Y axis, e.g. meanTemperature,meanPrecipitation ",

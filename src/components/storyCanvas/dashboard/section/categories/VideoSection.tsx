@@ -1,4 +1,5 @@
 import { VideoSectionProps } from "@/sections/validation/sections/video-section-schema";
+import RichTextContent from "./fields/RichTextContent";
 
 const VideoSection = ({ video, title }: VideoSectionProps) => {
   return (
@@ -15,7 +16,7 @@ const VideoSection = ({ video, title }: VideoSectionProps) => {
           console.error("Video loading error:", e);
         }}
       />
-      <h2 className="mt-4 text-xl font-semibold">{title}</h2>
+      <RichTextContent html={title} />
     </div>
   );
 };

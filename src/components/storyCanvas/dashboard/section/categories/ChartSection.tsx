@@ -15,6 +15,7 @@ import {
 } from "recharts";
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+import RichTextContent from "./fields/RichTextContent";
 
 const ChartSection = ({
   title,
@@ -92,9 +93,7 @@ const ChartSection = ({
 
   return (
     <section className="py-8 max-w-4xl mx-auto">
-      {title && (
-        <h2 className="text-2xl font-bold mb-6 text-center">{title}</h2>
-      )}
+      {title && <RichTextContent html={title} />}
       {isValidChart ? (
         <ResponsiveContainer width="100%" height={400}>
           {chart}
