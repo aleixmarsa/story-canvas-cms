@@ -17,11 +17,11 @@ export const imageSectionSchemaWithUI: SchemaWithUI<typeof imageSectionSchema> =
         },
         alt: {
           label: "Alt text",
-          type: "text",
+          type: "richtext",
         },
         caption: {
           label: "Caption",
-          type: "text",
+          type: "richtext",
         },
       },
       style: {

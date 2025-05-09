@@ -27,11 +27,11 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
       },
       alt: {
         label: "Alt text",
-        type: "text",
+        type: "richtext",
       },
       caption: {
         label: "Caption",
-        type: "text",
+        type: "richtext",
       },
       body: {
         label: "Body",

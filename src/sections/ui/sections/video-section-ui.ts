@@ -18,7 +18,7 @@ export const videoSectionSchemaWithUI: SchemaWithUI<typeof videoSectionSchema> =
         },
         title: {
           label: "Title",
-          type: "text",
+          type: "richtext",
           required: true,
         },
       },

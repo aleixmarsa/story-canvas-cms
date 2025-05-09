@@ -12,7 +12,7 @@ export const titleSectionSchemaWithUI: SchemaWithUI<typeof titleSectionSchema> =
         ...baseUIData,
         text: {
           label: "Title",
-          type: "text",
+          type: "richtext",
           required: true,
           placeholder: "Enter your title...",
         },
