@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import FormErrorMessage from "../../FormErrorMessage";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { createUser } from "@/lib/actions/users/create-user";
 import { Role } from "@prisma/client";
 import { toast } from "sonner";

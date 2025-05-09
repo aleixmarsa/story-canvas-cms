@@ -2,7 +2,7 @@
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import CreateSectionForm from "@/components/storyCanvas/dashboard/section/CreateSectionForm";
 import { useRef, useState } from "react";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { Loader2 } from "lucide-react";
 import { useStories } from "@/lib/swr/useStories";
 import { useParams } from "next/navigation";

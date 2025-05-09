@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { updateSectionVersion } from "@/lib/actions/section-version/update-section-version";
 import type {

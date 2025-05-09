@@ -4,7 +4,7 @@ import { createSession, deleteSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import { loginSchema } from "@/lib/validation/login-schema";
 import bcrypt from "bcryptjs";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { findUserByEmail } from "@/lib/dal/users";
 
 /**

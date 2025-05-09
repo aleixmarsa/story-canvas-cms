@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { StoryStatus } from "@prisma/client";
 import { GripVertical } from "lucide-react";
 import RowActionsMenu from "./RowActionsMenu";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import DeleteDialog from "../DeleteDialog";
 
 export const columns = (

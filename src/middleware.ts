@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSession } from "./lib/auth/session";
-import { ROUTES } from "./lib/constants/storyCanvas";
+import { ROUTES } from "./lib/constants/story-canvas";
 import { Role } from "@prisma/client";
 
 function isProtected(pathname: string): boolean {

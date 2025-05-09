@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ROUTES } from "../../src/lib/constants/storyCanvas";
+import { ROUTES } from "../../src/lib/constants/story-canvas";
 
 // Reset storage state for this file to avoid being authenticated
 test.use({ storageState: { cookies: [], origins: [] } });

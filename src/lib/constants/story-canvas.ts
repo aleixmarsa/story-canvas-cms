@@ -9,3 +9,16 @@ export const ROUTES = {
   login: "/admin/login",
   error: "/admin/error",
 };
+
+// sections/constants/font-size-map.ts
+export const FONT_SIZES = {
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
+  xl: "text-xl",
+  "2xl": "text-2xl",
+  "3xl": "text-3xl",
+  "4xl": "text-4xl",
+} as const;
+
+export type FontSizeKey = keyof typeof FONT_SIZES;

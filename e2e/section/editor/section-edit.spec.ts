@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 
 test.use({ storageState: "playwright/.auth/editor.json" });
 test.describe.configure({ mode: "serial" });

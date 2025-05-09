@@ -7,7 +7,7 @@ import DataTable from "../DataTable/DataTable";
 import { CurrentUser } from "@/types/auth";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { toast } from "sonner";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 
 const UsersTableWrapper = ({
   users,

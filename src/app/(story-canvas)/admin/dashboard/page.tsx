@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 
 const DashboardPage = () => {
   return (

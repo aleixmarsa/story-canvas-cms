@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import FormErrorMessage from "../../FormErrorMessage";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { updateStoryVersion } from "@/lib/actions/story-versions/update-story-version";
 import { useStories, Response } from "@/lib/swr/useStories";

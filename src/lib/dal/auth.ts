@@ -3,7 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import prisma from "@/lib/prisma";
 import type { VerifiedSession, CurrentUser } from "@/types/auth";
 

@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { createSection } from "@/lib/actions/sections/create-section";
 import { StoryDraftMetadata } from "@/lib/dal/draft";
