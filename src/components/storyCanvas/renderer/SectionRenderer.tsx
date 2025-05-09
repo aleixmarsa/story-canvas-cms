@@ -51,7 +51,6 @@ const SectionRenderer = <T extends keyof SectionContentByCategory>({
         return <div className="text-red-500">Unknown section type: {type}</div>;
     }
   };
-
   return (
     <StyledSectionWrapper {...content}>
       {sectionComponent()}

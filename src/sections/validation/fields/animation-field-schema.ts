@@ -57,7 +57,7 @@ export const animationFields = {
     .optional(),
   duration: z
     .number({ invalid_type_error: "Value is not a number" })
-    .min(0.1, { message: "Min value is 0.1" })
+    .min(0.1, { message: "Min value is 0" })
     .max(10, { message: "Max value is 10" })
     .optional(),
   easing: z

@@ -32,6 +32,7 @@ import type { MediaField } from "@/sections/validation/fields/media-field-schema
 import { usePreviewIframe } from "@/hooks/use-preview-iframe";
 import type { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
 import { FieldMeta } from "@/types/section-fields";
+import { cn } from "@/lib/utils";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -186,7 +187,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
   }: {
     config: FieldMeta;
     key: keyof FormData;
-    subkey?: keyof FormData;
+    subkey?: keyof FormData; // For composite fields
     compositeErrors?: Errors;
   }) => {
     const error =
@@ -225,10 +226,11 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Input
             id={id}
             type="number"
-            defaultValue={Number(config.default) || ""}
+            min={0}
+            defaultValue={Number(config.default) || 0}
             placeholder={config.placeholder}
             {...register(finalKey, { valueAsNumber: true })}
-            data-testid={`create-section-${key}-input`}
+            data-testid={`create-section-${finalKey}-input`}
           />
         );
         break;
@@ -294,7 +296,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
                     />
                     <Label
                       htmlFor={`${id}-${option.value}`}
-                      className="font-light"
+                      className="font-medium text-xs"
                     >
                       {option.label}
                     </Label>
@@ -310,37 +312,53 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Controller
             name={finalKey}
             control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder={config.placeholder} />
-                </SelectTrigger>
-                <SelectContent>
-                  {(config.options ?? []).map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            render={({ field }) => {
+              const value = field.value ? field.value.toString() : "";
+              return (
+                <Select value={value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={config.placeholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(config.options ?? []).map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              );
+            }}
           />
         );
         break;
       case "composite":
         inputElement = (
-          <div className="ml-4 space-y-2 grid grid-cols-2 gap-4">
-            {Object.entries(config.fields).map(([subKey, subConfig]) => (
-              <div key={`${key}.${subKey}`}>
-                {renderField({
-                  config: subConfig,
-                  key,
-                  subkey,
-                  compositeErrors: compositeError,
-                })}
-              </div>
-            ))}
+          <div className="ml-2 space-y-2 grid grid-cols-2 gap-2">
+            {Object.entries(config.fields).map(([subKey, subConfig]) => {
+              return (
+                <div key={`${key}.${subKey}`}>
+                  {renderField({
+                    config: subConfig,
+                    key,
+                    subkey: subKey as keyof FormData,
+                    compositeErrors: compositeError,
+                  })}
+                </div>
+              );
+            })}
           </div>
+        );
+        break;
+      case "color":
+        inputElement = (
+          <Input
+            id={id}
+            type="color"
+            placeholder={config.placeholder}
+            {...register(finalKey)}
+            data-testid={`create-section-${finalKey}-input`}
+          />
         );
         break;
       case "text":
@@ -360,7 +378,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
       <div key={id} className="flex flex-col gap-1.5">
         <Label
           htmlFor={id}
-          className="font-medium"
+          className={cn("font-medium", subkey ? "text-xs" : "")}
           aria-required={config.required}
           required={config.required}
         >
@@ -396,14 +414,24 @@ const SectionCategoryForm = <T extends SectionCategory>({
 
         {Object.entries(ui).map(([key, value]) => {
           return (
-            <TabsContent key={key} value={key} className="space-y-4">
-              {Object.entries(value).map(([key, config]) => {
-                if (!config) return null;
-                return renderField({
-                  config,
-                  key: key as keyof FormData,
-                });
-              })}
+            <TabsContent key={key} value={key}>
+              <div
+                key={key}
+                className={cn(
+                  "space-y-2",
+                  key === "style" || key === "animation"
+                    ? "grid grid-cols-1 lg:grid-cols-2 gap-2"
+                    : ""
+                )}
+              >
+                {Object.entries(value).map(([key, config]) => {
+                  if (!config) return null;
+                  return renderField({
+                    config: config as FieldMeta,
+                    key: key as keyof FormData,
+                  });
+                })}
+              </div>
             </TabsContent>
           );
         })}

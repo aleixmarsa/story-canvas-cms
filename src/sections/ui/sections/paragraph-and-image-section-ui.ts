@@ -1,7 +1,7 @@
 import { paragraphAndimageSectionSchema } from "../../validation/sections/paragraph-and-image-section-schema";
 import { baseUIData } from "@/sections/ui/fields/base-fields-ui";
 import { baseUIAnimation } from "../fields/animation-fields-ui";
-import { baseUIStyles } from "../fields/styles-fields-ui";
+import { baseUIStyles } from "../styles/base-styles-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 
 export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<

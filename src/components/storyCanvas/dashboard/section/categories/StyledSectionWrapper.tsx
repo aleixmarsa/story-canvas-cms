@@ -16,9 +16,10 @@ export const StyledSectionWrapper = ({
   delay,
   duration,
   easing,
-  backgroundColor,
-  backgroundImage,
+  sectionBackground,
+  sectionPadding,
 }: StyledSectionWrapperProps) => {
+  console.log("🚀 ~ sectionPadding:", sectionPadding);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // Handle GSAP animation
@@ -57,16 +58,25 @@ export const StyledSectionWrapper = ({
   }, [animationType, delay, duration, easing]);
 
   const inlineStyle: React.CSSProperties = {
-    backgroundColor: backgroundColor || undefined,
-    backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-    backgroundSize: backgroundImage ? "cover" : undefined,
-    backgroundPosition: backgroundImage ? "center" : undefined,
+    backgroundColor: sectionBackground?.color || undefined,
+    backgroundImage: sectionBackground?.image
+      ? `url(${sectionBackground?.image})`
+      : undefined,
+    backgroundSize: sectionBackground?.size ?? "cover",
+    backgroundPosition: sectionBackground?.position ?? "center",
+    paddingTop: sectionPadding?.top ? `${sectionPadding.top}px` : undefined,
+    paddingBottom: sectionPadding?.bottom
+      ? `${sectionPadding.bottom}px`
+      : undefined,
+    paddingLeft: sectionPadding?.left ? `${sectionPadding.left}px` : undefined,
+    paddingRight: sectionPadding?.right
+      ? `${sectionPadding?.right}px`
+      : undefined,
   };
-  console.log("🚀 ~ inlineStyle:", inlineStyle);
 
   return (
-    <section ref={sectionRef} className="p-8" style={inlineStyle}>
-      <div className="max-w-3xl mx-auto">{children}</div>
+    <section ref={sectionRef} style={inlineStyle}>
+      <div className="max-w-4xl mx-auto">{children}</div>
     </section>
   );
 };

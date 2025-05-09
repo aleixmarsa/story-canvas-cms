@@ -14,7 +14,7 @@ const StoryRenderer = ({ sections }: Props) => {
   );
   return (
     <div className="w-full h-full">
-      <div className="space-y-10">
+      <div>
         {sortedSections.map((section) => {
           if (
             typeof section.content !== "object" ||

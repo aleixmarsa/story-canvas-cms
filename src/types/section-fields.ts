@@ -9,7 +9,8 @@ export type FieldTypes =
   | "select"
   | "image"
   | "video"
-  | "animation";
+  | "animation"
+  | "color";
 
 export type MediaFieldTypes = Extract<FieldTypes, "image" | "video">;
 
@@ -21,6 +22,13 @@ export type CompositeFieldMeta = {
   fields: Record<string, FieldMeta>;
 };
 
+export type StyleFieldMeta = {
+  label: string;
+  type: "composite";
+  subtype: FieldTypes;
+  required?: boolean;
+};
+
 export type FieldMeta =
   | {
       label: string;
@@ -29,13 +37,14 @@ export type FieldMeta =
       required?: boolean;
       placeholder?: string;
       options?: { value: string; label: string }[];
+      group?: string;
     }
   | CompositeFieldMeta;
 
 export type SchemaWithUI<T extends z.ZodTypeAny> = {
   schema: T;
   ui: {
-    data: { [K in keyof z.infer<T>]: FieldMeta };
+    data: Partial<{ [K in keyof z.infer<T>]: FieldMeta }>;
     style: Partial<{ [K in keyof z.infer<T>]: FieldMeta }>;
     animation: Partial<{ [K in keyof z.infer<T>]: FieldMeta }>;
   };

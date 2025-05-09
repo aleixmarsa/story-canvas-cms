@@ -1,8 +1,9 @@
 import { titleSectionSchema } from "../../validation/sections/title-section-schema";
 import { baseUIData } from "@/sections/ui/fields/base-fields-ui";
 import { baseUIAnimation } from "../fields/animation-fields-ui";
-import { baseUIStyles } from "../fields/styles-fields-ui";
+import { baseUIStyles } from "../styles/base-styles-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
+import { textPadding } from "../styles/text-padding-ui";
 
 export const titleSectionSchemaWithUI: SchemaWithUI<typeof titleSectionSchema> =
   {
@@ -19,6 +20,7 @@ export const titleSectionSchemaWithUI: SchemaWithUI<typeof titleSectionSchema> =
       },
       style: {
         ...baseUIStyles,
+        ...textPadding,
       },
       animation: {
         ...baseUIAnimation,

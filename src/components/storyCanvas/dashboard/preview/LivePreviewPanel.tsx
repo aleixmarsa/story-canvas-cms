@@ -154,7 +154,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
             src={previewPath + "?preview=true"}
             width={width}
             height={height}
-            className="rounded-md border shadow-lg bg-white pointer-events-auto"
+            className="rounded-md border shadow-lg bg-transparent pointer-events-auto"
           />
         </div>
       </div>
