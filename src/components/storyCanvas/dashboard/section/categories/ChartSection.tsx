@@ -25,9 +25,9 @@ const ChartSection = ({
 }: ChartSectionProps) => {
   if (!data || !xKey || !yKeys || yKeys.length === 0) {
     return (
-      <section className="py-8 text-red-500 text-center">
+      <div className="py-8 text-red-500 text-center">
         Invalid chart configuration
-      </section>
+      </div>
     );
   }
 

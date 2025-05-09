@@ -10,7 +10,7 @@ const ParagraphAndImageSection = ({
 }: ParagraphAndImageSectionProps) => {
   const isLeft = layout === "left";
   return (
-    <section className="py-8 max-w-3xl mx-auto">
+    <div className="py-8">
       <div
         className={`flex flex-col md:flex-row md:justify-between ${
           isLeft ? "md:flex-row-reverse" : ""
@@ -31,7 +31,7 @@ const ParagraphAndImageSection = ({
 
         <RichTextContent html={body} />
       </div>
-    </section>
+    </div>
   );
 };
 

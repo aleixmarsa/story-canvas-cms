@@ -2,7 +2,7 @@ import { VideoSectionProps } from "@/sections/validation/sections/video-section-
 
 const VideoSection = ({ video, title }: VideoSectionProps) => {
   return (
-    <section className="py-8 text-center">
+    <div className="py-8 text-center">
       <video
         className="mx-auto rounded-lg shadow-md"
         controls
@@ -16,7 +16,7 @@ const VideoSection = ({ video, title }: VideoSectionProps) => {
         }}
       />
       <h2 className="mt-4 text-xl font-semibold">{title}</h2>
-    </section>
+    </div>
   );
 };
 

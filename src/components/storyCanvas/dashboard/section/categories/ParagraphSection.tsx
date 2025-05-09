@@ -3,9 +3,9 @@ import RichTextContent from "./fields/RichTextContent";
 
 const ParagraphSection = ({ body }: ParagraphSectionProps) => {
   return (
-    <section className="py-8 max-w-3xl mx-auto">
+    <div className="py-8">
       <RichTextContent html={body} />
-    </section>
+    </div>
   );
 };
 
