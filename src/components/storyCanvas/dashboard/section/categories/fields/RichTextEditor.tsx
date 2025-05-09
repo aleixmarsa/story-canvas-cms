@@ -30,6 +30,7 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
           modules: {
             toolbar: [
               [{ header: [2, 3, false] }],
+              [{ color: [] }, { background: [] }],
               ["bold", "italic", "underline", "strike"],
               ["link"],
               ["clean"],
@@ -56,7 +57,11 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
     };
   }, []);
 
-  return <div ref={editorRef} className="min-h-[300px]" />;
+  return (
+    <div>
+      <div ref={editorRef} className="min-h-fit" />
+    </div>
+  );
 };
 
 export default RichTextEditor;

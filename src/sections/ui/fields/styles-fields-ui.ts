@@ -7,20 +7,10 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
     type: "url",
     placeholder: "Enter a background image URL...",
   },
-  fontColor: {
-    label: "Font Color",
+  backgroundColor: {
+    label: "Background Color",
     type: "text",
     placeholder: "Enter a hex color code...",
-    default: "#000000",
-  },
-  fontSize: {
-    label: "Font Size",
-    type: "select",
-    options: [
-      { value: "small", label: "Small" },
-      { value: "medium", label: "Medium" },
-      { value: "large", label: "Large" },
-    ],
-    default: "medium",
+    default: "#ffffff",
   },
 };
