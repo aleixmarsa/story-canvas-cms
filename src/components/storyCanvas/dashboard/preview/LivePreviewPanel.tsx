@@ -61,7 +61,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
   return (
     <div className="flex flex-col border rounded-md ">
       <div className="flex items-center justify-between py-2 px-4 border-b bg-muted/40">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2.5">
           <Select
             value={size}
             onValueChange={(value) => setSize(value as PreviewSize)}
@@ -80,7 +80,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
           <div className="flex items-center gap-1">
             <Input
               type="number"
-              className="w-20 border rounded px-2 py-1 text-sm"
+              className="w-16 border rounded px-2 py-1 text-sm"
               value={selectedSize.width}
               onChange={(e) =>
                 setCustomSize({
@@ -94,7 +94,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
             <X className="text-muted-foreground h-5 w-5" />
             <Input
               type="number"
-              className="w-20 border rounded px-2 py-1 text-sm"
+              className="w-16 border rounded px-2 py-1 text-sm"
               value={selectedSize.height}
               onChange={(e) =>
                 setCustomSize({
