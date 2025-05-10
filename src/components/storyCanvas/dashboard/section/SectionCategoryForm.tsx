@@ -34,7 +34,6 @@ import type {
 } from "@/types/section-fields";
 import type { MediaField } from "@/sections/validation/fields/media-field-schema";
 import { usePreviewIframe } from "@/hooks/use-preview-iframe";
-import type { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
 import { FIELD_TYPES, FieldMeta } from "@/types/section-fields";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -137,7 +136,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
   useEffect(() => {
     if (!watchedValues) return;
 
-    const watchedSection: { [key: string]: string | AnimationFields } = {};
+    const watchedSection: { [key: string]: string } = {};
 
     fieldNames.forEach((key, i) => {
       const value = watchedValues[i];
@@ -200,6 +199,14 @@ const SectionCategoryForm = <T extends SectionCategory>({
       });
     }
   }, [externalError, setError]);
+
+  // reset the form if the type changes
+  useEffect(() => {
+    if (type) {
+      reset(defaultValues);
+    }
+  }, [type]);
+  // reset the form if the section changes
 
   const renderField = ({
     config,
@@ -401,7 +408,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
           </div>
         );
         break;
-      case "color":
+      case FIELD_TYPES.color:
         inputElement = (
           <Input
             id={id}
@@ -412,8 +419,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "text":
-      case "url":
+      case FIELD_TYPES.text:
+      case FIELD_TYPES.url:
       default:
         inputElement = (
           <Input
