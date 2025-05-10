@@ -3,7 +3,7 @@ import { baseUIAnimation } from "../fields/animation-fields-ui";
 import { baseUIStyles } from "../styles/base-styles-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 import { paragraphSectionSchema } from "../../validation/sections/paragraph-section-schema";
-import { textPadding } from "../styles/text-padding-ui";
+import { elementPadding } from "../styles/text-padding-ui";
 
 export const paragraphSectionSchemaWithUI: SchemaWithUI<
   typeof paragraphSectionSchema
@@ -21,7 +21,7 @@ export const paragraphSectionSchemaWithUI: SchemaWithUI<
     },
     style: {
       ...baseUIStyles,
-      ...textPadding,
+      ...elementPadding("textPadding", "Text Padding"),
     },
     animation: {
       ...baseUIAnimation,

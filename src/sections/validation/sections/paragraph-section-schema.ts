@@ -8,6 +8,14 @@ export const paragraphSectionSchema = baseFields.extend({
   body: z.string().min(1, "Text cannot be empty"),
   // STYLE
   ...stylesFields,
+  textPadding: z
+    .object({
+      top: z.number().optional(),
+      bottom: z.number().optional(),
+      left: z.number().optional(),
+      right: z.number().optional(),
+    })
+    .optional(),
   // ANIMATION
   ...animationFields,
 });

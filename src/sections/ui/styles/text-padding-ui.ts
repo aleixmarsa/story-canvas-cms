@@ -1,10 +1,12 @@
 import type { FieldMeta } from "@/types/section-fields";
 
-export const textPadding: Record<string, FieldMeta> = {
-  textPadding: {
-    label: "Text Padding",
+export const elementPadding = <T extends string>(
+  key: T,
+  label: string
+): Record<T, FieldMeta> => {
+  const fieldMeta: FieldMeta = {
+    label,
     type: "composite",
-    subtype: "number",
     fields: {
       top: {
         label: "Top",
@@ -31,5 +33,7 @@ export const textPadding: Record<string, FieldMeta> = {
         placeholder: "In pixels",
       },
     },
-  },
+  };
+
+  return { [key]: fieldMeta } as Record<T, FieldMeta>;
 };
