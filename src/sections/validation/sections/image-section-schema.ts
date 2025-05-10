@@ -3,6 +3,7 @@ import { baseFields } from "@/sections/validation/fields/base-fields-schema";
 import { mediaFieldSchema } from "../fields/media-field-schema";
 import { animationFields } from "../fields/animation-field-schema";
 import { stylesFields } from "../fields/styles-fields-schema";
+import { numberOrUndefined } from "../helpers";
 
 export const imageSectionSchema = baseFields.extend({
   // DATA
@@ -11,6 +12,13 @@ export const imageSectionSchema = baseFields.extend({
   caption: z.string().optional(),
   // STYLE
   ...stylesFields,
+  imageSize: z
+    .object({
+      width: numberOrUndefined.optional(),
+      height: numberOrUndefined.optional(),
+    })
+    .optional(),
+
   // ANIMATION
   ...animationFields,
 });

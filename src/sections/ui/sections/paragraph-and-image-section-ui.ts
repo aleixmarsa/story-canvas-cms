@@ -27,7 +27,8 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
       },
       alt: {
         label: "Alt text",
-        type: "richtext",
+        type: "text",
+        required: true,
       },
       caption: {
         label: "Caption",
@@ -42,6 +43,25 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
     },
     style: {
       ...baseUIStyles,
+      imageSize: {
+        label: "Image Size",
+        type: "composite",
+        subtype: "number",
+        fields: {
+          width: {
+            label: "Width",
+            type: "number",
+            default: 0,
+            placeholder: "In pixels",
+          },
+          height: {
+            label: "Height",
+            type: "number",
+            default: 0,
+            placeholder: "In pixels",
+          },
+        },
+      },
     },
     animation: {
       ...baseUIAnimation,
