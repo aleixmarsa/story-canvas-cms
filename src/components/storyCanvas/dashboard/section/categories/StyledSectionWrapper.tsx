@@ -18,8 +18,8 @@ export const StyledSectionWrapper = ({
   easing,
   sectionBackground,
   sectionPadding,
+  sectionMargin,
 }: StyledSectionWrapperProps) => {
-  console.log("🚀 ~ sectionPadding:", sectionPadding);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // Handle GSAP animation
@@ -72,11 +72,19 @@ export const StyledSectionWrapper = ({
     paddingRight: sectionPadding?.right
       ? `${sectionPadding?.right}px`
       : undefined,
+    marginTop: sectionMargin?.top ? `${sectionMargin.top}px` : undefined,
+    marginBottom: sectionMargin?.bottom
+      ? `${sectionMargin.bottom}px`
+      : undefined,
+    marginLeft: sectionMargin?.left ? `${sectionMargin.left}px` : undefined,
+    marginRight: sectionMargin?.right ? `${sectionMargin.right}px` : undefined,
   };
 
   return (
-    <section ref={sectionRef} style={inlineStyle}>
-      <div className="max-w-4xl mx-auto">{children}</div>
+    <section style={inlineStyle}>
+      <div className="max-w-4xl mx-auto" ref={sectionRef}>
+        {children}
+      </div>
     </section>
   );
 };

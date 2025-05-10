@@ -42,6 +42,14 @@ export const stylesFields = {
       right: numberOrUndefined.optional(),
     })
     .optional(),
+  sectionMargin: z
+    .object({
+      top: numberOrUndefined.optional(),
+      bottom: numberOrUndefined.optional(),
+      left: numberOrUndefined.optional(),
+      right: numberOrUndefined.optional(),
+    })
+    .optional(),
 };
 
 export const stylesSchema = z.object(stylesFields);
