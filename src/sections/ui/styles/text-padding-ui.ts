@@ -9,25 +9,25 @@ export const elementPadding = <T extends string>(
     type: "composite",
     fields: {
       top: {
-        label: "Top",
+        label: "Top (px)",
         type: "number",
         default: 0,
         placeholder: "In pixels",
       },
       bottom: {
-        label: "Bottom",
+        label: "Bottom (px)",
         type: "number",
         default: 0,
         placeholder: "In pixels",
       },
       left: {
-        label: "Left",
+        label: "Left (px)",
         type: "number",
         default: 0,
         placeholder: "In pixels",
       },
       right: {
-        label: "Right",
+        label: "Right (px)",
         type: "number",
         default: 0,
         placeholder: "In pixels",

@@ -34,12 +34,12 @@ export const paragraphSectionSchemaWithUI: SchemaWithUI<
         default: "none",
       },
       delay: {
-        label: "Delay",
+        label: "Delay (s)",
         type: "number",
         placeholder: "Seconds",
       },
       duration: {
-        label: "Duration",
+        label: "Duration (s)",
         type: "number",
         placeholder: "Seconds",
       },
