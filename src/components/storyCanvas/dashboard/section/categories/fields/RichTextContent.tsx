@@ -11,7 +11,7 @@ const RichTextContent = ({ html }: RichTextContentProps) => {
 
   return (
     <div
-      className="prose prose-lg max-w-none"
+      className="prose prose-lg"
       dangerouslySetInnerHTML={{ __html: cleanHtml }}
     />
   );
