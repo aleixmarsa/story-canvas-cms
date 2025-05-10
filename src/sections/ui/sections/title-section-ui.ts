@@ -1,9 +1,10 @@
 import { titleSectionSchema } from "../../validation/sections/title-section-schema";
 import { baseUIData } from "@/sections/ui/fields/base-fields-ui";
-import { baseUIAnimation } from "../fields/animation-fields-ui";
 import { baseUIStyles } from "../styles/base-styles-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
 import { elementPadding } from "../styles/text-padding-ui";
+import { fieldAnimation } from "../animations/field-animation";
+import { fieldScrolltrigger } from "../animations/element-scrolltrigger";
 
 export const titleSectionSchemaWithUI: SchemaWithUI<typeof titleSectionSchema> =
   {
@@ -23,7 +24,8 @@ export const titleSectionSchemaWithUI: SchemaWithUI<typeof titleSectionSchema> =
         ...elementPadding("textPadding", "Text Padding"),
       },
       animation: {
-        ...baseUIAnimation,
+        ...fieldAnimation("textAnimation", "Text Animation"),
+        ...fieldScrolltrigger("scrollTrigger", "Text ScrollTrigger"),
       },
     },
   };

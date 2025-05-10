@@ -7,15 +7,20 @@ const ImageSection = ({
   caption,
   imageSize,
 }: ImageSectionProps) => {
+  if (!image) return null;
   return (
     <div className="py-8">
-      <img
-        src={image.url}
-        alt={alt || "Image"}
-        className="rounded-lg shadow-md"
-        width={imageSize?.width || "auto"}
-        height={imageSize?.height || "auto"}
-      />
+      {image ? (
+        <img
+          src={image.url}
+          alt={alt || "Image"}
+          className="rounded-lg shadow-md"
+          width={imageSize?.width || "auto"}
+          height={imageSize?.height || "auto"}
+        />
+      ) : (
+        <></>
+      )}
       {caption && (
         <div className="mt-2">
           <RichTextContent html={caption} />

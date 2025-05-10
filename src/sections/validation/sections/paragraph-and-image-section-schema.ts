@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
 import { mediaFieldSchema } from "../fields/media-field-schema";
-import { animationFields } from "../fields/animation-field-schema";
-import { stylesFields } from "../fields/styles-fields-schema";
+import { stylesFieldsSchema } from "../fields/styles-fields-schema";
 import { numberOrUndefined } from "../helpers";
+import { createScrollTriggerSchema } from "../animations/create-scroll-trigger-schema";
+import { createTextAnimationSchema } from "../animations/create-animation-schema";
 
 export const paragraphAndimageSectionSchema = baseFields.extend({
   //DATA
@@ -15,7 +16,7 @@ export const paragraphAndimageSectionSchema = baseFields.extend({
     errorMap: () => ({ message: "You need to select a layout." }),
   }),
   // STYLE
-  ...stylesFields,
+  ...stylesFieldsSchema,
   imageSize: z
     .object({
       width: numberOrUndefined.optional(),
@@ -24,7 +25,9 @@ export const paragraphAndimageSectionSchema = baseFields.extend({
     .optional(),
 
   // ANIMATION
-  ...animationFields,
+  textAnimation: createTextAnimationSchema(),
+  imageAnimation: createTextAnimationSchema(),
+  scrollTrigger: createScrollTriggerSchema(),
 });
 
 export type ParagraphAndImageSectionSchema =

@@ -10,7 +10,7 @@ export const BACKGROUND_POSITION_VALUES = [
   "center",
 ] as const;
 
-export const stylesFields = {
+export const stylesFieldsSchema = {
   sectionBackground: z
     .object({
       image: z
@@ -52,6 +52,6 @@ export const stylesFields = {
     .optional(),
 };
 
-export const stylesSchema = z.object(stylesFields);
+export const stylesSchema = z.object(stylesFieldsSchema);
 
 export type StylesFields = z.infer<typeof stylesSchema>;

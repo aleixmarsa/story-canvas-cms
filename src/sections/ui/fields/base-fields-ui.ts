@@ -1,6 +1,5 @@
 import type { FieldMeta } from "@/types/section-fields";
 import type { BaseFields } from "@/sections/validation/fields/base-fields-schema";
-import { baseUIAnimation } from "./animation-fields-ui";
 
 export const baseUIData: Record<keyof BaseFields, FieldMeta> = {
   name: {
@@ -20,5 +19,5 @@ export const baseUIData: Record<keyof BaseFields, FieldMeta> = {
 export const baseUI = {
   data: baseUIData,
   style: {},
-  animation: baseUIAnimation,
+  animation: {},
 };

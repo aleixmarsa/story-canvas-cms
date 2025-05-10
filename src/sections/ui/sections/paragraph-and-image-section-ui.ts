@@ -1,8 +1,9 @@
 import { paragraphAndimageSectionSchema } from "../../validation/sections/paragraph-and-image-section-schema";
 import { baseUIData } from "@/sections/ui/fields/base-fields-ui";
-import { baseUIAnimation } from "../fields/animation-fields-ui";
 import { baseUIStyles } from "../styles/base-styles-ui";
 import type { SchemaWithUI } from "@/types/section-fields";
+import { fieldAnimation } from "../animations/field-animation";
+import { fieldScrolltrigger } from "../animations/element-scrolltrigger";
 
 export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
   typeof paragraphAndimageSectionSchema
@@ -63,7 +64,9 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
       },
     },
     animation: {
-      ...baseUIAnimation,
+      ...fieldAnimation("textAnimation", "Text Animation"),
+      ...fieldAnimation("imageAnimation", "Image Animation"),
+      ...fieldScrolltrigger("scrollTrigger", "Text ScrollTrigger"),
     },
   },
 };

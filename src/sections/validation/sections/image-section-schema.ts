@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
 import { mediaFieldSchema } from "../fields/media-field-schema";
-import { animationFields } from "../fields/animation-field-schema";
-import { stylesFields } from "../fields/styles-fields-schema";
+import { stylesFieldsSchema } from "../fields/styles-fields-schema";
 import { numberOrUndefined } from "../helpers";
+import { createScrollTriggerSchema } from "../animations/create-scroll-trigger-schema";
+import { createTextAnimationSchema } from "../animations/create-animation-schema";
 
 export const imageSectionSchema = baseFields.extend({
   // DATA
@@ -11,7 +12,7 @@ export const imageSectionSchema = baseFields.extend({
   alt: z.string().optional(),
   caption: z.string().optional(),
   // STYLE
-  ...stylesFields,
+  ...stylesFieldsSchema,
   imageSize: z
     .object({
       width: numberOrUndefined.optional(),
@@ -20,7 +21,8 @@ export const imageSectionSchema = baseFields.extend({
     .optional(),
 
   // ANIMATION
-  ...animationFields,
+  imageAnimation: createTextAnimationSchema(),
+  scrollTrigger: createScrollTriggerSchema(),
 });
 
 export type ImageSectionSchema = typeof imageSectionSchema;

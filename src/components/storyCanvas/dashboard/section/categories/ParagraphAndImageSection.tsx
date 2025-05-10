@@ -10,6 +10,7 @@ const ParagraphAndImageSection = ({
   imageSize,
 }: ParagraphAndImageSectionProps) => {
   const isLeft = layout === "left";
+
   return (
     <div className="py-8">
       <div
@@ -18,13 +19,17 @@ const ParagraphAndImageSection = ({
         } gap-6 items-center`}
       >
         <div className="shrink-0 w-full md:w-1/2">
-          <img
-            src={image.url}
-            alt={alt || "Image"}
-            className="mx-auto rounded-lg shadow-md"
-            width={imageSize?.width || "auto"}
-            height={imageSize?.height || "auto"}
-          />
+          {image ? (
+            <img
+              src={image.url}
+              alt={alt || "Image"}
+              className="mx-auto rounded-lg shadow-md"
+              width={imageSize?.width || "auto"}
+              height={imageSize?.height || "auto"}
+            />
+          ) : (
+            <></>
+          )}
           {caption && <RichTextContent html={caption} />}
         </div>
 

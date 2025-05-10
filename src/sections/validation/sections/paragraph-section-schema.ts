@@ -1,16 +1,14 @@
 import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
-import { stylesFields } from "../fields/styles-fields-schema";
-import {
-  ANIMATION_TYPES_VALUES,
-  EASE_TYPES,
-} from "../fields/animation-field-schema";
+import { createTextAnimationSchema } from "../animations/create-animation-schema";
+import { createScrollTriggerSchema } from "../animations/create-scroll-trigger-schema";
+import { stylesFieldsSchema } from "../fields/styles-fields-schema";
 
 export const paragraphSectionSchema = baseFields.extend({
   // DATA
   body: z.string().min(1, "Text cannot be empty"),
   // STYLE
-  ...stylesFields,
+  ...stylesFieldsSchema,
   textPadding: z
     .object({
       top: z.number().optional(),
@@ -20,28 +18,8 @@ export const paragraphSectionSchema = baseFields.extend({
     })
     .optional(),
   // ANIMATION
-
-  textAnimation: z.object({
-    animationType: z.enum(ANIMATION_TYPES_VALUES),
-    delay: z.number().min(0).max(10).optional(),
-    duration: z.number().min(0).max(10).optional(),
-    easing: z.enum(EASE_TYPES).optional(),
-  }),
-  scrollTrigger: z
-    .object({
-      start: z.string().min(1, "Start is required").optional(),
-      end: z.string().min(1, "End is required").optional(),
-      scrub: z.enum(["true", "false"]).optional(),
-    })
-    .superRefine(({ start, end }, ctx) => {
-      if ((start && !end) || (end && !start)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            "ScrollTrigger settings are required when using ScrollTrigger",
-        });
-      }
-    }),
+  textAnimation: createTextAnimationSchema(),
+  scrollTrigger: createScrollTriggerSchema(),
 });
 
 export type ParagraphSectionSchema = typeof paragraphSectionSchema;
