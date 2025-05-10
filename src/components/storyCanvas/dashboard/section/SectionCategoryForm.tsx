@@ -325,7 +325,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             render={({ field }) => (
               <RadioGroup
                 onValueChange={field.onChange}
-                value={(field.value as string) ?? ""}
+                value={(field.value as string) ?? config.default}
                 className="flex gap-4"
               >
                 {(radioFConfig.options ?? []).map((option) => (
