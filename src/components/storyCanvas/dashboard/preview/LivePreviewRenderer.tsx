@@ -29,6 +29,26 @@ const LivePreviewRenderer = ({ initialStoryData }: Props) => {
           sections: updatedSections,
         }));
       }
+      if (event.data.type === "preview:single_section_create") {
+        const newSection = event.data.payload;
+        setStoryData((prev) => {
+          // Check if a section with the same ID already exists
+          const exists = prev.sections.some(
+            (section) => section.id === newSection.id
+          );
+
+          // If it exists, replace the existing section (it means it is in process of creation)
+          // If it doesn't exist, append the new section to the list
+          return {
+            ...prev,
+            sections: exists
+              ? prev.sections.map((section) =>
+                  section.id === newSection.id ? newSection : section
+                )
+              : [...prev.sections, newSection],
+          };
+        });
+      }
 
       if (event.data.type === "preview:delete_section") {
         const deletedSectionId = event.data.payload.sectionId;

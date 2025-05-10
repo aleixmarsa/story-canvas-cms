@@ -29,4 +29,49 @@ export const baseUIAnimation: Record<keyof AnimationFields, FieldMeta> = {
     type: "select",
     options: EASE_TYPES.map((e) => ({ value: e, label: e })),
   },
+  // withScrollTrigger: {
+  //   label: "Use ScrollTrigger",
+  //   type: "radio",
+  //   options: [
+  //     { label: "Yes", value: "true" },
+  //     { label: "No", value: "false" },
+  //   ],
+  //   default: "false",
+  // },
+  // scrollTrigger: {
+  //   label: "ScrollTrigger Settings",
+  //   type: "composite",
+  //   fields: {
+  //     start: {
+  //       label: "Start",
+  //       type: "text",
+  //       placeholder: "e.g. top bottom",
+  //       required: true,
+  //     },
+  //     end: {
+  //       label: "End",
+  //       type: "text",
+  //       placeholder: "e.g. bottom top",
+  //       required: true,
+  //     },
+  //     scrub: {
+  //       label: "Scrub",
+  //       type: "radio",
+  //       options: [
+  //         { label: "Yes", value: "true" },
+  //         { label: "No", value: "false" },
+  //       ],
+  //       default: "false",
+  //     },
+  //     pin: {
+  //       label: "Pin",
+  //       type: "radio",
+  //       options: [
+  //         { label: "Yes", value: "true" },
+  //         { label: "No", value: "false" },
+  //       ],
+  //       default: "false",
+  //     },
+  //   },
+  // },
 };

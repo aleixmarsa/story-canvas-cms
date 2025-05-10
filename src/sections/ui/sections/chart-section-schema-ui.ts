@@ -43,7 +43,7 @@ export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =
           type: "textarea",
           required: true,
           placeholder:
-            'Paste your JSON data, e.g. [{"year": 2020, "meantTemperature": 24, "meanPrecipitation": }, ...]',
+            'Paste your JSON data, e.g. [{"year": 2020, "meanTemperature": 24, "meanPrecipitation": }, ...]',
         },
       },
       style: {

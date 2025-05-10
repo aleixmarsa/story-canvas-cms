@@ -27,12 +27,17 @@ import { RenderSectionData } from "@/types/section";
 import RichTextEditor from "./categories/fields/RichTextEditor";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
 import MediaUploader from "./categories/fields/MediaUploader";
-import type { MediaFieldTypes } from "@/types/section-fields";
+import type {
+  CompositeFieldMeta,
+  MediaFieldTypes,
+  WithOptionsFieldMeta,
+} from "@/types/section-fields";
 import type { MediaField } from "@/sections/validation/fields/media-field-schema";
 import { usePreviewIframe } from "@/hooks/use-preview-iframe";
 import type { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
-import { FieldMeta } from "@/types/section-fields";
+import { FIELD_TYPES, FieldMeta } from "@/types/section-fields";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -114,9 +119,23 @@ const SectionCategoryForm = <T extends SectionCategory>({
     );
   }, 300);
 
+  const sendPreviewCreate = debounce((data: RenderSectionData) => {
+    if (!iframeRef.current?.contentWindow) return;
+    iframeRef.current.contentWindow.postMessage(
+      {
+        type: "preview:single_section_create",
+        payload: {
+          ...data,
+          type,
+        },
+      },
+      "*"
+    );
+  }, 300);
+
   // Send the updated section data to the iframe for live preview
   useEffect(() => {
-    if (!watchedValues || !section) return;
+    if (!watchedValues) return;
 
     const watchedSection: { [key: string]: string | AnimationFields } = {};
 
@@ -124,21 +143,24 @@ const SectionCategoryForm = <T extends SectionCategory>({
       const value = watchedValues[i];
 
       // Handle special cases for animation
-
       watchedSection[key] = value as string;
     });
 
     const name = watchedSection.name;
 
     const previewDraftSectionData: RenderSectionData = {
-      id: section.currentDraftId || 0,
+      id: section?.currentDraftId || 99999, // If section is not present (creating a new one) set id to 99999 to be able to preview it
       name: name as string,
-      order: section.currentDraft?.order || 0,
+      order: section?.currentDraft?.order || 99999,
       type,
       content: watchedSection,
     };
 
-    sendPreviewUpdate(previewDraftSectionData);
+    if (section) {
+      sendPreviewUpdate(previewDraftSectionData);
+      return;
+    }
+    sendPreviewCreate(previewDraftSectionData);
   }, [watchedValues, sendPreviewUpdate]);
 
   const internalSubmitHandler = async (data: FormData) => {
@@ -211,7 +233,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
     }
 
     switch (config.type) {
-      case "textarea":
+      case FIELD_TYPES.textarea:
         inputElement = (
           <Textarea
             id={id}
@@ -221,7 +243,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "number":
+      case FIELD_TYPES.number:
         inputElement = (
           <Input
             id={id}
@@ -234,7 +256,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "richtext":
+      case FIELD_TYPES.richtext:
         inputElement = (
           <Controller
             name={key}
@@ -248,8 +270,8 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "image":
-      case "video":
+      case FIELD_TYPES.image:
+      case FIELD_TYPES.video:
         inputElement = (
           <Controller
             name={finalKey}
@@ -274,7 +296,28 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "radio":
+      case FIELD_TYPES.checkbox:
+        inputElement = (
+          <Controller
+            name={finalKey as keyof FormData}
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id={id}
+                  checked={!!field.value}
+                  onCheckedChange={field.onChange}
+                />
+                <Label htmlFor={id} className="font-medium text-sm">
+                  {config.label}
+                </Label>
+              </div>
+            )}
+          />
+        );
+        break;
+      case FIELD_TYPES.radio:
+        const radioFConfig = config as WithOptionsFieldMeta;
         inputElement = (
           <Controller
             name={finalKey as keyof FormData}
@@ -285,9 +328,9 @@ const SectionCategoryForm = <T extends SectionCategory>({
                 value={(field.value as string) ?? ""}
                 className="flex gap-4"
               >
-                {(config.options ?? []).map((option) => (
+                {(radioFConfig.options ?? []).map((option) => (
                   <div
-                    key={option.value}
+                    key={option.label}
                     className="flex items-center space-x-2"
                   >
                     <RadioGroupItem
@@ -307,20 +350,25 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "select":
+      case FIELD_TYPES.select:
+        const selectConfig = config as WithOptionsFieldMeta;
+
         inputElement = (
           <Controller
             name={finalKey}
             control={control}
             render={({ field }) => {
-              const value = field.value ? field.value.toString() : "";
+              const value = field.value
+                ? field.value.toString()
+                : config.default?.toString();
+
               return (
                 <Select value={value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder={config.placeholder} />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {(config.options ?? []).map((option) => (
+                    {(selectConfig.options ?? []).map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -332,21 +380,24 @@ const SectionCategoryForm = <T extends SectionCategory>({
           />
         );
         break;
-      case "composite":
+      case FIELD_TYPES.composite:
+        const compositeConfig = config as CompositeFieldMeta;
         inputElement = (
           <div className="ml-2 space-y-2 grid grid-cols-2 gap-2">
-            {Object.entries(config.fields).map(([subKey, subConfig]) => {
-              return (
-                <div key={`${key}.${subKey}`}>
-                  {renderField({
-                    config: subConfig,
-                    key,
-                    subkey: subKey as keyof FormData,
-                    compositeErrors: compositeError,
-                  })}
-                </div>
-              );
-            })}
+            {Object.entries(compositeConfig.fields).map(
+              ([subKey, subConfig]) => {
+                return (
+                  <div key={`${key}.${subKey}`}>
+                    {renderField({
+                      config: subConfig,
+                      key,
+                      subkey: subKey as keyof FormData,
+                      compositeErrors: compositeError,
+                    })}
+                  </div>
+                );
+              }
+            )}
           </div>
         );
         break;
@@ -355,7 +406,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Input
             id={id}
             type="color"
-            placeholder={config.placeholder}
+            defaultValue={config.default as string}
             {...register(finalKey)}
             data-testid={`create-section-${finalKey}-input`}
           />

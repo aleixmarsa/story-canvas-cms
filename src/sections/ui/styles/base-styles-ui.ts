@@ -23,18 +23,17 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
       size: {
         label: "Size",
         type: "select",
-        options: BACKGROUND_SIZE_VALUES.map((value) => ({
-          label: value.charAt(0).toUpperCase() + value.slice(1),
-          value,
-        })),
+        options: BACKGROUND_SIZE_VALUES.map((v) => ({ value: v, label: v })),
+        default: "cover",
       },
       position: {
         label: "Position",
         type: "select",
-        options: BACKGROUND_POSITION_VALUES.map((value) => ({
-          label: value.charAt(0).toUpperCase() + value.slice(1),
-          value,
+        options: BACKGROUND_POSITION_VALUES.map((v) => ({
+          value: v,
+          label: v,
         })),
+        default: "center",
       },
     },
   },

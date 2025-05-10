@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
-import { animationFields } from "../fields/animation-field-schema";
 import { stylesFields } from "../fields/styles-fields-schema";
+import { ANIMATION_TYPES, EASE_TYPES } from "../fields/animation-field-schema";
 
 export const paragraphSectionSchema = baseFields.extend({
   // DATA
@@ -17,7 +17,27 @@ export const paragraphSectionSchema = baseFields.extend({
     })
     .optional(),
   // ANIMATION
-  ...animationFields,
+  animationType: z.enum(ANIMATION_TYPES).default("none"),
+  delay: z.number().min(0).max(10).optional(),
+  duration: z.number().min(0).max(10).optional(),
+  easing: z.enum(EASE_TYPES).optional(),
+
+  scrollTrigger: z
+    .object({
+      start: z.string().min(1, "Start is required").optional(),
+      end: z.string().min(1, "End is required").optional(),
+      scrub: z.enum(["true", "false"]).optional(),
+      pin: z.enum(["true", "false"]).optional(),
+    })
+    .superRefine(({ start, end }, ctx) => {
+      if ((start && !end) || (end && !start)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "ScrollTrigger settings are required when using ScrollTrigger",
+        });
+      }
+    }),
 });
 
 export type ParagraphSectionSchema = typeof paragraphSectionSchema;

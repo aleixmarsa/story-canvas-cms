@@ -33,6 +33,7 @@ export const getInitialsFromEmail = (email: string): string => {
 };
 
 export const normalizeLinks = (html: string): string => {
+  if (!html) return "";
   return html.replace(/<a\s+[^>]*href="([^"]+)"[^>]*>/g, (match, href) => {
     if (
       href.startsWith("http://") ||

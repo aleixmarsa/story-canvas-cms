@@ -1,42 +1,49 @@
 import { z } from "zod";
-export type FieldTypes =
-  | "text"
-  | "number"
-  | "textarea"
-  | "url"
-  | "richtext"
-  | "radio"
-  | "select"
-  | "image"
-  | "video"
-  | "animation"
-  | "color";
 
+export const FIELD_TYPES = {
+  text: "text",
+  number: "number",
+  textarea: "textarea",
+  url: "url",
+  richtext: "richtext",
+  radio: "radio",
+  select: "select",
+  image: "image",
+  video: "video",
+  animation: "animation",
+  color: "color",
+  composite: "composite",
+  checkbox: "checkbox",
+} as const;
+
+export type FieldTypes = (typeof FIELD_TYPES)[keyof typeof FIELD_TYPES];
 export type MediaFieldTypes = Extract<FieldTypes, "image" | "video">;
 
-export type CompositeFieldMeta = {
+type BaseFieldMeta<T extends FieldTypes = FieldTypes> = {
   label: string;
-  type: "composite";
+  type: T;
   required?: boolean;
+};
+
+type SimpleFieldMeta = BaseFieldMeta<FieldTypes> & {
+  default?: number | string | boolean;
+  placeholder?: string;
+};
+
+export type WithOptionsFieldMeta = BaseFieldMeta<
+  typeof FIELD_TYPES.radio | typeof FIELD_TYPES.select
+> & {
+  options: { label: string; value: string }[];
+  default?: string;
+};
+
+export type CompositeFieldMeta = BaseFieldMeta<typeof FIELD_TYPES.composite> & {
   fields: Record<string, FieldMeta>;
 };
 
-export type StyleFieldMeta = {
-  label: string;
-  type: "composite";
-  required?: boolean;
-};
-
 export type FieldMeta =
-  | {
-      label: string;
-      type: FieldTypes;
-      default?: number | string | boolean;
-      required?: boolean;
-      placeholder?: string;
-      options?: { value: string; label: string }[];
-      group?: string;
-    }
+  | SimpleFieldMeta
+  | WithOptionsFieldMeta
   | CompositeFieldMeta;
 
 export type SchemaWithUI<T extends z.ZodTypeAny> = {

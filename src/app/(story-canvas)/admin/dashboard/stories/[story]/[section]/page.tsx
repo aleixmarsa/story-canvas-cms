@@ -15,7 +15,7 @@ import { useSections } from "@/lib/swr/useSections";
 import { Loader2 } from "lucide-react";
 
 const EditSectionPage = () => {
-  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(true);
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formIsSubmitting, setFormIsSubmitting] = useState(false);
