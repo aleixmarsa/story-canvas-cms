@@ -60,7 +60,7 @@ export default async function AdminLayout({
   return (
     <>
       {children}
-      <Toaster richColors />
+      <Toaster richColors duration={2500} />
     </>
   );
 }
