@@ -426,7 +426,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
         );
     }
     return (
-      <div key={id} className="flex flex-col gap-1.5">
+      <div key={id} className="flex flex-col gap-2">
         <Label
           htmlFor={id}
           className={cn("font-medium", subkey ? "text-xs" : "")}
