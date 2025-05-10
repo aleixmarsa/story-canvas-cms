@@ -17,7 +17,6 @@ export type MediaFieldTypes = Extract<FieldTypes, "image" | "video">;
 export type CompositeFieldMeta = {
   label: string;
   type: "composite";
-  subtype: FieldTypes;
   required?: boolean;
   fields: Record<string, FieldMeta>;
 };
@@ -25,7 +24,6 @@ export type CompositeFieldMeta = {
 export type StyleFieldMeta = {
   label: string;
   type: "composite";
-  subtype: FieldTypes;
   required?: boolean;
 };
 

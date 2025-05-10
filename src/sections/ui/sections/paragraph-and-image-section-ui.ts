@@ -46,7 +46,6 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
       imageSize: {
         label: "Image Size",
         type: "composite",
-        subtype: "number",
         fields: {
           width: {
             label: "Width",

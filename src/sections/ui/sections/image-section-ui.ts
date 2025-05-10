@@ -30,7 +30,6 @@ export const imageSectionSchemaWithUI: SchemaWithUI<typeof imageSectionSchema> =
         imageSize: {
           label: "Image Size",
           type: "composite",
-          subtype: "number",
           fields: {
             width: {
               label: "Width",

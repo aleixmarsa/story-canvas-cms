@@ -9,7 +9,6 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
   sectionBackground: {
     label: "Section Background",
     type: "composite",
-    subtype: "select",
     fields: {
       image: {
         label: "Image URL",
@@ -39,11 +38,39 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
       },
     },
   },
-
   sectionPadding: {
     label: "Section Padding",
     type: "composite",
-    subtype: "number",
+    fields: {
+      top: {
+        label: "Top",
+        type: "number",
+        default: 0,
+        placeholder: "In pixels",
+      },
+      bottom: {
+        label: "Bottom",
+        type: "number",
+        default: 0,
+        placeholder: "In pixels",
+      },
+      left: {
+        label: "Left",
+        type: "number",
+        default: 0,
+        placeholder: "In pixels",
+      },
+      right: {
+        label: "Right",
+        type: "number",
+        default: 0,
+        placeholder: "In pixels",
+      },
+    },
+  },
+  sectionMargin: {
+    label: "Section Margin",
+    type: "composite",
     fields: {
       top: {
         label: "Top",
