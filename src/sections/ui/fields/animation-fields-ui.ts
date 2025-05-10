@@ -9,7 +9,7 @@ export const baseUIAnimation: Record<keyof AnimationFields, FieldMeta> = {
   animationType: {
     label: "Type",
     type: "select",
-    options: ANIMATION_TYPES.map((t) => ({
+    options: Object.values(ANIMATION_TYPES).map((t) => ({
       value: t,
       label: t.charAt(0).toUpperCase() + t.slice(1),
     })),

@@ -1,6 +1,25 @@
 import { z } from "zod";
 
-export const ANIMATION_TYPES = ["none", "fade", "slide-up", "zoom-in"] as const;
+export const ANIMATION_TYPES = {
+  none: "none",
+  fade: "fade",
+  slideUp: "slide-up",
+  slideDown: "slide-down",
+  slideLeft: "slide-left",
+  slideRight: "slide-right",
+  zoomIn: "zoom-in",
+  zoomOut: "zoom-out",
+  flipHorizontal: "flip-horizontal",
+  flipVertical: "flip-vertical",
+  bounceIn: "bounce-in",
+  elasticIn: "elastic-in",
+} as const;
+
+export const ANIMATION_TYPES_VALUES = Object.values(ANIMATION_TYPES) as [
+  string,
+  ...string[]
+];
+
 export const EASE_TYPES = [
   "none",
   "power1",
@@ -45,11 +64,13 @@ export const EASE_TYPES = [
   "sine.inOut",
 ] as const;
 
-export type AnimationTypes = (typeof ANIMATION_TYPES)[number];
+export type AnimationTypes =
+  (typeof ANIMATION_TYPES)[keyof typeof ANIMATION_TYPES];
+
 export type EasingTypes = (typeof EASE_TYPES)[number];
 
 export const animationFields = {
-  animationType: z.enum(ANIMATION_TYPES).default("none").optional(),
+  animationType: z.enum(ANIMATION_TYPES_VALUES).default("none").optional(),
   delay: z
     .number({ invalid_type_error: "Value is not a number" })
     .min(0, { message: "Min value is 0" })

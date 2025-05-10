@@ -27,30 +27,39 @@ export const paragraphSectionSchemaWithUI: SchemaWithUI<
       ...elementPadding("textPadding", "Text Padding"),
     },
     animation: {
-      animationType: {
-        label: "Type",
-        type: "select",
-        options: ANIMATION_TYPES.map((t) => ({ value: t, label: t })),
-        default: "none",
-      },
-      delay: {
-        label: "Delay (s)",
-        type: "number",
-        placeholder: "Seconds",
-      },
-      duration: {
-        label: "Duration (s)",
-        type: "number",
-        placeholder: "Seconds",
-      },
-      easing: {
-        label: "Easing",
-        type: "select",
-        options: EASE_TYPES.map((e) => ({ value: e, label: e })),
-        default: "none",
+      textAnimation: {
+        label: "Text animation",
+        type: "composite",
+        fields: {
+          animationType: {
+            label: "Type",
+            type: "select",
+            options: Object.values(ANIMATION_TYPES).map((t) => ({
+              value: t,
+              label: t,
+            })),
+            default: "none",
+          },
+          delay: {
+            label: "Delay (s)",
+            type: "number",
+            placeholder: "Seconds",
+          },
+          duration: {
+            label: "Duration (s)",
+            type: "number",
+            placeholder: "Seconds",
+          },
+          easing: {
+            label: "Easing",
+            type: "select",
+            options: EASE_TYPES.map((e) => ({ value: e, label: e })),
+            default: "none",
+          },
+        },
       },
       scrollTrigger: {
-        label: "ScrollTrigger Settings",
+        label: "Text ScrollTrigger",
         type: "composite",
         fields: {
           start: {
@@ -77,15 +86,6 @@ export const paragraphSectionSchemaWithUI: SchemaWithUI<
           },
           scrub: {
             label: "Scrub",
-            type: "radio",
-            options: [
-              { label: "Yes", value: "true" },
-              { label: "No", value: "false" },
-            ],
-            default: "false",
-          },
-          pin: {
-            label: "Pin",
             type: "radio",
             options: [
               { label: "Yes", value: "true" },
