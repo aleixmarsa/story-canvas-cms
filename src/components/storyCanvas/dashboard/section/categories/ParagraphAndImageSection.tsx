@@ -7,6 +7,7 @@ const ParagraphAndImageSection = ({
   alt,
   caption,
   layout,
+  imageSize,
 }: ParagraphAndImageSectionProps) => {
   const isLeft = layout === "left";
   return (
@@ -16,11 +17,13 @@ const ParagraphAndImageSection = ({
           isLeft ? "md:flex-row-reverse" : ""
         } gap-6 items-center`}
       >
-        <div className="w-full md:w-1/2">
+        <div className="shrink-0 w-full md:w-1/2">
           <img
             src={image.url}
             alt={alt || "Image"}
             className="mx-auto rounded-lg shadow-md"
+            width={imageSize?.width || "auto"}
+            height={imageSize?.height || "auto"}
           />
           {caption && <RichTextContent html={caption} />}
         </div>

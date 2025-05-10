@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ANIMATION_TYPES = ["fade", "slide-up", "zoom-in", "none"] as const;
+export const ANIMATION_TYPES = ["none", "fade", "slide-up", "zoom-in"] as const;
 export const EASE_TYPES = [
   "none",
   "power1",
