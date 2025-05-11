@@ -24,6 +24,7 @@ export const fieldScrolltrigger = <T extends string>(
         type: "select",
         options: [
           { label: "none", value: "none" },
+          { label: "bottom bottom", value: "bottom bottom" },
           { label: "top top", value: "top top" },
           { label: "top 50%", value: "top 50%" },
           { label: "50% 50%", value: "50% 50%" },
