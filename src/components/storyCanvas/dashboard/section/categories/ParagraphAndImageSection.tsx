@@ -52,8 +52,9 @@ const ParagraphAndImageSection = ({
           : undefined,
       });
 
-      applyAnimation(textElement, textAnimation, timeline);
-      applyAnimation(imageElement, imageAnimation, timeline);
+      if (textAnimation) applyAnimation(textElement, textAnimation, timeline);
+      if (imageAnimation)
+        applyAnimation(imageElement, imageAnimation, timeline);
     },
     { dependencies: [textAnimation, scrollTrigger], revertOnUpdate: true }
   );
