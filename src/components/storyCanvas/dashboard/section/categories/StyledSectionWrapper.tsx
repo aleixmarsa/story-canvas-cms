@@ -12,8 +12,6 @@ export const StyledSectionWrapper = ({
   sectionPadding,
   sectionMargin,
 }: StyledSectionWrapperProps) => {
-  console.log("🚀 ~ sectionLayout:", sectionLayout);
-
   const inlineSectionStyle: React.CSSProperties = {
     backgroundColor: sectionBackground?.color || undefined,
     backgroundImage: sectionBackground?.image
