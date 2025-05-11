@@ -30,6 +30,7 @@ export const fieldAnimation = <T extends string>(
         label: "Duration (s)",
         type: "number",
         placeholder: "Seconds",
+        default: 0,
       },
       easing: {
         label: "Easing",

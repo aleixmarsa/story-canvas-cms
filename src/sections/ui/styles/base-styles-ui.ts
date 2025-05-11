@@ -20,7 +20,7 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
           value: value,
           label: key,
         })),
-        default: "content",
+        default: "auto",
       },
 
       justifyContent: {
@@ -30,7 +30,7 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
           value: value,
           label: key,
         })),
-        default: "center",
+        default: "flex-start",
       },
       alignItems: {
         label: "Vertical Align",
@@ -39,7 +39,7 @@ export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
           value: value,
           label: key,
         })),
-        default: "center",
+        default: "flex-start",
       },
     },
   },
