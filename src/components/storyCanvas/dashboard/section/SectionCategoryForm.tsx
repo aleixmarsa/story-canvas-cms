@@ -37,6 +37,13 @@ import { usePreviewIframe } from "@/hooks/use-preview-iframe";
 import { FIELD_TYPES, FieldMeta } from "@/types/section-fields";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -433,14 +440,30 @@ const SectionCategoryForm = <T extends SectionCategory>({
     }
     return (
       <div key={id} className="flex flex-col gap-2">
-        <Label
-          htmlFor={id}
-          className={cn("font-medium", subkey ? "text-xs" : "")}
-          aria-required={config.required}
-          required={config.required}
-        >
-          {config.label}
-        </Label>
+        <div className="flex items-center gap-1">
+          <Label
+            htmlFor={id}
+            className={cn("font-medium", subkey ? "text-xs" : "")}
+            aria-required={config.required}
+            required={config.required}
+          >
+            {config.label}
+          </Label>
+          {config.tip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="hover:text-gray-700 cursor-pointer">
+                    <Info size={14} />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs max-w-[100px]">{config.tip}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </div>
         {inputElement}
         {error && <FormErrorMessage error={error} />}
       </div>
