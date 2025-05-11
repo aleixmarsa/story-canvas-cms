@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { ConflictError } from "@/lib/errors";
 import { StoryStatus } from "@prisma/client";
 import { slugify } from "../utils";
-import type { SectionCategory } from "@/sections/section-categories";
+import type { SectionFormData } from "../validation/section-version";
 
 /**
  * Gets a section with its current draft and published version.
@@ -47,24 +47,18 @@ export const deleteSectionWithVersions = async (sectionId: number) => {
  * @throws ConflictError - If the slug already exists in another section of the same story.
  * @throws Error - If the transaction fails.
  */
-export const createSectionWithDraftVersion = async (input: {
-  storyId: number;
-  name: string;
-  type: SectionCategory;
-  content: unknown;
-  createdBy: string;
-}) => {
-  const slug = slugify(input.name);
+export const createSectionWithDraftVersion = async (data: SectionFormData) => {
+  const slug = slugify(data.name);
 
   return prisma.$transaction(async (tx) => {
     const numberOfSections = await tx.section.count({
-      where: { storyId: input.storyId },
+      where: { storyId: data.storyId },
     });
     const section = await tx.section.create({
       data: {
-        storyId: input.storyId,
-        lastEditedBy: input.createdBy,
-        lockedBy: input.createdBy,
+        storyId: data.storyId,
+        lastEditedBy: data.createdBy,
+        lockedBy: data.createdBy,
       },
     });
 
@@ -72,7 +66,7 @@ export const createSectionWithDraftVersion = async (input: {
       where: {
         slug,
         section: {
-          storyId: input.storyId,
+          storyId: data.storyId,
           id: {
             not: section.id,
           },
@@ -87,12 +81,12 @@ export const createSectionWithDraftVersion = async (input: {
     const draftVersion = await tx.sectionVersion.create({
       data: {
         sectionId: section.id,
-        name: input.name,
+        name: data.name,
         slug,
-        type: input.type,
+        type: data.type,
         order: numberOfSections,
-        content: input.content || {},
-        createdBy: input.createdBy,
+        content: data.content || {},
+        createdBy: data.createdBy,
         status: StoryStatus.draft,
       },
     });
