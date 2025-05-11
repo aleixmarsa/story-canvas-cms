@@ -38,7 +38,7 @@ const ImageSection = ({
           ? {
               trigger: imageElement,
               start: scroll.start,
-              end: "scroll.end",
+              end: scroll.end,
               scrub: scroll.scrub === "true",
             }
           : undefined,

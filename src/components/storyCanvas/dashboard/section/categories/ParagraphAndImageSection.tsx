@@ -46,7 +46,7 @@ const ParagraphAndImageSection = ({
           ? {
               trigger: textElement,
               start: scroll.start,
-              end: "scroll.end",
+              end: scroll.end,
               scrub: scroll.scrub === "true",
             }
           : undefined,
