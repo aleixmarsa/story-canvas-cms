@@ -15,4 +15,5 @@ export const createScrollTriggerSchema = () =>
             "ScrollTrigger settings are required when using ScrollTrigger",
         });
       }
-    });
+    })
+    .optional();

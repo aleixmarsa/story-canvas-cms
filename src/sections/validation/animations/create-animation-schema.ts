@@ -5,9 +5,11 @@ import {
 } from "../fields/animation-field-schema";
 
 export const createTextAnimationSchema = () =>
-  z.object({
-    animationType: z.enum(ANIMATION_TYPES_VALUES),
-    delay: z.number().min(0).max(10).optional(),
-    duration: z.number().min(0).max(10).optional(),
-    easing: z.enum(EASE_TYPES).optional(),
-  });
+  z
+    .object({
+      animationType: z.enum(ANIMATION_TYPES_VALUES),
+      delay: z.number().min(0).max(10).optional(),
+      duration: z.number().min(0).max(10).optional(),
+      easing: z.enum(EASE_TYPES).optional(),
+    })
+    .optional();
