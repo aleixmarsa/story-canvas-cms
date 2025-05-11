@@ -19,6 +19,7 @@ import RichTextContent from "./fields/RichTextContent";
 
 const ChartSection = ({
   title,
+  description,
   data,
   xKey,
   yKeys,
@@ -93,7 +94,10 @@ const ChartSection = ({
 
   return (
     <div className="py-8 w-full">
-      {title && <RichTextContent html={title} />}
+      <div className="pb-4">{title && <RichTextContent html={title} />}</div>
+      <div className="pb-4">
+        {description && <RichTextContent html={description} />}
+      </div>
       {isValidChart ? (
         <ResponsiveContainer width="100%" height={400}>
           {chart}
