@@ -309,7 +309,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border mb-6 min-h-[120px] flex items-center justify-center">
+      <div className="rounded-md border mb-6 min-h-[100px] flex items-center justify-center">
         {dataFetchingError ? (
           <p className="text-destructive text-sm">Error loading data.</p>
         ) : dataIsLoading ? (
