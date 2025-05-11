@@ -71,9 +71,9 @@ export async function createTemplateStory(formData: FormData) {
           bottom: 80,
         },
         scrollTrigger: {
-          end: "bottom bottom",
+          start: "bottom bottom",
+          end: "50% 50%",
           scrub: "true",
-          start: "50% 50%",
         },
         sectionLayout: {
           height: "fit-content",
@@ -155,9 +155,9 @@ export async function createTemplateStory(formData: FormData) {
           height: 0,
         },
         scrollTrigger: {
-          end: "bottom bottom",
+          start: "bottom bottom",
+          end: "50% 50%",
           scrub: "true",
-          start: "50% 50%",
         },
         sectionLayout: {
           height: "fit-content",
