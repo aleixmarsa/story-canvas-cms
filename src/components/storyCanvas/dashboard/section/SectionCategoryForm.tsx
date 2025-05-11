@@ -84,7 +84,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
     resolver: zodResolver(schema),
     defaultValues,
   });
-
   type Errors = typeof errors;
 
   // Setup the iframe reference to send messages to the live preview
@@ -362,6 +361,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
           <Controller
             name={finalKey}
             control={control}
+            defaultValue={config.default?.toString()}
             render={({ field }) => {
               const value = field.value
                 ? field.value.toString()
