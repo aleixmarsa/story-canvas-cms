@@ -440,7 +440,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
     }
     return (
       <div key={id} className="flex flex-col gap-2">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 group">
           <Label
             htmlFor={id}
             className={cn("font-medium", subkey ? "text-xs" : "")}
@@ -453,7 +453,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="hover:text-gray-700 cursor-pointer">
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-muted-foreground cursor-pointer">
                     <Info size={14} />
                   </span>
                 </TooltipTrigger>
@@ -464,6 +464,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
             </TooltipProvider>
           )}
         </div>
+
         {inputElement}
         {error && <FormErrorMessage error={error} />}
       </div>

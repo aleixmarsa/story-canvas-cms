@@ -14,8 +14,9 @@ const StatusBadge = ({ status }: { status: string }) => {
     published: "Visible in both preview and live.",
     changed: "Live version differs from preview. Changes not published.",
   };
+
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 group">
       <Badge
         variant={
           status === StoryStatus.published
@@ -31,7 +32,7 @@ const StatusBadge = ({ status }: { status: string }) => {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="hover:text-gray-700 cursor-pointer">
+            <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-muted-foreground cursor-pointer">
               <Info size={14} />
             </span>
           </TooltipTrigger>
@@ -45,4 +46,5 @@ const StatusBadge = ({ status }: { status: string }) => {
     </div>
   );
 };
+
 export default StatusBadge;
