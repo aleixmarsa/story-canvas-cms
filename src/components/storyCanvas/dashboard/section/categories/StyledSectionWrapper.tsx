@@ -1,24 +1,20 @@
 "use client";
 
-import { useRef } from "react";
 import type { PropsWithChildren } from "react";
-import type { StylesFields } from "@/sections/validation/fields/styles-fields-schema";
-import type { AnimationFields } from "@/sections/validation/fields/animation-field-schema";
+import type { StylesFields } from "@/sections/validation/fields/base-styles-schema";
 
-type StyledSectionWrapperProps = PropsWithChildren<
-  StylesFields & AnimationFields
->;
+type StyledSectionWrapperProps = PropsWithChildren<StylesFields>;
 
 export const StyledSectionWrapper = ({
   children,
-
+  sectionLayout,
   sectionBackground,
   sectionPadding,
   sectionMargin,
 }: StyledSectionWrapperProps) => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  console.log("🚀 ~ sectionLayout:", sectionLayout);
 
-  const inlineStyle: React.CSSProperties = {
+  const inlineSectionStyle: React.CSSProperties = {
     backgroundColor: sectionBackground?.color || undefined,
     backgroundImage: sectionBackground?.image
       ? `url(${sectionBackground?.image})`
@@ -41,9 +37,16 @@ export const StyledSectionWrapper = ({
     marginRight: sectionMargin?.right ? `${sectionMargin.right}px` : undefined,
   };
 
+  const inlineDivStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: sectionLayout?.justifyContent,
+    alignItems: sectionLayout?.alignItems,
+    height: sectionLayout?.height || "fit-content",
+  };
+
   return (
-    <section style={inlineStyle}>
-      <div className="max-w-4xl mx-auto" ref={sectionRef}>
+    <section style={inlineSectionStyle}>
+      <div className="max-w-4xl mx-auto" style={inlineDivStyle}>
         {children}
       </div>
     </section>

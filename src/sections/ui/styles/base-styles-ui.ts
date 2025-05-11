@@ -1,11 +1,48 @@
 import type { FieldMeta } from "@/types/section-fields";
-import type { StylesFields } from "@/sections/validation/fields/styles-fields-schema";
+import type { StylesFields } from "@/sections/validation/fields/base-styles-schema";
 import {
   BACKGROUND_SIZE_VALUES,
   BACKGROUND_POSITION_VALUES,
-} from "@/sections/validation/fields/styles-fields-schema";
+  SECTION_HEIGHT,
+  JUSTIFY_CONTENT,
+  ALIGN_ITEMS,
+} from "@/sections/validation/fields/base-styles-schema";
 
 export const baseUIStyles: Record<keyof StylesFields, FieldMeta> = {
+  sectionLayout: {
+    label: "Section Layout",
+    type: "composite",
+    fields: {
+      height: {
+        label: "Height",
+        type: "select",
+        options: Object.entries(SECTION_HEIGHT).map(([key, value]) => ({
+          value: value,
+          label: key,
+        })),
+        default: "content",
+      },
+
+      justifyContent: {
+        label: "Horizontal Align",
+        type: "select",
+        options: Object.entries(JUSTIFY_CONTENT).map(([key, value]) => ({
+          value: value,
+          label: key,
+        })),
+        default: "center",
+      },
+      alignItems: {
+        label: "Vertical Align",
+        type: "select",
+        options: Object.entries(ALIGN_ITEMS).map(([key, value]) => ({
+          value: value,
+          label: key,
+        })),
+        default: "center",
+      },
+    },
+  },
   sectionBackground: {
     label: "Section Background",
     type: "composite",

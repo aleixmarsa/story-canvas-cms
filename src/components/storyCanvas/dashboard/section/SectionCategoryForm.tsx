@@ -135,7 +135,6 @@ const SectionCategoryForm = <T extends SectionCategory>({
   // Send the updated section data to the iframe for live preview
   useEffect(() => {
     if (!watchedValues) return;
-
     const watchedSection: { [key: string]: string } = {};
 
     fieldNames.forEach((key, i) => {
@@ -148,13 +147,12 @@ const SectionCategoryForm = <T extends SectionCategory>({
     const name = watchedSection.name;
 
     const previewDraftSectionData: RenderSectionData = {
-      id: section?.currentDraftId || 99999, // If section is not present (creating a new one) set id to 99999 to be able to preview it
+      id: section?.currentDraftId ?? 99999, // If section is not present (creating a new one) set id to 99999 to be able to preview it
       name: name as string,
-      order: section?.currentDraft?.order || 99999,
+      order: section?.currentDraft?.order ?? 99999,
       type,
       content: watchedSection,
     };
-
     if (section) {
       sendPreviewUpdate(previewDraftSectionData);
       return;

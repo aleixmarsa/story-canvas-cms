@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
-import { stylesFieldsSchema } from "../fields/styles-fields-schema";
+import { stylesFieldsSchema } from "../fields/base-styles-schema";
 
 const isValidJson = (value: string) => {
   try {

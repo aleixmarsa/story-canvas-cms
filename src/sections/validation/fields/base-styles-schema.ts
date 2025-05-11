@@ -10,7 +10,44 @@ export const BACKGROUND_POSITION_VALUES = [
   "center",
 ] as const;
 
+export const SECTION_HEIGHT = {
+  auto: "auto",
+  full: "100vh",
+  content: "fit-content",
+};
+
+export const SECTION_HEIGHT_VALUES = Object.values(SECTION_HEIGHT) as [
+  string,
+  ...string[]
+];
+
+export const ALIGN_ITEMS = {
+  top: "flex-start",
+  center: "center",
+  bottom: "flex-end",
+};
+export const JUSTIFY_CONTENT = {
+  left: "flex-start",
+  center: "center",
+  right: "flex-end",
+};
+
+export const JUSTIFY_VALUES = Object.values(JUSTIFY_CONTENT) as [
+  string,
+  ...string[]
+];
+
+export const ALIGN_VALUES = Object.values(ALIGN_ITEMS) as [string, ...string[]];
+
 export const stylesFieldsSchema = {
+  sectionLayout: z
+    .object({
+      height: z.enum(SECTION_HEIGHT_VALUES).optional(),
+      justifyContent: z.enum(JUSTIFY_VALUES).optional(),
+      alignItems: z.enum(ALIGN_VALUES).optional(),
+    })
+    .optional(),
+
   sectionBackground: z
     .object({
       image: z
@@ -42,6 +79,7 @@ export const stylesFieldsSchema = {
       right: numberOrUndefined.optional(),
     })
     .optional(),
+
   sectionMargin: z
     .object({
       top: numberOrUndefined.optional(),
@@ -53,5 +91,4 @@ export const stylesFieldsSchema = {
 };
 
 export const stylesSchema = z.object(stylesFieldsSchema);
-
 export type StylesFields = z.infer<typeof stylesSchema>;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
 import { mediaFieldSchema } from "../fields/media-field-schema";
-import { stylesFieldsSchema } from "../fields/styles-fields-schema";
+import { stylesFieldsSchema } from "../fields/base-styles-schema";
 import { numberOrUndefined } from "../helpers";
 import { createScrollTriggerSchema } from "../animations/create-scroll-trigger-schema";
 import { createTextAnimationSchema } from "../animations/create-animation-schema";

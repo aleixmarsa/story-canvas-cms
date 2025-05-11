@@ -2,7 +2,7 @@ import { z } from "zod";
 import { baseFields } from "@/sections/validation/fields/base-fields-schema";
 import { createTextAnimationSchema } from "../animations/create-animation-schema";
 import { createScrollTriggerSchema } from "../animations/create-scroll-trigger-schema";
-import { stylesFieldsSchema } from "../fields/styles-fields-schema";
+import { stylesFieldsSchema } from "../fields/base-styles-schema";
 
 export const paragraphSectionSchema = baseFields.extend({
   // DATA

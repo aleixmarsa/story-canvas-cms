@@ -92,7 +92,7 @@ const ChartSection = ({
   const isValidChart = type === "line" || type === "bar";
 
   return (
-    <section className="py-8 max-w-4xl mx-auto">
+    <div className="py-8 w-full">
       {title && <RichTextContent html={title} />}
       {isValidChart ? (
         <ResponsiveContainer width="100%" height={400}>
@@ -101,7 +101,7 @@ const ChartSection = ({
       ) : (
         chart
       )}
-    </section>
+    </div>
   );
 };
 
