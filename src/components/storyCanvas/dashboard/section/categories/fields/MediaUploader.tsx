@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useState } from "react";
 import type { MediaFieldTypes } from "@/types/section-fields";
-import { MediaField } from "@/sections/validation/media-field-schema";
+import { MediaField } from "@/sections/validation/fields/media-field-schema";
 
 type MediaUploaderProps = {
   onUpload: ({ url, publicId }: MediaField) => void;

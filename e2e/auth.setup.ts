@@ -1,6 +1,6 @@
 import { test as setup, expect } from "@playwright/test";
 import path from "path";
-import { ROUTES } from "../src/lib/constants/storyCanvas";
+import { ROUTES } from "../src/lib/constants/story-canvas";
 
 const adminAuthFile = path.join(__dirname, "../playwright/.auth/admin.json");
 const editorAuthFile = path.join(__dirname, "../playwright/.auth/editor.json");

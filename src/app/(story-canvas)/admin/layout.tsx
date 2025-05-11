@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { Toaster } from "@/components/ui/sonner";
 import { countAllUsers } from "@/lib/dal/users";
 import { checkDbConnection } from "@/lib/db";
@@ -60,7 +60,7 @@ export default async function AdminLayout({
   return (
     <>
       {children}
-      <Toaster richColors />
+      <Toaster richColors duration={2500} />
     </>
   );
 }

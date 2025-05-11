@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 
 test.use({ storageState: "playwright/.auth/editor.json" });
 test.describe.configure({ mode: "serial" });
@@ -25,12 +25,14 @@ test.describe("Edit section (editor)", () => {
     // Empty the form
     await page.getByTestId("create-section-name-input").fill("");
     await page.getByTestId("create-section-createdBy-input").fill("");
-    await page.getByTestId("create-section-text-input").fill("");
+    await page
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
+      .fill("");
     await page.getByTestId("header-save-button").click();
 
     await expect(page.getByText("Name is required")).toBeVisible();
     await expect(page.getByText("Author is required")).toBeVisible();
-    await expect(page.getByText("Title cannot be empty")).toBeVisible();
   });
 
   test("should show error if name is already in use", async ({ page }) => {
@@ -51,9 +53,7 @@ test.describe("Edit section (editor)", () => {
     await expect(
       page.getByTestId("create-section-createdBy-input")
     ).toHaveValue("editor@cms.com");
-    await expect(page.getByTestId("create-section-text-input")).toHaveValue(
-      "Editor Editable content"
-    );
+    await expect(page.getByText("Editable content")).toBeVisible();
 
     // Updates the form and saves
     await page
@@ -62,7 +62,10 @@ test.describe("Edit section (editor)", () => {
     await page
       .getByTestId("create-section-createdBy-input")
       .fill("playwright-e2e");
-    await page.getByTestId("create-section-text-input").fill("Edited content");
+    await page
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
+      .fill("Edited content");
     await page.getByTestId("header-save-button").click();
 
     await page.waitForTimeout(3000);

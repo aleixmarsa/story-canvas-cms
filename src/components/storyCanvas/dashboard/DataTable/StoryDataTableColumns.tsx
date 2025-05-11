@@ -5,7 +5,7 @@ import { StoryDraftMetadata } from "@/lib/dal/draft";
 import { StoryStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import RowActionsMenu from "./RowActionsMenu";
 import DeleteDialog from "../DeleteDialog";
 import { CurrentUser } from "@/types/auth";

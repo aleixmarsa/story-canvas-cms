@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import EditSectionForm from "@/components/storyCanvas/dashboard/section/EditSectionForm";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
@@ -15,7 +15,7 @@ import { useSections } from "@/lib/swr/useSections";
 import { Loader2 } from "lucide-react";
 
 const EditSectionPage = () => {
-  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(true);
   const router = useRouter();
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formIsSubmitting, setFormIsSubmitting] = useState(false);
@@ -114,8 +114,8 @@ const EditSectionPage = () => {
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
       />
-      <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
-        <div className="min-w-[30%]">
+      <div className="flex flex-col lg:flex-row px-6 w-full gap-4 overflow-hidden">
+        <div className="min-w-[30%] lg:min-w-[32rem]">
           <EditSectionForm
             formRef={formRef}
             onDirtyChange={setFormIsDirty}

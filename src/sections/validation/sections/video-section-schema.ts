@@ -1,10 +1,14 @@
 import { z } from "zod";
-import { baseFields } from "@/lib/validation/section-base-fields-schema";
-import { mediaFieldSchema } from "./media-field-schema";
+import { baseFields } from "@/sections/validation/fields/base-fields-schema";
+import { mediaFieldSchema } from "../fields/media-field-schema";
+import { stylesFieldsSchema } from "../fields/base-styles-schema";
 
 export const videoSectionSchema = baseFields.extend({
+  // DATA
   video: mediaFieldSchema,
   title: z.string().min(1, "Title is required"),
+  // STYLE
+  ...stylesFieldsSchema,
 });
 
 export type VideoSectionSchema = typeof videoSectionSchema;

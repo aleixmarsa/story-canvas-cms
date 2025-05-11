@@ -17,7 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { CurrentUser } from "@/types/auth";
 import { logout } from "@/lib/actions/auth/login";
 import { LogOut } from "lucide-react";

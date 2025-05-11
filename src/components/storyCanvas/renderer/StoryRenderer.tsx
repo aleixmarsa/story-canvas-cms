@@ -13,8 +13,8 @@ const StoryRenderer = ({ sections }: Props) => {
     (a, b) => a.order - b.order
   );
   return (
-    <div className="p-8 max-w-3xl mx-auto">
-      <div className="space-y-10">
+    <div className="w-full h-full">
+      <div>
         {sortedSections.map((section) => {
           if (
             typeof section.content !== "object" ||

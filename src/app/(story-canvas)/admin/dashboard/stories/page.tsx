@@ -1,5 +1,5 @@
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { getCurrentUser } from "@/lib/dal/auth";
 import StoryTableWrapper from "@/components/storyCanvas/dashboard/story/StoryTableWrapper";
 import { redirect } from "next/navigation";

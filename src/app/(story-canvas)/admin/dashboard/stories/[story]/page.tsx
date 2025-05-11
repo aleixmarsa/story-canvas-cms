@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
 import { publishStoryAndSections } from "@/lib/actions/stories/publish-story-and-sections";

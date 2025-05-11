@@ -6,7 +6,7 @@ import { CurrentUser } from "@/types/auth";
 import { toast } from "sonner";
 import { StoryDraftMetadata } from "@/lib/dal/draft";
 import { deleteStory } from "@/lib/actions/stories/delete-story";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { Role } from "@prisma/client";
 import { useStories, Response } from "@/lib/swr/useStories";
 

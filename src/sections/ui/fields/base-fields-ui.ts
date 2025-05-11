@@ -1,7 +1,7 @@
 import type { FieldMeta } from "@/types/section-fields";
-import type { BaseFields } from "@/lib/validation/section-base-fields-schema";
+import type { BaseFields } from "@/sections/validation/fields/base-fields-schema";
 
-export const baseUI: Record<keyof BaseFields, FieldMeta> = {
+export const baseUIData: Record<keyof BaseFields, FieldMeta> = {
   name: {
     label: "Name",
     type: "text",
@@ -14,4 +14,10 @@ export const baseUI: Record<keyof BaseFields, FieldMeta> = {
     required: true,
     placeholder: "Author of this section",
   },
+};
+
+export const baseUI = {
+  data: baseUIData,
+  style: {},
+  animation: {},
 };

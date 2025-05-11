@@ -3,7 +3,7 @@
  */
 import { middleware } from "@/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { SessionPayload } from "@/lib/validation/session-payload-schema";
 import { Role } from "@prisma/client";
 

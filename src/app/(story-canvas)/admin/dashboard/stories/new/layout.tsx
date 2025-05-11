@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/dal/auth";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { Role } from "@prisma/client";
 
 const NewUserLayout = async ({ children }: { children: React.ReactNode }) => {

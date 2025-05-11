@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 
 test.use({ storageState: "playwright/.auth/admin.json" });
 
@@ -22,7 +22,8 @@ test.describe("Create section form (admin)", () => {
       .getByTestId("create-section-createdBy-input")
       .fill("playwright-e2e");
     await page
-      .getByTestId("create-section-text-input")
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
       .fill("Test section text");
 
     // Submit the form
@@ -31,6 +32,7 @@ test.describe("Create section form (admin)", () => {
     await expect(page.getByText("Section created successfully")).toBeVisible();
 
     await page.waitForURL(new RegExp(`/admin/dashboard/stories/story-list`));
+    await page.waitForTimeout(5000);
 
     await expect(page.getByText("Test Section")).toBeVisible();
   });
@@ -48,7 +50,8 @@ test.describe("Create section form (admin)", () => {
       .getByTestId("create-section-createdBy-input")
       .fill("playwright-e2e");
     await page
-      .getByTestId("create-section-text-input")
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
       .fill("Test section text");
 
     // Submit the form

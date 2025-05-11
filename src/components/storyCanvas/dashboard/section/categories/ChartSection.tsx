@@ -1,6 +1,6 @@
 "use client";
 
-import { ChartSectionProps } from "@/sections/validation/chart-section-schema";
+import { ChartSectionProps } from "@/sections/validation/sections/chart-section-schema";
 import {
   LineChart,
   BarChart,
@@ -15,6 +15,7 @@ import {
 } from "recharts";
 
 const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+import RichTextContent from "./fields/RichTextContent";
 
 const ChartSection = ({
   title,
@@ -25,9 +26,9 @@ const ChartSection = ({
 }: ChartSectionProps) => {
   if (!data || !xKey || !yKeys || yKeys.length === 0) {
     return (
-      <section className="py-8 text-red-500 text-center">
+      <div className="py-8 text-red-500 text-center">
         Invalid chart configuration
-      </section>
+      </div>
     );
   }
 
@@ -91,10 +92,8 @@ const ChartSection = ({
   const isValidChart = type === "line" || type === "bar";
 
   return (
-    <section className="py-8 max-w-4xl mx-auto">
-      {title && (
-        <h2 className="text-2xl font-bold mb-6 text-center">{title}</h2>
-      )}
+    <div className="py-8 w-full">
+      {title && <RichTextContent html={title} />}
       {isValidChart ? (
         <ResponsiveContainer width="100%" height={400}>
           {chart}
@@ -102,7 +101,7 @@ const ChartSection = ({
       ) : (
         chart
       )}
-    </section>
+    </div>
   );
 };
 

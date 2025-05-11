@@ -18,7 +18,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import FormErrorMessage from "../../FormErrorMessage";
-import { ROUTES } from "@/lib/constants/storyCanvas";
+import { ROUTES } from "@/lib/constants/story-canvas";
 import { createUser } from "@/lib/actions/users/create-user";
 import { Role } from "@prisma/client";
 import { toast } from "sonner";
@@ -88,7 +88,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 max-w-lg"
       >
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="email" required>
             Email
           </Label>
@@ -96,7 +96,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           {errors.email && <FormErrorMessage error={errors.email.message} />}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="role" required>
             Role
           </Label>
@@ -115,7 +115,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           {errors.role && <FormErrorMessage error={errors.role.message} />}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="password" required>
             Password
           </Label>
@@ -125,7 +125,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="confirmPassword" required>
             Confirm password
           </Label>

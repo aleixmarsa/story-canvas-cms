@@ -29,11 +29,12 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
           theme: "snow",
           modules: {
             toolbar: [
-              [{ header: [2, 3, false] }],
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              ["blockquote"],
+              [{ color: [] }, { background: [] }],
               ["bold", "italic", "underline", "strike"],
-              ["link"],
-              ["clean"],
               [{ align: [] }],
+              ["clean"],
             ],
           },
           placeholder: "Write something...",
@@ -56,7 +57,11 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
     };
   }, []);
 
-  return <div ref={editorRef} className="min-h-[300px]" />;
+  return (
+    <div>
+      <div ref={editorRef} className="min-h-fit" />
+    </div>
+  );
 };
 
 export default RichTextEditor;
