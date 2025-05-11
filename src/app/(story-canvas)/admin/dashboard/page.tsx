@@ -32,7 +32,7 @@ const DashboardPage = () => {
               <CardContent className="p-6">
                 <CardTitle>Users</CardTitle>
                 <p className="text-muted-foreground mt-2">
-                  View and manage registered users.
+                  View and manage users.
                 </p>
               </CardContent>
             </Card>
