@@ -1,6 +1,5 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
 import { StoryDraftMetadata } from "@/lib/dal/draft";
 import { StoryStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import RowActionsMenu from "./RowActionsMenu";
 import DeleteDialog from "../DeleteDialog";
 import { CurrentUser } from "@/types/auth";
 import { Role } from "@prisma/client";
+import StatusBadge from "./StatusBadge";
 
 export const columns = (
   currentUser: CurrentUser,
@@ -46,19 +46,7 @@ export const columns = (
     },
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
-      return (
-        <Badge
-          variant={
-            status === StoryStatus.published
-              ? "default"
-              : status === StoryStatus.draft
-              ? "outline"
-              : "secondary"
-          }
-        >
-          {status}
-        </Badge>
-      );
+      return <StatusBadge status={status} />;
     },
     enableHiding: false,
   },
