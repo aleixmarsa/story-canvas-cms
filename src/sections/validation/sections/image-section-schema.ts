@@ -4,7 +4,7 @@ import { mediaFieldSchema } from "../fields/media-field-schema";
 import { stylesFieldsSchema } from "../fields/base-styles-schema";
 import { numberOrUndefined } from "../helpers";
 import { createScrollTriggerSchema } from "../animations/create-scroll-trigger-schema";
-import { createTextAnimationSchema } from "../animations/create-animation-schema";
+import { createAnimationSchema } from "../animations/create-animation-schema";
 
 export const imageSectionSchema = baseFields.extend({
   // DATA
@@ -21,7 +21,7 @@ export const imageSectionSchema = baseFields.extend({
     .optional(),
 
   // ANIMATION
-  imageAnimation: createTextAnimationSchema(),
+  imageAnimation: createAnimationSchema(),
   scrollTrigger: createScrollTriggerSchema(),
 });
 

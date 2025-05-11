@@ -4,7 +4,7 @@ import {
   EASE_TYPES,
 } from "../fields/animation-field-schema";
 
-export const createTextAnimationSchema = () =>
+export const createAnimationSchema = () =>
   z
     .object({
       animationType: z.enum(ANIMATION_TYPES_VALUES),
