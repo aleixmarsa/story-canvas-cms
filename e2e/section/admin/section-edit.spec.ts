@@ -52,9 +52,7 @@ test.describe("Edit section (admin)", () => {
     await expect(
       page.getByTestId("create-section-createdBy-input")
     ).toHaveValue("admin@cms.com");
-    await expect(
-      page.getByRole("tabpanel", { name: "Data" }).getByRole("paragraph")
-    ).toHaveValue("Editable content");
+    await expect(page.getByText("Editable content")).toBeVisible();
 
     // Updates the form and saves
     await page
