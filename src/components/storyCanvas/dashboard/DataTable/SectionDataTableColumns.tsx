@@ -2,12 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
-import { Badge } from "@/components/ui/badge";
 import { StoryStatus } from "@prisma/client";
 import { GripVertical } from "lucide-react";
 import RowActionsMenu from "./RowActionsMenu";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import DeleteDialog from "../DeleteDialog";
+import StatusBadge from "./StatusBadge";
 
 export const columns = (
   storySlug: string,
@@ -42,19 +42,7 @@ export const columns = (
     },
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
-      return (
-        <Badge
-          variant={
-            status === StoryStatus.published
-              ? "default"
-              : status === StoryStatus.draft
-              ? "outline"
-              : "secondary"
-          }
-        >
-          {status}
-        </Badge>
-      );
+      return <StatusBadge status={status} />;
     },
   },
   {

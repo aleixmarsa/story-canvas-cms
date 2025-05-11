@@ -1,6 +1,7 @@
 "use client";
 
-import { Feather, ScrollText, User2 } from "lucide-react";
+import { ScrollText, User2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
 import {
@@ -46,10 +47,17 @@ export function DashboardSidebar({
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Feather className="size-4" />
+                  <Image
+                    src="/story-canvas-logo.svg"
+                    alt="Logo"
+                    width={26}
+                    height={26}
+                    className="mx-auto dark:invert"
+                    priority
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-lg leading-tight">
-                  <span className="truncate font-medium">Story Canvas</span>
+                  <span className="truncate font-medium">StoryCanvas</span>
                 </div>
               </SidebarMenuButton>
             </Link>

@@ -68,6 +68,7 @@ type BaseProps<TData, TValue> = {
   onAddClick?: () => void;
   dataIsLoading?: boolean;
   dataFetchingError?: boolean;
+  customHeaderMessage?: React.ReactNode;
 };
 
 // If `enableSorting` is true, `id` is required
@@ -102,6 +103,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     dataFetchingError,
     dataIsLoading,
     selectedStoryId,
+    customHeaderMessage,
   } = props;
   const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -258,6 +260,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
             className="max-w-sm"
           />
         )}
+        {customHeaderMessage}
         <div className="flex items-center gap-2 ml-auto">
           {(addHref || onAddClick) &&
             addButtonLabel &&
@@ -306,7 +309,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border mb-6 min-h-[120px] flex items-center justify-center">
+      <div className="rounded-md border mb-6 min-h-[100px] flex items-center justify-center">
         {dataFetchingError ? (
           <p className="text-destructive text-sm">Error loading data.</p>
         ) : dataIsLoading ? (

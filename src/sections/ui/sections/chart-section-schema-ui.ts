@@ -15,6 +15,11 @@ export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =
           required: true,
           placeholder: "Enter the title of the chart",
         },
+        description: {
+          label: "Chart Description",
+          type: "richtext",
+          placeholder: "Enter the description of the chart",
+        },
         type: {
           label: "Chart Type",
           type: "radio",

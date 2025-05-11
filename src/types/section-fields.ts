@@ -23,6 +23,7 @@ type BaseFieldMeta<T extends FieldTypes = FieldTypes> = {
   label: string;
   type: T;
   required?: boolean;
+  tip?: string;
 };
 
 type SimpleFieldMeta = BaseFieldMeta<FieldTypes> & {

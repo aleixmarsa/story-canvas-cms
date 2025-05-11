@@ -9,9 +9,13 @@ import { deleteStory } from "@/lib/actions/stories/delete-story";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { Role } from "@prisma/client";
 import { useStories, Response } from "@/lib/swr/useStories";
+import { createTemplateStory } from "@/lib/actions/stories/create-template-story";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
   const { stories, mutate, isLoading, isError } = useStories();
+  const [isCreatingTemplate, setIsCreatingTemplate] = useState(false);
 
   const isAdmin = currentUser.role === Role.ADMIN;
 
@@ -83,6 +87,22 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
     });
   };
 
+  const handleCreateTemplate = async () => {
+    setIsCreatingTemplate(true);
+    try {
+      const formData = new FormData();
+      formData.set("createdBy", currentUser.email);
+      await createTemplateStory(formData);
+      mutate();
+      toast.success("Template story created");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Failed to create template story");
+    } finally {
+      setIsCreatingTemplate(false);
+    }
+  };
+
   return (
     <div className="px-6">
       {isAdmin ? (
@@ -90,14 +110,26 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           columns={columns(currentUser, handleDelete)}
           data={stories}
           getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
-          filterConfig={{
-            columnKey: "title",
-            placeholder: "Search by Title...",
-          }}
           addHref={ROUTES.newStory}
           addButtonLabel="New Story"
           dataIsLoading={isLoading}
           dataFetchingError={isError}
+          customHeaderMessage={
+            isCreatingTemplate ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <span className="text-sm text-muted-foreground">
+                You can{" "}
+                <button
+                  onClick={handleCreateTemplate}
+                  className="text-sm text-primary underline"
+                >
+                  generate story template
+                </button>{" "}
+                automatically.
+              </span>
+            )
+          }
         />
       ) : (
         <DataTable

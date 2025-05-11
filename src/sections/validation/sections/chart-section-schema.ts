@@ -14,6 +14,7 @@ const isValidJson = (value: string) => {
 export const chartSectionSchema = baseFields.extend({
   // DATA
   title: z.string().min(1, "Chart title is required"),
+  description: z.string().optional(),
   type: z.enum(["line", "bar"], {
     required_error: "You must select a chart type",
   }),
