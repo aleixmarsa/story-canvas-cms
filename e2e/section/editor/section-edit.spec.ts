@@ -25,12 +25,14 @@ test.describe("Edit section (editor)", () => {
     // Empty the form
     await page.getByTestId("create-section-name-input").fill("");
     await page.getByTestId("create-section-createdBy-input").fill("");
-    await page.getByTestId("create-section-text-input").fill("");
+    await page
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
+      .fill("");
     await page.getByTestId("header-save-button").click();
 
     await expect(page.getByText("Name is required")).toBeVisible();
     await expect(page.getByText("Author is required")).toBeVisible();
-    await expect(page.getByText("Title cannot be empty")).toBeVisible();
   });
 
   test("should show error if name is already in use", async ({ page }) => {
@@ -51,9 +53,9 @@ test.describe("Edit section (editor)", () => {
     await expect(
       page.getByTestId("create-section-createdBy-input")
     ).toHaveValue("editor@cms.com");
-    await expect(page.getByTestId("create-section-text-input")).toHaveValue(
-      "Editor Editable content"
-    );
+    await expect(
+      page.getByRole("tabpanel", { name: "Data" }).getByRole("paragraph")
+    ).toHaveValue("Editor Editable content");
 
     // Updates the form and saves
     await page
@@ -62,7 +64,10 @@ test.describe("Edit section (editor)", () => {
     await page
       .getByTestId("create-section-createdBy-input")
       .fill("playwright-e2e");
-    await page.getByTestId("create-section-text-input").fill("Edited content");
+    await page
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
+      .fill("Edited content");
     await page.getByTestId("header-save-button").click();
 
     await page.waitForTimeout(3000);

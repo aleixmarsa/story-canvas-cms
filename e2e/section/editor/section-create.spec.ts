@@ -22,19 +22,19 @@ test.describe("Create section form (editor)", () => {
       .getByTestId("create-section-createdBy-input")
       .fill("playwright-e2e");
     await page
-      .getByTestId("create-section-text-input")
+      .getByRole("tabpanel", { name: "Data" })
+      .getByRole("paragraph")
       .fill("Test section text");
 
     // Submit the form
     await page.getByTestId("header-save-button").click();
-
-    await page.waitForTimeout(3000); // Wait for the success message to appear
 
     await expect(page.getByText("Section created successfully")).toBeVisible();
 
     await page.waitForURL(
       new RegExp(`/admin/dashboard/stories/editor-story-list`)
     );
+    await page.waitForTimeout(5000);
 
     await expect(page.getByText("Test Section")).toBeVisible();
   });

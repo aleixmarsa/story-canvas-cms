@@ -18,7 +18,8 @@ import {
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { createSection } from "@/lib/actions/sections/create-section";
-import { StoryDraftMetadata } from "@/lib/dal/draft";
+import { SectionDraftMetadata, StoryDraftMetadata } from "@/lib/dal/draft";
+import { useSections } from "@/lib/swr/useSections";
 
 const CreateSectionForm = ({
   onDirtyChange,
@@ -31,6 +32,8 @@ const CreateSectionForm = ({
   onSubmittingChange?: (submitting: boolean) => void;
   story: StoryDraftMetadata;
 }) => {
+  const { mutate: mutateSections } = useSections();
+
   const [selectedType, setSelectedType] = useState<SectionCategory | null>(
     null
   );
@@ -80,7 +83,40 @@ const CreateSectionForm = ({
         return false;
       }
 
+      if (!result.section.currentDraft) {
+        throw new Error("Missing currentDraft in created section");
+      }
+
+      const section: SectionDraftMetadata = {
+        id: result.section.id,
+        publishedAt: result.section.publishedAt,
+        currentDraftId: result.section.currentDraft.id,
+        currentDraft: {
+          id: result.section.currentDraft.id,
+          name: result.section.currentDraft.name,
+          type: result.section.currentDraft.type,
+          order: result.section.currentDraft.order,
+          content: result.section.currentDraft.content,
+          updatedAt: result.section.currentDraft.updatedAt,
+          slug: result.section.currentDraft.slug,
+          createdBy: result.section.currentDraft.createdBy,
+        },
+      };
+
       setSelectedType(null);
+      mutateSections(
+        (prev) =>
+          prev && "success" in prev && prev.sections
+            ? {
+                success: true,
+                sections: [...prev.sections, section],
+              }
+            : {
+                success: true,
+                sections: [section],
+              },
+        { revalidate: false }
+      );
       toast.success("Section created successfully");
       router.push(`${ROUTES.stories}/${story.currentDraft?.slug}`);
       return true;

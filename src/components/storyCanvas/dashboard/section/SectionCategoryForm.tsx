@@ -269,6 +269,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
               <RichTextEditor
                 value={(field.value as string) ?? ""}
                 onChange={field.onChange}
+                data-testid={`create-section-${finalKey}-input`}
               />
             )}
           />
