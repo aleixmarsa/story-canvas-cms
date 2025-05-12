@@ -1,35 +1,32 @@
-# Etapa 1: Build
+# Step 1: Builder
 FROM node:23-alpine AS builder
 
-# Instal·lació de dependències del sistema si calen paquets nadius
+# Install system dependencies if native packages are needed
 RUN apk add --no-cache libc6-compat
 
-# Directori de treball
+# Working directory
 WORKDIR /app
 
-# Instal·la pnpm globalment
+# Install pnpm globally
 RUN npm install -g pnpm
 
-# Copia fitxers
+# Copy files
 COPY . .
 
-
-# Instal·la dependències
+# Install dependencies
 RUN pnpm install
 
 # Genera Prisma Client
 RUN pnpm prisma generate
 
-# # Compila Next.js
-# RUN pnpm build
 
-# Etapa 2: Runtime
+# Step 2: Runner
 FROM node:23-alpine AS runner
 
 WORKDIR /app
 RUN npm install -g pnpm
 
-# Copiem la build i node_modules
+# Copy only the necessary files from the builder stage
 COPY --from=builder /app ./
 
 EXPOSE 3000
