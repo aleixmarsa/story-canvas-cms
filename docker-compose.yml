@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: cms-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cmsdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  migrate:
+    build: .
+    depends_on:
+      - db
+    command: pnpm prisma:migrate
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cmsdb
+  web:
+    build: .
+    container_name: cms-web
+    depends_on:
+      - db
+      - migrate
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cmsdb
+      - SESSION_SECRET=09ed7aafedfe8afd3aa6f9bdbc6353652334c208462bc961e8b37ec845b81700
+      - CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+      - NODE_ENV=development
+
+volumes:
+  postgres_data:
