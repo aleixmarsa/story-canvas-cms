@@ -1,6 +1,6 @@
-# 🪶 Story Canvas – Headless Storytelling CMS
+# 🪶 StoryCanvas – Storytelling CMS
 
-**Story Canvas** is a modular, animation-ready and developer-friendly CMS designed for building structured, rich digital stories. Built with modern technologies like Next.js, Prisma, SWR and GSAP, it supports flexible section types, versioning, media uploads, live previews, and role-based collaboration.
+**StoryCanvas** is a modular, animation-ready and developer-friendly CMS designed for building structured, rich digital stories. Built with modern technologies like Next.js, Prisma, SWR and GSAP, it supports flexible section types, versioning, media uploads, live previews, and role-based collaboration.
 
 ---
 
