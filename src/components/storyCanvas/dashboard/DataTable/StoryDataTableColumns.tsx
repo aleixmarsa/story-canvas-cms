@@ -46,7 +46,17 @@ export const columns = (
     },
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
-      return <StatusBadge status={status} />;
+      return (
+        <StatusBadge
+          status={status}
+          messages={{
+            draft: "Story metadata only visible in preview. Not published yet.",
+            published: "Story metadata visible in both preview and live.",
+            changed:
+              "Story metadata live version differs from preview. Changes not published.",
+          }}
+        />
+      );
     },
     enableHiding: false,
   },
