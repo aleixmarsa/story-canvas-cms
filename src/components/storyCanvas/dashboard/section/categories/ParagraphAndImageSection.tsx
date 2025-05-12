@@ -59,6 +59,10 @@ const ParagraphAndImageSection = ({
     { dependencies: [textAnimation, scrollTrigger], revertOnUpdate: true }
   );
 
+  if (!image) return null;
+
+  const imageUrl = typeof image === "string" ? image : image.url;
+
   return (
     <div className="py-8">
       <div
@@ -69,7 +73,7 @@ const ParagraphAndImageSection = ({
         <div className="shrink-0 w-full md:w-1/2" ref={imageRef}>
           {image ? (
             <img
-              src={image.url}
+              src={imageUrl}
               alt={alt || "Image"}
               className="mx-auto rounded-lg shadow-md"
               width={imageSize?.width || "auto"}
