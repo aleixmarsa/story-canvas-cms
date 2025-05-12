@@ -27,10 +27,8 @@ services:
         condition: service_healthy
     ports:
       - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/storycanvasdb
-      - SESSION_SECRET=09ed7aafedfe8afd3aa6f9bdbc6353652334c208462bc961e8b37ec845b81700
-      - CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+    env_file:
+      - .env.docker
     networks:
       - story-canvas-network
   prisma_studio:
@@ -46,8 +44,8 @@ services:
         condition: service_healthy
       web:
         condition: service_started
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/storycanvasdb
+    env_file:
+      - .env.docker
     networks:
       - story-canvas-network
 volumes:
