@@ -10,6 +10,7 @@
     "dev:test:e2e": "NODE_ENV=test next dev -p 3001",
     "preview:test:e2e": "NODE_ENV=test pnpm build && next start -p 3001",
     "build": "pnpm run prisma:migrate:deploy && prisma generate && next build",
+    "build:docker:env": "pnpm prisma:db:push && prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",

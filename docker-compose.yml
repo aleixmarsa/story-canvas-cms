@@ -1,38 +1,56 @@
 version: "3.9"
 
 services:
-  db:
+  postgres_db:
     image: postgres:15
-    container_name: cms-db
+    container_name: story-canvas-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cmsdb
+      POSTGRES_DB: storycanvasdb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  migrate:
-    build: .
-    depends_on:
-      - db
-    command: pnpm prisma:migrate
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cmsdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - story-canvas-network
   web:
     build: .
     container_name: cms-web
     depends_on:
-      - db
-      - migrate
+      postgres_db:
+        condition: service_healthy
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/cmsdb
+      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/storycanvasdb
       - SESSION_SECRET=09ed7aafedfe8afd3aa6f9bdbc6353652334c208462bc961e8b37ec845b81700
       - CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
-      - NODE_ENV=development
-
+    networks:
+      - story-canvas-network
+  prisma_studio:
+    image: node:lts-alpine3.17
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npx prisma studio --port 5555 --browser none
+    ports:
+      - "5555:5555"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      web:
+        condition: service_started
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres_db:5432/storycanvasdb
+    networks:
+      - story-canvas-network
 volumes:
   postgres_data:
+networks:
+  story-canvas-network:

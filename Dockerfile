@@ -34,4 +34,4 @@ COPY --from=builder /app ./
 
 EXPOSE 3000
 
-CMD ["pnpm", "dev"]
+CMD ["sh", "-c", "pnpm build:docker:env && pnpm start"]
