@@ -22,7 +22,7 @@ const NewStoryPage = () => {
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
       />
-      <div className="px-6">
+      <div className="px-4 md:px-6 ">
         <CreateStoryForm
           setDirty={setDirty}
           setIsSubmitting={setIsSubmitting}

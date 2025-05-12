@@ -41,7 +41,7 @@ const DashboardHeader = ({
   previewVisible,
 }: DashboardHeaderProps) => {
   return (
-    <header className="flex justify-between w-full h-16 px-6 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-2.5 py-2 md:py-0 w-full h-fit md:h-16 px-4 md:px-6  shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2 h-full">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -55,7 +55,7 @@ const DashboardHeader = ({
                       <BreadcrumbLink asChild>
                         <Link
                           href={item.href}
-                          className="group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-xs"
+                          className="text-xs group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-xs"
                         >
                           {item.label}
                         </Link>
@@ -71,13 +71,13 @@ const DashboardHeader = ({
               ))}
             </BreadcrumbList>
           </Breadcrumb>
-          <p className="text-lg font-semibold group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-sm">
+          <p className="text-sm font-semibold group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-sm">
             {title}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-auto md:ml-0">
         {onTogglePreview && (
           <Button
             variant="ghost"
@@ -91,7 +91,9 @@ const DashboardHeader = ({
               ) : (
                 <Eye className="w-4 h-4" />
               )}
-              Live Preview
+              <span>
+                <span className="hidden md:inline">Live </span>Preview
+              </span>
             </>
           </Button>
         )}
@@ -111,7 +113,9 @@ const DashboardHeader = ({
                 ) : (
                   <Save className="w-4 h-4 mr-1" />
                 )}
-                Save draft
+                <span>
+                  Save<span className="hidden md:inline"> draft</span>
+                </span>
               </Button>
             )}
             {onPublish && (
@@ -121,7 +125,8 @@ const DashboardHeader = ({
                 ) : (
                   <Rocket className="w-4 h-4 mr-1" />
                 )}
-                {publishButtonLabel}
+                <span className="inline md:hidden">Publish</span>
+                <span className="hidden md:inline">{publishButtonLabel}</span>
               </Button>
             )}
           </>

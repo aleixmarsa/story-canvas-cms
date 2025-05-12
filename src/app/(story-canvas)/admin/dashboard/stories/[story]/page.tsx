@@ -223,7 +223,7 @@ const StoryPage = () => {
         previewVisible={previewVisible}
         onSaveDraft={handleSaveDraft}
       />
-      <div className="flex flex-col lg:flex-row px-6 w-full gap-6 overflow-hidden">
+      <div className="flex flex-col lg:flex-row px-4 md:px-6  w-full gap-6 overflow-hidden">
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
             previewVisible ? "w-full lg:w-[40%]" : "w-full"

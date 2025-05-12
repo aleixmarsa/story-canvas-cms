@@ -104,7 +104,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
   };
 
   return (
-    <div className="px-6">
+    <div className="px-4 md:px-6">
       {isAdmin ? (
         <DataTable
           columns={columns(currentUser, handleDelete)}

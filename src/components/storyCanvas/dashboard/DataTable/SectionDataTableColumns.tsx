@@ -42,7 +42,17 @@ export const columns = (
     },
     cell: ({ row }) => {
       const status = row.getValue("Status") as string;
-      return <StatusBadge status={status} />;
+      return (
+        <StatusBadge
+          status={status}
+          messages={{
+            draft: "Section only visible in preview. Not published yet.",
+            published: "Section visible in both preview and live.",
+            changed:
+              "Section live version differs from preview. Changes not published.",
+          }}
+        />
+      );
     },
   },
   {
