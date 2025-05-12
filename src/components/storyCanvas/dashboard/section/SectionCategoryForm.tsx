@@ -284,6 +284,26 @@ const SectionCategoryForm = <T extends SectionCategory>({
         break;
       case FIELD_TYPES.image:
       case FIELD_TYPES.video:
+        // Check if the cloudinary credentials are present
+        if (
+          !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+          !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ||
+          !process.env.NEXT_PUBLIC_CLOUDINARY_PRESET ||
+          !process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER
+        ) {
+          // If the cloudinary credentials are not present, use a regular input
+          inputElement = (
+            <Input
+              id={id}
+              type="url"
+              placeholder={config.placeholder}
+              {...register(finalKey)}
+              data-testid={`create-section-${finalKey}-input`}
+            />
+          );
+          break;
+        }
+        // If the cloudinary credentials are present, use the MediaUploader component
         inputElement = (
           <Controller
             name={finalKey}

@@ -50,11 +50,13 @@ const ImageSection = ({
   );
 
   if (!image) return null;
+
+  const imageUrl = typeof image === "string" ? image : image.url;
   return (
     <div className="py-8" ref={imageRef}>
       {image ? (
         <img
-          src={image.url}
+          src={imageUrl}
           alt={alt || "Image"}
           className="rounded-lg shadow-md"
           width={imageSize?.width || "auto"}

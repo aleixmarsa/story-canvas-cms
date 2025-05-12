@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ROUTES } from "../../src/lib/constants/story-canvas";
@@ -30,7 +29,7 @@ const Home = () => {
             stories!
           </p>
           <Button asChild size="lg" className="w-full sm:w-auto">
-            <Link href={ROUTES.login}>Go to dashboard</Link>
+            <a href={ROUTES.login}>Go to dashboard</a>
           </Button>
         </CardContent>
       </Card>
