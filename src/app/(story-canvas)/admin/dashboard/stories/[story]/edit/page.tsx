@@ -71,7 +71,7 @@ const EditStoryPage = () => {
   return (
     <>
       <DashboardHeader
-        title="Edit Story"
+        title="Edit Story Metadata"
         breadcrumbs={[
           { label: "Dashboard", href: ROUTES.dashboard },
           { label: "Stories", href: ROUTES.stories },
@@ -83,7 +83,7 @@ const EditStoryPage = () => {
         publishButtonLabel="Publish Story Metadata"
         isPublishing={isPublishing}
       />
-      <div className="px-6">
+      <div className="px-4 md:px-6 ">
         <EditStoryForm
           story={selectedStory}
           setDirty={setDirty}

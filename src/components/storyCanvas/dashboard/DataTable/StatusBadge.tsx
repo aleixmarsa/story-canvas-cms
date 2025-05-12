@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 
-const StatusBadge = ({ status }: { status: string }) => {
-  const storyStatusTips = {
-    draft: "Only visible in preview. Not published yet.",
-    published: "Visible in both preview and live.",
-    changed: "Live version differs from preview. Changes not published.",
-  };
-
+const StatusBadge = ({
+  status,
+  messages,
+}: {
+  status: string;
+  messages: { draft: string; published: string; changed: string };
+}) => {
   return (
     <div className="flex items-center gap-1 group">
       <Badge
@@ -38,7 +38,7 @@ const StatusBadge = ({ status }: { status: string }) => {
           </TooltipTrigger>
           <TooltipContent>
             <p className="text-xs max-w-[100px]">
-              {storyStatusTips[status as keyof typeof storyStatusTips]}
+              {messages[status as keyof typeof messages]}
             </p>
           </TooltipContent>
         </Tooltip>

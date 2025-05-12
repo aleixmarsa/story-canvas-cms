@@ -243,7 +243,7 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-2 items-center justify-between pb-4">
         {filterConfig && (
           <Input
             placeholder={filterConfig.placeholder}

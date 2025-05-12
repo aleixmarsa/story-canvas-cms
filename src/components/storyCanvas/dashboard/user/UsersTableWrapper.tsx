@@ -56,14 +56,10 @@ const UsersTableWrapper = ({
   };
 
   return (
-    <div className="px-6">
+    <div className="px-4 md:px-6">
       <DataTable
         columns={columns(currentUser, handleDelete)}
         data={zustandUsers}
-        filterConfig={{
-          columnKey: "email",
-          placeholder: "Search by Email...",
-        }}
         addHref={ROUTES.newUser}
         addButtonLabel="New User"
       />
