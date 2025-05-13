@@ -14,6 +14,10 @@ import SectionCategoryForm from "./SectionCategoryForm";
 import { defaultContentByType } from "@/sections/lib/default-content-by-type";
 import { SectionDraftMetadata, StoryDraftMetadata } from "@/lib/dal/draft";
 import { useSections, Response } from "@/lib/swr/useSections";
+import {
+  startHeartbeat,
+  clearOtherPreviewModes,
+} from "@/lib/preview-storage/preview-storage";
 
 type EditSectionFormProps = {
   formRef: React.MutableRefObject<(() => void) | undefined>;
@@ -50,6 +54,14 @@ const EditSectionForm = ({
       }
     };
   }, [formRef]);
+
+  useEffect(() => {
+    // Start the heartbeat for the edit-sections mode
+    // and clear other preview modes
+    const stop = startHeartbeat("edit-section");
+    clearOtherPreviewModes("edit-section");
+    return () => stop();
+  }, []);
 
   if (!section) return null;
   const { currentDraft: currentSectionDraft } = section;

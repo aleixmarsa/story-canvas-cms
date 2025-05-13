@@ -9,3 +9,10 @@ export const ROUTES = {
   login: "/admin/login",
   error: "/admin/error",
 };
+
+export const LIVE_PREVIEW_MESSAGES = {
+  updateSingleSection: "preview:single_section_update",
+  updateAllSections: "preview:sections_update",
+  createSingleSection: "preview:single_section_create",
+  deleteSection: "preview:delete_section",
+} as const;

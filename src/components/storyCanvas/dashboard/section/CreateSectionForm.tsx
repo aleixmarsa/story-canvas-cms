@@ -20,6 +20,10 @@ import { toast } from "sonner";
 import { createSection } from "@/lib/actions/sections/create-section";
 import { SectionDraftMetadata, StoryDraftMetadata } from "@/lib/dal/draft";
 import { useSections } from "@/lib/swr/useSections";
+import {
+  startHeartbeat,
+  clearOtherPreviewModes,
+} from "@/lib/preview-storage/preview-storage";
 
 const CreateSectionForm = ({
   onDirtyChange,
@@ -45,6 +49,22 @@ const CreateSectionForm = ({
   } | null>(null);
   const formSubmitRef = useRef<(() => void) | undefined>(undefined);
   const router = useRouter();
+
+  useEffect(() => {
+    formRef.current = async () => {
+      if (formSubmitRef.current) {
+        formSubmitRef.current();
+      }
+    };
+  }, [formRef]);
+
+  useEffect(() => {
+    // Start the heartbeat for the new-section mode
+    // and clear other preview modes
+    const stop = startHeartbeat("new-section");
+    clearOtherPreviewModes("new-section");
+    return () => stop();
+  }, []);
 
   const handleTypeSelect = (value: string) => {
     setSelectedType(value as SectionCategory);
@@ -129,14 +149,6 @@ const CreateSectionForm = ({
       return false;
     }
   };
-
-  useEffect(() => {
-    formRef.current = async () => {
-      if (formSubmitRef.current) {
-        formSubmitRef.current();
-      }
-    };
-  }, [formRef]);
 
   return (
     <div className="space-y-4 max-w-lg">

@@ -33,7 +33,8 @@ import type {
   WithOptionsFieldMeta,
 } from "@/types/section-fields";
 import type { MediaField } from "@/sections/validation/fields/media-field-schema";
-import { usePreviewIframe } from "@/hooks/use-preview-iframe";
+import { usePreviewChannel } from "@/hooks/use-preview-iframe";
+import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
 import { FIELD_TYPES, FieldMeta } from "@/types/section-fields";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -44,6 +45,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { setPreviewData } from "@/lib/preview-storage/preview-storage";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -93,8 +95,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
   });
   type Errors = typeof errors;
 
-  // Setup the iframe reference to send messages to the live preview
-  const iframeRef = usePreviewIframe();
+  const { sendMessage } = usePreviewChannel();
 
   const fieldNames = [
     ...Object.keys(ui.data),
@@ -111,31 +112,25 @@ const SectionCategoryForm = <T extends SectionCategory>({
 
   // This function is used to send the updated section data to the iframe for live preview
   const sendPreviewUpdate = debounce((data: RenderSectionData) => {
-    if (!iframeRef.current?.contentWindow) return;
-    iframeRef.current.contentWindow.postMessage(
-      {
-        type: "preview:single_section_update",
-        payload: {
-          ...data,
-          type,
-        },
+    sendMessage({
+      type: LIVE_PREVIEW_MESSAGES.updateSingleSection,
+      payload: {
+        ...data,
+        type,
       },
-      "*"
-    );
+    });
+    setPreviewData("edit-section", data);
   }, 300);
 
   const sendPreviewCreate = debounce((data: RenderSectionData) => {
-    if (!iframeRef.current?.contentWindow) return;
-    iframeRef.current.contentWindow.postMessage(
-      {
-        type: "preview:single_section_create",
-        payload: {
-          ...data,
-          type,
-        },
+    sendMessage({
+      type: LIVE_PREVIEW_MESSAGES.createSingleSection,
+      payload: {
+        ...data,
+        type,
       },
-      "*"
-    );
+    });
+    setPreviewData("new-section", data);
   }, 300);
 
   // Send the updated section data to the iframe for live preview
