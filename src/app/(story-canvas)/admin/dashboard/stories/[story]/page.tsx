@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import DashboardHeader from "@/components/storyCanvas/dashboard/DashboardHeader";
 import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
@@ -18,7 +18,9 @@ import { publishSection } from "@/lib/actions/section-version/publish-section-ve
 import { useStories } from "@/lib/swr/useStories";
 import { useSections, Response } from "@/lib/swr/useSections";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
-import { usePreviewIframe } from "@/hooks/use-preview-iframe";
+import { usePreviewChannel } from "@/hooks/use-preview-iframe";
+import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
+import { startHeartbeat } from "@/lib/preview-storage/preview-storage";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -32,20 +34,21 @@ const StoryPage = () => {
     isError: sectionsError,
     mutate: mutateSections,
   } = useSections(selectedStory?.id);
-  const iframeRef = usePreviewIframe();
+  const { sendMessage } = usePreviewChannel();
 
   const sendPreviewDeleteSection = (sectionId: number) => {
-    if (!iframeRef.current?.contentWindow) return;
-    iframeRef.current.contentWindow.postMessage(
-      {
-        type: "preview:delete_section",
-        payload: {
-          sectionId,
-        },
+    sendMessage({
+      type: LIVE_PREVIEW_MESSAGES.deleteSection,
+      payload: {
+        sectionId,
       },
-      "*"
-    );
+    });
   };
+
+  useEffect(() => {
+    const stop = startHeartbeat("sort-sections");
+    return () => stop();
+  }, []);
 
   if (storiesLoading)
     return (

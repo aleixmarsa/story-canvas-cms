@@ -52,7 +52,9 @@ import { useState } from "react";
 import { RenderSectionData } from "@/types/section";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { usePreviewIframe } from "@/hooks/use-preview-iframe";
+import { usePreviewChannel } from "@/hooks/use-preview-iframe";
+import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
+import { setPreviewData } from "@/lib/preview-storage/preview-storage";
 
 type BaseProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -96,7 +98,6 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     getRowLink,
     filterConfig,
     enableSorting = false,
-    isPreviewVisible,
     addButtonLabel,
     addHref,
     onAddClick,
@@ -111,6 +112,8 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const { sections = [], mutate: mutateSections } =
     useSections(selectedStoryId);
+
+  const { sendMessage } = usePreviewChannel();
 
   const table = useReactTable({
     data,
@@ -162,17 +165,13 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     }));
     sendPreviewUpdate(previewData);
   };
-  const iframeRef = usePreviewIframe([isPreviewVisible]);
-
   const sendPreviewUpdate = (data: RenderSectionData[]) => {
-    if (!iframeRef.current?.contentWindow) return;
-    iframeRef.current.contentWindow.postMessage(
-      {
-        type: "preview:sections_update",
-        payload: data,
-      },
-      "*"
-    );
+    sendMessage({
+      type: LIVE_PREVIEW_MESSAGES.updateAllSections,
+      payload: data,
+    });
+    // Save preview data to local storage
+    setPreviewData("sort-sections", data);
   };
 
   const tableContent = (

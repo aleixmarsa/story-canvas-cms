@@ -12,6 +12,8 @@ import {
 import { X, SquareArrowOutUpRight } from "lucide-react";
 import { SectionVersion } from "@prisma/client";
 import { RenderSectionData } from "@/types/section";
+import { usePreviewChannel } from "@/hooks/use-preview-iframe";
+import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
 
 type PreviewSize = "desktop" | "tablet" | "mobile" | "custom";
 
@@ -32,6 +34,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
   const [size, setSize] = useState<PreviewSize>("desktop");
   const [customSize, setCustomSize] = useState({ width: 1000, height: 800 });
   const [zoom, setZoom] = useState(50);
+  const { sendMessage } = usePreviewChannel();
 
   const selectedSize = size === "custom" ? customSize : SIZE_PRESETS[size];
   const { width, height } = selectedSize;
@@ -46,13 +49,11 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
         order: draftSection.order,
         content: draftSection.content,
       };
-      iframeRef.current.contentWindow.postMessage(
-        {
-          type: "preview:single_section_update",
-          payload: previewDraftSectionData,
-        },
-        "*"
-      );
+
+      sendMessage({
+        type: LIVE_PREVIEW_MESSAGES.updateSingleSection,
+        payload: previewDraftSectionData,
+      });
     }
   }, [draftSection]);
 

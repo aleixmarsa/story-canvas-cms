@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import type { RenderStoryData } from "@/types/story";
 import StoryRenderer from "../../renderer/StoryRenderer";
+import { usePreviewChannel } from "@/hooks/use-preview-iframe";
+import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
+import { RenderSectionData } from "@/types/section";
+import { getPreviewData } from "@/lib/preview-storage/preview-storage";
 
 type Props = {
   initialStoryData: RenderStoryData;
@@ -10,35 +14,47 @@ type Props = {
 
 const LivePreviewRenderer = ({ initialStoryData }: Props) => {
   const [storyData, setStoryData] = useState(initialStoryData);
+  console.log("🚀 ~ LivePreviewRenderer ~ initialStoryData:", initialStoryData);
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data.type === "preview:single_section_update") {
-        const updatedSection = event.data.payload;
+    const previewData = getPreviewData<RenderSectionData[]>("sort-sections");
+    if (previewData) {
+      setStoryData((prev) => ({
+        ...prev,
+        sections: previewData,
+      }));
+    }
+  }, []);
+
+  usePreviewChannel((msg) => {
+    switch (msg.type) {
+      case LIVE_PREVIEW_MESSAGES.updateSingleSection: {
+        const updatedSection = msg.payload as RenderSectionData;
         setStoryData((prev) => ({
           ...prev,
           sections: prev.sections.map((section) =>
             section.id === updatedSection.id ? updatedSection : section
           ),
         }));
+        break;
       }
-      if (event.data.type === "preview:sections_update") {
-        const updatedSections = event.data.payload;
+
+      case LIVE_PREVIEW_MESSAGES.updateAllSections: {
+        const updatedSections = msg.payload as RenderSectionData[];
         setStoryData((prev) => ({
           ...prev,
           sections: updatedSections,
         }));
+        break;
       }
-      if (event.data.type === "preview:single_section_create") {
-        const newSection = event.data.payload;
+
+      case LIVE_PREVIEW_MESSAGES.createSingleSection: {
+        const newSection = msg.payload as RenderSectionData;
         setStoryData((prev) => {
-          // Check if a section with the same ID already exists
           const exists = prev.sections.some(
             (section) => section.id === newSection.id
           );
 
-          // If it exists, replace the existing section (it means it is in process of creation)
-          // If it doesn't exist, append the new section to the list
           return {
             ...prev,
             sections: exists
@@ -48,21 +64,25 @@ const LivePreviewRenderer = ({ initialStoryData }: Props) => {
               : [...prev.sections, newSection],
           };
         });
+        break;
       }
 
-      if (event.data.type === "preview:delete_section") {
-        const deletedSectionId = event.data.payload.sectionId;
+      case LIVE_PREVIEW_MESSAGES.deleteSection: {
+        const deletedSectionId = msg.payload.sectionId;
         setStoryData((prev) => ({
           ...prev,
           sections: prev.sections.filter(
             (section) => section.id !== deletedSectionId
           ),
         }));
+        break;
       }
-    };
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, []);
+
+      default:
+        console.warn("Missatge no reconegut:", msg);
+        break;
+    }
+  });
 
   return <StoryRenderer sections={storyData.sections} />;
 };
