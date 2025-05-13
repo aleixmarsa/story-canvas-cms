@@ -49,6 +49,7 @@ const NewSectionPage = () => {
         saveDisabled={!formIsDirty}
         isSaving={formIsSubmitting}
         onTogglePreview={handleTogglePreview}
+        previewVisible={previewVisible}
       />
       <div className="flex flex-col lg:flex-row px-6 w-full gap-4 overflow-hidden">
         <div className="min-w-[30%] lg:min-w-[32rem]">
