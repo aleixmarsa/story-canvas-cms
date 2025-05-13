@@ -38,14 +38,8 @@ import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
 import { FIELD_TYPES, FieldMeta } from "@/types/section-fields";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Info } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { setPreviewData } from "@/lib/preview-storage/preview-storage";
+import { InfoTooltip } from "../InfoTooltip";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -464,19 +458,11 @@ const SectionCategoryForm = <T extends SectionCategory>({
           >
             {config.label}
           </Label>
+
           {config.tip && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-muted-foreground cursor-pointer">
-                    <Info size={14} />
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs max-w-[100px]">{config.tip}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <InfoTooltip
+              message={<p className="text-xs max-w-[100px]">{config.tip}</p>}
+            />
           )}
         </div>
 

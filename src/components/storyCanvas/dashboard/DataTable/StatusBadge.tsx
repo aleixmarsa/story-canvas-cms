@@ -1,12 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { StoryStatus } from "@prisma/client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { InfoTooltip } from "../InfoTooltip";
 
 const StatusBadge = ({
   status,
@@ -29,20 +23,13 @@ const StatusBadge = ({
       >
         {status}
       </Badge>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-muted-foreground cursor-pointer">
-              <Info size={14} />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p className="text-xs max-w-[100px]">
-              {messages[status as keyof typeof messages]}
-            </p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <InfoTooltip
+        message={
+          <p className="text-xs max-w-[100px]">
+            {messages[status as keyof typeof messages]}
+          </p>
+        }
+      />
     </div>
   );
 };
