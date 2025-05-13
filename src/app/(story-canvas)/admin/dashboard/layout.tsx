@@ -1,10 +1,13 @@
 import { DashboardSidebar } from "@/components/storyCanvas/dashboard/Sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getCurrentUser } from "@/lib/dal/auth";
+import { redirect } from "next/navigation";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getCurrentUser();
-
+  if (!user) {
+    redirect("/admin/logout");
+  }
   return (
     <SidebarProvider>
       <DashboardSidebar user={user} />
