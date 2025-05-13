@@ -2,6 +2,7 @@ const HEARTBEAT_INTERVAL = 2000; // ms
 const HEARTBEAT_TTL = 5000; // ms
 
 type PreviewKey = "new-section" | "edit-section" | "sort-sections";
+const allKeys: PreviewKey[] = ["new-section", "edit-section", "sort-sections"];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PreviewData<T = any> = {
@@ -10,14 +11,14 @@ type PreviewData<T = any> = {
 };
 
 // Set data + refresh heartbeat
-export function setPreviewData<T>(key: PreviewKey, data: T) {
+export const setPreviewData = <T>(key: PreviewKey, data: T) => {
   const fullKey = `livePreview-${key}`;
   const heartbeatKey = `heartbeat-${key}`;
   const payload: PreviewData = { data, timestamp: Date.now() };
 
   localStorage.setItem(fullKey, JSON.stringify(payload));
   localStorage.setItem(heartbeatKey, Date.now().toString());
-}
+};
 
 // --- Get data only if heartbeat is recent
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,9 +47,13 @@ export const getPreviewData = <T = any>(key: PreviewKey): T | null => {
 };
 
 // Clear data manually
-export const clearPreviewData = (key: PreviewKey) => {
-  localStorage.removeItem(`livePreview-${key}`);
-  localStorage.removeItem(`heartbeat-${key}`);
+export const clearOtherPreviewModes = (current: PreviewKey) => {
+  allKeys.forEach((key) => {
+    if (key !== current) {
+      localStorage.removeItem(`livePreview-${key}`);
+      localStorage.removeItem(`heartbeat-${key}`);
+    }
+  });
 };
 
 // Start heartbeat

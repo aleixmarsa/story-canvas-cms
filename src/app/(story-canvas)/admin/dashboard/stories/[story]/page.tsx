@@ -20,7 +20,10 @@ import { useSections, Response } from "@/lib/swr/useSections";
 import { SectionDraftMetadata } from "@/lib/dal/draft";
 import { usePreviewChannel } from "@/hooks/use-preview-iframe";
 import { LIVE_PREVIEW_MESSAGES } from "@/lib/constants/story-canvas";
-import { startHeartbeat } from "@/lib/preview-storage/preview-storage";
+import {
+  startHeartbeat,
+  clearOtherPreviewModes,
+} from "@/lib/preview-storage/preview-storage";
 
 const StoryPage = () => {
   const { story: storySlug } = useParams();
@@ -46,7 +49,10 @@ const StoryPage = () => {
   };
 
   useEffect(() => {
+    // Start the heartbeat for the sort-sections mode
+    // and clear other preview modes
     const stop = startHeartbeat("sort-sections");
+    clearOtherPreviewModes("sort-sections");
     return () => stop();
   }, []);
 

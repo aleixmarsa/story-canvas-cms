@@ -45,6 +45,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { setPreviewData } from "@/lib/preview-storage/preview-storage";
 
 interface SectionFormProps<T extends SectionCategory> {
   type: T;
@@ -118,6 +119,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
         type,
       },
     });
+    setPreviewData("edit-section", data);
   }, 300);
 
   const sendPreviewCreate = debounce((data: RenderSectionData) => {
@@ -128,6 +130,7 @@ const SectionCategoryForm = <T extends SectionCategory>({
         type,
       },
     });
+    setPreviewData("new-section", data);
   }, 300);
 
   // Send the updated section data to the iframe for live preview

@@ -14,15 +14,45 @@ type Props = {
 
 const LivePreviewRenderer = ({ initialStoryData }: Props) => {
   const [storyData, setStoryData] = useState(initialStoryData);
-  console.log("🚀 ~ LivePreviewRenderer ~ initialStoryData:", initialStoryData);
 
   useEffect(() => {
-    const previewData = getPreviewData<RenderSectionData[]>("sort-sections");
-    if (previewData) {
+    // Check if there is any new section data in local storage.
+    // This means that a user is sorting, edition or creating a section.
+    const sortedPreviewData =
+      getPreviewData<RenderSectionData[]>("sort-sections");
+    if (sortedPreviewData) {
       setStoryData((prev) => ({
         ...prev,
-        sections: previewData,
+        sections: sortedPreviewData,
       }));
+    }
+    const updatedPreviewData =
+      getPreviewData<RenderSectionData>("edit-section");
+    if (updatedPreviewData) {
+      setStoryData((prev) => ({
+        ...prev,
+        sections: prev.sections.map((section) =>
+          section.id === updatedPreviewData.id ? updatedPreviewData : section
+        ),
+      }));
+    }
+
+    const newPreviewData = getPreviewData<RenderSectionData>("new-section");
+    if (newPreviewData) {
+      setStoryData((prev) => {
+        const exists = prev.sections.some(
+          (section) => section.id === newPreviewData.id
+        );
+
+        return {
+          ...prev,
+          sections: exists
+            ? prev.sections.map((section) =>
+                section.id === newPreviewData.id ? newPreviewData : section
+              )
+            : [...prev.sections, newPreviewData],
+        };
+      });
     }
   }, []);
 
