@@ -29,8 +29,8 @@ describe("createInitialUser", () => {
   const validFormData = () => {
     const form = new FormData();
     form.set("email", "admin@example.com");
-    form.set("password", "securepass123");
-    form.set("confirmPassword", "securepass123");
+    form.set("password", "12345678aA!");
+    form.set("confirmPassword", "12345678aA!");
     return form;
   };
 
@@ -69,7 +69,7 @@ describe("createInitialUser", () => {
       },
     });
 
-    expect(bcrypt.hash).toHaveBeenCalledWith("securepass123", 10);
+    expect(bcrypt.hash).toHaveBeenCalledWith("12345678aA!", 10);
     expect(prisma.user.create).toHaveBeenCalledWith({
       data: {
         email: "admin@example.com",

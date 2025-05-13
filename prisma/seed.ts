@@ -5,7 +5,7 @@ import { slugify } from "../src/lib/utils";
 const prisma = new PrismaClient();
 
 async function main() {
-  const hashedPassword = await bcrypt.hash("securepassword", 10);
+  const hashedPassword = await bcrypt.hash("12345678aA!", 10);
 
   const admin = await prisma.user.create({
     data: {
