@@ -21,6 +21,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
+import PasswordInfoTooltip from "../dashboard/user/PasswordInfoTooltip";
 
 const SignupForm = () => {
   const {
@@ -88,10 +89,13 @@ const SignupForm = () => {
               )}
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="password" required>
-                Password
-              </Label>
+            <div className="flex flex-col gap-1.5 group">
+              <div className="flex items-center gap-1">
+                <Label htmlFor="password" required>
+                  Password
+                </Label>
+                <PasswordInfoTooltip />
+              </div>
               <Input
                 id="password"
                 type="password"

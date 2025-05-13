@@ -22,6 +22,7 @@ import { ROUTES } from "@/lib/constants/story-canvas";
 import { createUser } from "@/lib/actions/users/create-user";
 import { Role } from "@prisma/client";
 import { toast } from "sonner";
+import PasswordInfoTooltip from "./PasswordInfoTooltip";
 
 type UserFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -115,10 +116,13 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           {errors.role && <FormErrorMessage error={errors.role.message} />}
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="password" required>
-            Password
-          </Label>
+        <div className="flex flex-col gap-1.5  group">
+          <div className="flex items-center gap-1">
+            <Label htmlFor="password" required>
+              Password
+            </Label>
+            <PasswordInfoTooltip />
+          </div>
           <Input id="password" type="password" {...register("password")} />
           {errors.password && (
             <FormErrorMessage error={errors.password.message} />
