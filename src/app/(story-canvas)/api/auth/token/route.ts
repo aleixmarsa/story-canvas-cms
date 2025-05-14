@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { compare } from "bcryptjs";
-import { signJwtToken } from "@/lib/auth/session";
+import { encrypt } from "@/lib/auth/session";
 import { findUserByEmail } from "@/lib/dal/users";
 
 const loginSchema = z.object({
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour expiration
 
-  const token = await signJwtToken({
+  const token = await encrypt({
     userId: user.id,
     role: user.role,
     expiresAt: expiresAt,
