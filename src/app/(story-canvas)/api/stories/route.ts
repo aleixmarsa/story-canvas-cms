@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { getAllStories } from "@/lib/dal/stories";
+import { verifyRequestToken } from "@/lib/auth/session";
 
 const querySchema = z.object({
   includeSections: z.coerce.boolean().optional(),
@@ -10,23 +11,39 @@ const querySchema = z.object({
 
 /**
  * GET /api/stories
+ *
+ * Requires authentication via Bearer token in the Authorization header.
+ *
  * Returns all stories with their current draft and published version metadata.
  * Optionally, includes sections if `?includeSections=true` is set.
  *
- * @queryParam includeSections - boolean (optional)
+ * @header Authorization - Bearer JWT token (required)
+ * @queryParam includeSections - boolean (optional) - Include draft and published sections
+ * @queryParam orderBy - string (optional) - Order by field ("createdAt" or "updatedAt")
+ * @queryParam order - string (optional) - Order direction ("asc" or "desc")
+ *
  * @returns List of stories
  * @throws 400 - Invalid query
+ * @throws 401 - Unauthorized
  * @throws 500 - Internal server error
  */
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+  // Check for authorization header
+  const authHeader = request.headers.get("authorization");
+  try {
+    const user = await verifyRequestToken(authHeader ?? "");
+    if (!user) throw new Error("Invalid token");
+  } catch {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
 
+  // Parse query parameters
+  const searchParams = request.nextUrl.searchParams;
   const parseResult = querySchema.safeParse({
     includeSections: searchParams.get("includeSections"),
     orderBy: searchParams.get("orderBy"),
     order: searchParams.get("order"),
   });
-
   if (!parseResult.success) {
     return NextResponse.json(
       {
@@ -37,8 +54,10 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Extract parsed data
   const { includeSections, orderBy, order } = parseResult.data;
 
+  // Fetch stories from the database
   try {
     const stories = await getAllStories({
       includeSections,
