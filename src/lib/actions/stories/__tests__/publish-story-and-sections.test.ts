@@ -64,7 +64,7 @@ describe("publishStoryAndSections", () => {
     const res = await publishStoryAndSections(1, 10);
 
     expect(mockPublishStoryVersion).toHaveBeenCalledWith(1);
-    expect(mockGetSectionsByStoryId).toHaveBeenCalledWith(10);
+    expect(mockGetSectionsByStoryId).toHaveBeenCalledWith({ storyId: 10 });
     expect(mockPublishSectionVersion).toHaveBeenCalledTimes(1);
     expect(mockPublishSectionVersion).toHaveBeenCalledWith(201);
     expect(res).toEqual({

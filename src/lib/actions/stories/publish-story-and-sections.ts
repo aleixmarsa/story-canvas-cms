@@ -25,7 +25,7 @@ export const publishStoryAndSections = async (
     const story = await publishStoryVersion(storyVersionId);
 
     // Get all sections for the story
-    const sections = await getSectionsByStoryId(storyId);
+    const sections = await getSectionsByStoryId({ storyId });
 
     for (const section of sections) {
       if (section.currentDraft?.status === "draft") {

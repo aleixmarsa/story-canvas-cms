@@ -139,15 +139,26 @@ export const checkSectionSlugConflict = async (
  * @param storyId - The ID of the story.
  * @returns A list of sections with their current draft and published versions.
  */
-export const getSectionsByStoryId = async (storyId: number) => {
-  return prisma.section.findMany({
+
+export const getSectionsByStoryId = async ({
+  storyId,
+  orderBy = "createdAt",
+  order = "asc",
+}: {
+  storyId: number;
+  orderBy?: "createdAt" | "updatedAt";
+  order?: "asc" | "desc";
+}) => {
+  const sections = await prisma.section.findMany({
     where: { storyId },
     include: {
       currentDraft: true,
       publishedVersion: true,
     },
     orderBy: {
-      id: "asc", // o potser `createdAt` si tens aquest camp
+      [orderBy]: order,
     },
   });
+
+  return sections;
 };
