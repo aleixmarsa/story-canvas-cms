@@ -20,7 +20,7 @@ jest.mock("@/lib/prisma", () => ({
   },
 }));
 
-export function createMockNextRequest({
+function createMockNextRequest({
   url,
   headers = {},
 }: {

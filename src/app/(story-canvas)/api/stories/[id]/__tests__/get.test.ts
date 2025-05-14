@@ -15,7 +15,7 @@ jest.mock("@/lib/dal/stories", () => ({
   getStory: jest.fn(),
 }));
 
-export function createMockNextRequest({
+function createMockNextRequest({
   url,
   headers = {},
 }: {
