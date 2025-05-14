@@ -11,7 +11,7 @@ import { RenderStoryData } from "@/types/story";
  * Optionally orders the response
  * @returns An array of stories including current draft and published versions metadata.
  */
-export async function getAllStories({
+export const getAllStories = async ({
   includeSections = false,
   orderBy = "updatedAt",
   order = "desc",
@@ -19,7 +19,7 @@ export async function getAllStories({
   includeSections?: boolean;
   orderBy?: "createdAt" | "updatedAt";
   order?: "asc" | "desc";
-}) {
+}) => {
   return prisma.story.findMany({
     include: {
       currentDraft: true,
@@ -38,7 +38,38 @@ export async function getAllStories({
       [orderBy]: order,
     },
   });
-}
+};
+
+/**
+ * Gets a story by its ID
+ * Optionally includes their sections.
+ * @param storyId - The ID of the story to retrieve.
+ * @returns The story with its sections and versions, or null if not found.
+ */
+export const getStory = async ({
+  storyId,
+  includeSections = false,
+}: {
+  storyId: number;
+  includeSections?: boolean;
+  includeVersions?: boolean;
+}) => {
+  return prisma.story.findUnique({
+    where: { id: storyId },
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+      sections: includeSections
+        ? {
+            include: {
+              currentDraft: true,
+              publishedVersion: true,
+            },
+          }
+        : false,
+    },
+  });
+};
 
 /**
  * Gets a story by its ID, including its sections and versions.
