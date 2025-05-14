@@ -54,7 +54,7 @@ export const getStory = async ({
   includeSections?: boolean;
   includeVersions?: boolean;
 }) => {
-  return prisma.story.findUnique({
+  const story = await prisma.story.findUnique({
     where: { id: storyId },
     include: {
       currentDraft: true,
@@ -69,6 +69,8 @@ export const getStory = async ({
         : false,
     },
   });
+
+  return story;
 };
 
 /**
@@ -78,7 +80,7 @@ export const getStory = async ({
  * @returns The story with its sections and versions, or null if not found.
  */
 export const getStoryWithSectionsAndVersions = async (storyId: number) => {
-  return prisma.story.findUnique({
+  const story = await prisma.story.findUnique({
     where: { id: storyId },
     include: {
       versions: true,
@@ -89,6 +91,8 @@ export const getStoryWithSectionsAndVersions = async (storyId: number) => {
       },
     },
   });
+
+  return story;
 };
 
 /**
@@ -213,7 +217,7 @@ export async function getDraftStoryBySlug(
  * @returns An array of objects containing public slugs for stories.
  */
 export const getPublishedSlugs = async () => {
-  return prisma.story.findMany({
+  const publicslugs = await prisma.story.findMany({
     where: {
       publishedVersion: { status: "published" },
     },
@@ -221,4 +225,6 @@ export const getPublishedSlugs = async () => {
       publicSlug: true,
     },
   });
+
+  return publicslugs;
 };
