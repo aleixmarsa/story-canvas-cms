@@ -83,6 +83,7 @@ export function DashboardSidebar({
                       <SidebarMenuSubButton asChild>
                         <Link
                           href={`${ROUTES.stories}/${story.currentDraft?.slug}`}
+                          className="truncate"
                         >
                           {story.currentDraft?.title}
                         </Link>

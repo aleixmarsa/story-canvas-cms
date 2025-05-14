@@ -36,8 +36,8 @@ export default async function PublishedStoryPage({
   const sections = await getPublishedSectionsBySlug(slug);
 
   return (
-    <main>
+    <div>
       <StoryRenderer sections={sections} />
-    </main>
+    </div>
   );
 }
