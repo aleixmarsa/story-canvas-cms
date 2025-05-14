@@ -2,66 +2,153 @@
  * @jest-environment node
  */
 import { GET } from "../route";
+import { createRequest } from "node-mocks-http";
 import { NextRequest } from "next/server";
-import prisma from "@/lib/prisma";
+import { verifyRequestToken } from "@/lib/auth/session";
+import { getStory } from "@/lib/dal/stories";
 
 jest.mock("@/lib/auth/session", () => ({
-  createSession: jest.fn(),
-  deleteSession: jest.fn(),
+  verifyRequestToken: jest.fn(),
 }));
 
-jest.mock("@/lib/prisma", () => ({
-  __esModule: true,
-  default: {
-    story: {
-      findUnique: jest.fn(),
-      update: jest.fn(),
-    },
-  },
+jest.mock("@/lib/dal/stories", () => ({
+  getStory: jest.fn(),
 }));
 
-describe("GET /api/stories/[id]", () => {
-  const mockParams = Promise.resolve({ id: "1" });
-
-  it("returns 400 if id is invalid", async () => {
-    const res = await GET(new NextRequest("http://localhost"), {
-      params: Promise.resolve({ id: "abc" }),
-    });
-    const json = await res.json();
-
-    expect(res.status).toBe(400);
-    expect(json.error).toBe("Invalid ID");
+export function createMockNextRequest({
+  url,
+  headers = {},
+}: {
+  url: string;
+  headers?: Record<string, string>;
+}): NextRequest {
+  const nodeReq = createRequest({
+    method: "GET",
+    url,
+    headers,
   });
 
-  it("returns 404 if story not found", async () => {
-    (prisma.story.findUnique as jest.Mock).mockResolvedValue(null);
+  return new NextRequest(nodeReq);
+}
 
-    const res = await GET(new NextRequest("http://localhost"), {
-      params: mockParams,
-    });
-    const json = await res.json();
-
-    expect(res.status).toBe(404);
-    expect(json.error).toBe("Story not found");
+describe("GET /api/stories/:id", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("returns 200 with story", async () => {
+  it("returns 200 and story when token and id are valid", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+
     const mockStory = {
-      id: 1,
-      title: "Test Story",
-      currentDraft: {},
-      publishedVersion: {},
-      versions: [],
+      id: 123,
+      currentDraft: { id: 10 },
+      publishedVersion: { id: 20 },
     };
 
-    (prisma.story.findUnique as jest.Mock).mockResolvedValue(mockStory);
+    (getStory as jest.Mock).mockResolvedValue(mockStory);
 
-    const res = await GET(new NextRequest("http://localhost"), {
-      params: mockParams,
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories/123",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
     });
+
+    const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
     const json = await res.json();
 
     expect(res.status).toBe(200);
     expect(json).toEqual(mockStory);
+  });
+
+  it("returns 401 if token is missing", async () => {
+    (verifyRequestToken as jest.Mock).mockImplementation(() => {
+      throw new Error("Missing token");
+    });
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories/123",
+    });
+
+    const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
+    const json = await res.json();
+
+    expect(res.status).toBe(401);
+    expect(json).toEqual({ message: "Unauthorized" });
+  });
+
+  it("returns 400 if id is invalid", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories/not-number",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
+    });
+
+    const res = await GET(req, {
+      params: Promise.resolve({ id: "not-a-number" }),
+    });
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json).toEqual({ error: "Invalid ID" });
+  });
+
+  it("returns 400 if includeSections is invalid", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories/123?includeSections=notvalid",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
+    });
+
+    const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.message).toBe("Invalid query parameters");
+    expect(json.errors).toHaveProperty("includeSections");
+  });
+
+  it("returns 404 if story not found", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+    (getStory as jest.Mock).mockResolvedValue(null);
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories/999",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
+    });
+
+    const res = await GET(req, { params: Promise.resolve({ id: "999" }) });
+    const json = await res.json();
+
+    expect(res.status).toBe(404);
+    expect(json).toEqual({ error: "Story not found" });
+  });
+
+  it("returns 500 on server error", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+    (getStory as jest.Mock).mockRejectedValue(
+      new Error("Something went wrong")
+    );
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories/123",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
+    });
+
+    const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
+    const json = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(json.message).toBe("Internal server error");
   });
 });
