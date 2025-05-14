@@ -11,7 +11,7 @@ setup("authenticate as admin", async ({ page }) => {
 
   //Fills the form with valid credentials
   await page.getByTestId("login-form-email-input").fill("admin@cms.com");
-  await page.getByTestId("login-form-password-input").fill("securepassword");
+  await page.getByTestId("login-form-password-input").fill("12345678aA!");
   await page.getByRole("button", { name: "Login" }).click();
 
   // Wait for the URL to change to the dashboard
@@ -27,7 +27,7 @@ setup("authenticate as editor", async ({ page }) => {
 
   //Fills the form with valid credentials
   await page.getByTestId("login-form-email-input").fill("editor@cms.com");
-  await page.getByTestId("login-form-password-input").fill("securepassword");
+  await page.getByTestId("login-form-password-input").fill("12345678aA!");
   await page.getByRole("button", { name: "Login" }).click();
 
   // Wait for the URL to change to the dashboard

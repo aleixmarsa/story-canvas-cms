@@ -4,8 +4,8 @@ import { Role } from "@prisma/client";
 describe("baseUserSchema", () => {
   const validData = {
     email: "user@example.com",
-    password: "strongpassword",
-    confirmPassword: "strongpassword",
+    password: "12345678aA!",
+    confirmPassword: "12345678aA!",
     role: Role.EDITOR,
   };
 

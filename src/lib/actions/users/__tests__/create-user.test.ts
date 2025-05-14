@@ -76,8 +76,8 @@ describe("createUser", () => {
 
     const formData = createFormData({
       email: "existing@example.com",
-      password: "securepass",
-      confirmPassword: "securepass",
+      password: "12345678aA!",
+      confirmPassword: "12345678aA!",
       role: "EDITOR",
     });
 
@@ -97,8 +97,8 @@ describe("createUser", () => {
 
     const formData = createFormData({
       email: "new@example.com",
-      password: "securepass",
-      confirmPassword: "securepass",
+      password: "12345678aA!",
+      confirmPassword: "12345678aA!",
       role: "EDITOR",
     });
 
@@ -119,8 +119,8 @@ describe("createUser", () => {
 
     const formData = createFormData({
       email: "error@example.com",
-      password: "securepass",
-      confirmPassword: "securepass",
+      password: "12345678aA!",
+      confirmPassword: "12345678aA!",
       role: "EDITOR",
     });
 
