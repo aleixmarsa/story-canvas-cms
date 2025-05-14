@@ -6,18 +6,39 @@ import { StoryFormData } from "../validation/story-schemas";
 import { RenderStoryData } from "@/types/story";
 
 /**
- * Fetches all stories with their current draft and published version.
- *
- * @returns An array of stories including current draft and published versions.
+ * Fetches all stories with their current draft and published version metadata.
+ * Optionally includes their sections.
+ * Optionally orders the response
+ * @returns An array of stories including current draft and published versions metadata.
  */
-export const getAllStories = async () => {
+export async function getAllStories({
+  includeSections = false,
+  orderBy = "updatedAt",
+  order = "desc",
+}: {
+  includeSections?: boolean;
+  orderBy?: "createdAt" | "updatedAt";
+  order?: "asc" | "desc";
+}) {
   return prisma.story.findMany({
     include: {
       currentDraft: true,
       publishedVersion: true,
+      sections: includeSections
+        ? {
+            include: {
+              currentDraft: true,
+              publishedVersion: true,
+            },
+          }
+        : false,
+    },
+
+    orderBy: {
+      [orderBy]: order,
     },
   });
-};
+}
 
 /**
  * Gets a story by its ID, including its sections and versions.
