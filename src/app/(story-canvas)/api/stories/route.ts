@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
     orderBy: searchParams.get("orderBy") ?? undefined,
     order: searchParams.get("order") ?? undefined,
   };
-  console.log("🚀 ~ GET ~ rawParams:", rawParams);
 
+  // Validate query parameters
   const parseResult = querySchema.safeParse(rawParams);
   if (!parseResult.success) {
     return NextResponse.json(
