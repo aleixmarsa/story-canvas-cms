@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { deleteSection } from "@/lib/actions/sections/delete-section";
 import { publishStoryAndSections } from "@/lib/actions/stories/publish-story-and-sections";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
-import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { updateSectionVersionOrders } from "@/lib/actions/sections/update-section-orders";
@@ -235,7 +234,7 @@ const StoryPage = () => {
       <div className="flex flex-col lg:flex-row px-4 md:px-6  w-full gap-6 overflow-hidden">
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            previewVisible ? "w-full lg:w-[40%]" : "w-full"
+            previewVisible ? "w-full lg:w-[40%] min-w-[40%]" : "w-full"
           }`}
         >
           <DataTable
@@ -250,26 +249,20 @@ const StoryPage = () => {
             selectedStoryId={selectedStory.id}
           />
         </div>
-        <AnimatePresence>
-          <motion.div
-            animate={{
-              opacity: previewVisible ? 1 : 0,
-              x: previewVisible ? 0 : 100,
-            }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className={cn(
-              previewVisible
-                ? "relative visible w-full lg:w-[100px] lg:min-w-0"
-                : "absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden",
-              "flex-1 overflow-hidden h-max-full min-w-full"
-            )}
-          >
-            <LivePreviewPanel
-              slug={selectedStory.currentDraft?.slug ?? ""}
-              draftSection={null}
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div
+          className={cn(
+            "transition-all duration-300 ease-in-out",
+            previewVisible
+              ? "relative visible opacity-100 translate-x-0 w-full lg:w-[100px] lg:min-w-0"
+              : "absolute opacity-0 pointer-events-none translate-x-100 w-0 h-0 overflow-hidden",
+            "flex-1 overflow-hidden h-max-full"
+          )}
+        >
+          <LivePreviewPanel
+            slug={selectedStory.currentDraft?.slug ?? ""}
+            draftSection={null}
+          />
+        </div>
       </div>
     </>
   );

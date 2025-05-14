@@ -56,7 +56,6 @@
     "clsx": "^2.1.1",
     "dompurify": "^3.2.5",
     "dotenv": "^16.5.0",
-    "framer-motion": "^12.9.2",
     "gsap": "^3.13.0",
     "isomorphic-dompurify": "^2.24.0",
     "jose": "^6.0.10",
