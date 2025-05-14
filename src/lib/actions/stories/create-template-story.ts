@@ -9,7 +9,7 @@ import { SectionFormData } from "@/lib/validation/section-version";
 
 export async function createTemplateStory(formData: FormData) {
   const session = await verifySession();
-  if (session.role !== Role.ADMIN) {
+  if (!session || session.role !== Role.ADMIN) {
     throw new Error("Unauthorized");
   }
   const uid = randomUUID();

@@ -24,7 +24,7 @@ import { createUser as createUserInDb, findUserByEmail } from "@/lib/dal/users";
 export const createUser = async (formData: FormData) => {
   try {
     const session = await verifySession();
-    if (session.role !== Role.ADMIN) {
+    if (!session || session.role !== Role.ADMIN) {
       return { error: "Unauthorized" };
     }
 

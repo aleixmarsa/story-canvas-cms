@@ -19,7 +19,7 @@ export const deleteUser = async (userId: string) => {
   try {
     const session = await verifySession();
 
-    if (session.role !== Role.ADMIN) {
+    if (!session || session.role !== Role.ADMIN) {
       return { error: "Unauthorized" };
     }
 

@@ -19,6 +19,11 @@ import { ConflictError } from "@/lib/errors";
  * @throws Error - For unexpected internal errors during story creation.
  */
 export const createStory = async (formData: FormData) => {
+  const session = await verifySession();
+  if (!session || session.role !== Role.ADMIN) {
+    return { error: "Unauthorized" };
+  }
+
   const rawData = {
     title: formData.get("title"),
     slug: formData.get("slug"),
@@ -35,11 +40,6 @@ export const createStory = async (formData: FormData) => {
       error: "Invalid input",
       details: parsed.error.flatten(),
     };
-  }
-
-  const session = await verifySession();
-  if (session.role !== Role.ADMIN) {
-    return { error: "Unauthorized" };
   }
 
   try {
