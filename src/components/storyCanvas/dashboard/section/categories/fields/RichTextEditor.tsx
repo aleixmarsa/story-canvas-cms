@@ -45,6 +45,7 @@ const RichTextEditor = ({ value, onChange }: RichTextEditorProps) => {
         });
 
         instance.root.innerHTML = value;
+        instance.root.style.backgroundColor = "#f0f0f0";
         quillRef.current = instance;
       }
     };

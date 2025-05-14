@@ -8,7 +8,6 @@ import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import { publishSection } from "@/lib/actions/section-version/publish-section-version";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useStories } from "@/lib/swr/useStories";
 import { useSections } from "@/lib/swr/useSections";
@@ -125,26 +124,20 @@ const EditSectionPage = () => {
             skipNotFoundRedirect={skipNotFoundRedirect}
           />
         </div>
-        <AnimatePresence>
-          <motion.div
-            animate={{
-              opacity: previewVisible ? 1 : 0,
-              x: previewVisible ? 0 : 100,
-            }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className={cn(
-              previewVisible
-                ? "relative visible w-full lg:w-[100px] lg:min-w-0"
-                : "absolute opacity-0 pointer-events-none w-0 h-0 overflow-hidden",
-              "flex-1 overflow-hidden h-max-full min-w-full"
-            )}
-          >
-            <LivePreviewPanel
-              slug={selectedStory.currentDraft?.slug ?? ""}
-              draftSection={null}
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div
+          className={cn(
+            "transition-all duration-300 ease-in-out",
+            previewVisible
+              ? "relative visible opacity-100 translate-x-0 w-full lg:w-[100px] lg:min-w-0"
+              : "absolute opacity-0 pointer-events-none translate-x-100 w-0 h-0 overflow-hidden",
+            "flex-1 overflow-hidden h-max-full"
+          )}
+        >
+          <LivePreviewPanel
+            slug={selectedStory.currentDraft?.slug ?? ""}
+            draftSection={null}
+          />
+        </div>
       </div>
     </>
   );

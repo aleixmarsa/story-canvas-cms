@@ -42,10 +42,10 @@ const DashboardHeader = ({
 }: DashboardHeaderProps) => {
   return (
     <header className="flex flex-col md:flex-row md:justify-between md:items-center gap-2.5 py-2 md:py-0 w-full h-fit md:h-16 px-4 md:px-6  shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-      <div className="flex items-center gap-2 h-full">
+      <div className="flex items-center gap-2 h-full overflow-hidden">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <div className="space-y-1 group-has-[[data-collapsible=icon]]/sidebar-wrapper:space-y-0">
+        <div className="space-y-1 group-has-[[data-collapsible=icon]]/sidebar-wrapper:space-y-0 overflow-hidden">
           <Breadcrumb>
             <BreadcrumbList>
               {breadcrumbs.map((item, idx) => (
@@ -71,7 +71,7 @@ const DashboardHeader = ({
               ))}
             </BreadcrumbList>
           </Breadcrumb>
-          <p className="text-sm font-semibold group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-sm">
+          <p className="text-sm font-semibold group-has-[[data-collapsible=icon]]/sidebar-wrapper:text-sm truncate">
             {title}
           </p>
         </div>
