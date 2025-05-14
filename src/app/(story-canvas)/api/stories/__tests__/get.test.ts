@@ -2,9 +2,23 @@
  * @jest-environment node
  */
 import { GET } from "../route";
-import { NextRequest } from "next/server";
-import { createRequest } from "node-mocks-http"; // o crea-la manualment
 import prisma from "@/lib/prisma";
+import { verifyRequestToken } from "@/lib/auth/session";
+import { createRequest } from "node-mocks-http";
+import { NextRequest } from "next/server";
+
+jest.mock("@/lib/auth/session", () => ({
+  verifyRequestToken: jest.fn(),
+}));
+
+jest.mock("@/lib/prisma", () => ({
+  __esModule: true,
+  default: {
+    story: {
+      findMany: jest.fn(),
+    },
+  },
+}));
 
 export function createMockNextRequest({
   url,
@@ -22,95 +36,98 @@ export function createMockNextRequest({
   return new NextRequest(nodeReq);
 }
 
-jest.mock("@/lib/auth/session", () => ({
-  verifyRequestToken: jest.fn(),
-}));
-
-jest.mock("@/lib/prisma", () => ({
-  __esModule: true,
-  default: {
-    story: {
-      findMany: jest.fn(),
-    },
-  },
-}));
-
-import { verifyRequestToken } from "@/lib/auth/session";
-
 describe("GET /api/stories", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("returns list of stories with valid token", async () => {
+  it("returns 200 and stories when request is valid", async () => {
     const mockStories = [
-      {
-        id: 1,
-        currentDraft: { id: 10 },
-        publishedVersion: { id: 20 },
-      },
+      { id: 1, currentDraft: { id: 10 }, publishedVersion: { id: 20 } },
     ];
 
-    (prisma.story.findMany as jest.Mock).mockResolvedValue(mockStories);
     (verifyRequestToken as jest.Mock).mockResolvedValue({
       userId: "123",
       email: "user@example.com",
       role: "EDITOR",
     });
+    (prisma.story.findMany as jest.Mock).mockResolvedValue(mockStories);
 
-    const request = createMockNextRequest({
+    const req = createMockNextRequest({
       url: "http://localhost/api/stories?includeSections=true&orderBy=createdAt&order=asc",
       headers: {
         Authorization: "Bearer testtoken",
       },
     });
-
-    const res = await GET(request);
+    const res = await GET(req);
     const json = await res.json();
 
     expect(res.status).toBe(200);
     expect(json).toEqual(mockStories);
   });
 
-  it("returns 401 if token is missing or invalid", async () => {
+  it("returns 401 if token is missing", async () => {
     (verifyRequestToken as jest.Mock).mockImplementation(() => {
-      throw new Error("Invalid token");
+      throw new Error("Missing token");
     });
+    const req = new NextRequest("http://localhost/api/stories");
 
-    const request = new NextRequest("http://localhost/api/stories");
-
-    const res = await GET(request);
+    const res = await GET(req);
     const json = await res.json();
 
     expect(res.status).toBe(401);
     expect(json).toEqual({ message: "Unauthorized" });
   });
 
-  it("handles internal server error", async () => {
-    (verifyRequestToken as jest.Mock).mockResolvedValue({
-      userId: "123",
-      email: "user@example.com",
-      role: "EDITOR",
-    });
+  it("returns 400 if includeSections is invalid", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
 
-    (prisma.story.findMany as jest.Mock).mockRejectedValue(
-      new Error("DB error")
-    );
-
-    const request = createMockNextRequest({
-      url: "http://localhost/api/stories",
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories?includeSections=notvalid&orderBy=createdAt&order=asc",
       headers: {
         Authorization: "Bearer testtoken",
       },
     });
+    const res = await GET(req);
+    const json = await res.json();
 
-    const res = await GET(request);
+    expect(res.status).toBe(400);
+    expect(json.message).toBe("Invalid query parameters");
+    expect(json.errors).toHaveProperty("includeSections");
+  });
+
+  it("returns 400 if orderBy is invalid", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories?includeSections=true&orderBy=notvalid&order=asc",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
+    });
+    const res = await GET(req);
+    const json = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(json.errors).toHaveProperty("orderBy");
+  });
+
+  it("returns 500 on internal error", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+    (prisma.story.findMany as jest.Mock).mockRejectedValue(
+      new Error("DB error")
+    );
+
+    const req = createMockNextRequest({
+      url: "http://localhost/api/stories?includeSections=true&orderBy=createdAt&order=asc",
+      headers: {
+        Authorization: "Bearer testtoken",
+      },
+    });
+    const res = await GET(req);
     const json = await res.json();
 
     expect(res.status).toBe(500);
-    expect(json).toEqual({
-      message: "Internal server error",
-      error: {},
-    });
+    expect(json.message).toBe("Internal server error");
   });
 });
