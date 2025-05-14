@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyRequestToken } from "@/lib/auth/session";
-import { getStory } from "@/lib/dal/stories";
+import { getStoryMetadata } from "@/lib/actions/stories/get-story";
 import { z } from "zod";
 
 const querySchema = z.object({
@@ -70,7 +70,7 @@ export async function GET(
 
   // Fetch story from the database
   try {
-    const story = await getStory({
+    const story = await getStoryMetadata({
       storyId,
       includeSections,
     });

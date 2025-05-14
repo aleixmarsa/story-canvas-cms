@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyRequestToken } from "@/lib/auth/session";
 import { z } from "zod";
-import { getSectionsByStoryId } from "@/lib/dal/sections";
+import { getSections } from "@/lib/actions/sections/get-sections";
 import { getStory } from "@/lib/dal/stories";
 
 const querySchema = z.object({
@@ -78,7 +78,7 @@ export async function GET(
       return NextResponse.json({ error: "Story not found" }, { status: 404 });
     }
 
-    const sections = await getSectionsByStoryId({
+    const sections = await getSections({
       storyId,
       orderBy,
       order,
