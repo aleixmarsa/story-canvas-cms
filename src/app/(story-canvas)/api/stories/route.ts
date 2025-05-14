@@ -4,7 +4,10 @@ import { getAllStories } from "@/lib/dal/stories";
 import { verifyRequestToken } from "@/lib/auth/session";
 
 const querySchema = z.object({
-  includeSections: z.coerce.boolean().optional(),
+  includeSections: z
+    .enum(["true", "false"])
+    .transform((v) => v === "true")
+    .optional(),
   orderBy: z.enum(["createdAt", "updatedAt"]).optional(),
   order: z.enum(["asc", "desc"]).optional(),
 });
@@ -45,6 +48,8 @@ export async function GET(request: NextRequest) {
     orderBy: searchParams.get("orderBy") ?? undefined,
     order: searchParams.get("order") ?? undefined,
   };
+  console.log("🚀 ~ GET ~ rawParams:", rawParams);
+
   const parseResult = querySchema.safeParse(rawParams);
   if (!parseResult.success) {
     return NextResponse.json(
