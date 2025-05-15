@@ -54,7 +54,7 @@ const ImageSection = ({
   const imageUrl = typeof image === "string" ? image : image.url;
   return (
     <div className="py-8" ref={imageRef}>
-      {image ? (
+      {image && imageUrl.length !== 0 ? (
         <img
           src={imageUrl}
           alt={alt || "Image"}
