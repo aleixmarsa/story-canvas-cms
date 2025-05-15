@@ -23,12 +23,9 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
     // Optimistically remove from UI
     mutate(
       (prev: Response | undefined) => {
-        if (!prev || !("success" in prev) || !prev.stories) return prev;
+        if (!prev) return prev;
 
-        return {
-          ...prev,
-          stories: prev.stories.filter((s) => s.id !== story.id),
-        };
+        return stories.filter((s) => s.id !== story.id);
       },
       { revalidate: false }
     );
@@ -41,17 +38,11 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           // Optimistically add back on Undo click
           mutate(
             (prev): Response => {
-              if (prev && "success" in prev) {
-                return {
-                  success: true,
-                  stories: [...(prev.stories ?? []), story],
-                };
+              if (prev) {
+                return [...(prev ?? []), story];
               }
 
-              return {
-                success: true,
-                stories: [story],
-              };
+              return [story];
             },
             { revalidate: false }
           );
@@ -65,17 +56,11 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           // Add back in case of error
           mutate(
             (prev): Response => {
-              if (prev && "success" in prev && Array.isArray(prev.stories)) {
-                return {
-                  success: true,
-                  stories: [...prev.stories, story],
-                };
+              if (prev && Array.isArray(prev)) {
+                return [...prev, story];
               }
               // Fallback
-              return {
-                success: true,
-                stories: [story],
-              };
+              return [story];
             },
             { revalidate: false }
           );

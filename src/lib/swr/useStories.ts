@@ -26,7 +26,7 @@ export function useStories(): {
   );
 
   return {
-    stories: data && "success" in data && data.stories ? data.stories : [],
+    stories: data ? data : [],
     isLoading,
     isError: !!error,
     mutate,

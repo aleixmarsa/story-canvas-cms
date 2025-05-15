@@ -13,7 +13,7 @@ export const getAllStoriesWithCurrentDraftMetadata = async ({
   orderBy?: OrderByField;
   order?: OrderDirection;
 } = {}) => {
-  return prisma.story.findMany({
+  const stories = await prisma.story.findMany({
     select: {
       id: true,
       createdAt: true,
@@ -46,6 +46,8 @@ export const getAllStoriesWithCurrentDraftMetadata = async ({
       currentDraftId: { not: null },
     },
   });
+
+  return stories;
 };
 
 export type StoryDraftMetadata = Awaited<

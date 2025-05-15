@@ -82,19 +82,13 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
 
         mutateStories(
           (prev): Response => {
-            if (prev && "success" in prev && prev.stories) {
-              return {
-                success: true,
-                stories: prev.stories.map((s) =>
-                  s.id === story.id ? { ...s, currentDraft: result.version } : s
-                ),
-              };
+            if (prev) {
+              return prev.map((s) =>
+                s.id === story.id ? { ...s, currentDraft: result.version } : s
+              );
             }
             // Fallback
-            return {
-              success: true,
-              stories: [],
-            };
+            return [];
           },
           { revalidate: false }
         );

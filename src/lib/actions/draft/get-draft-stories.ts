@@ -14,15 +14,11 @@ export const getCurrentDraftStories = async ({
   orderBy?: OrderByField;
   order?: OrderDirection;
 } = {}) => {
-  try {
-    const stories = await getAllStoriesWithCurrentDraftMetadata({
-      includeSections,
-      orderBy,
-      order,
-    });
+  const stories = await getAllStoriesWithCurrentDraftMetadata({
+    includeSections,
+    orderBy,
+    order,
+  });
 
-    return { success: true, stories };
-  } catch {
-    return { error: "Failed to fetch drafts" };
-  }
+  return stories;
 };

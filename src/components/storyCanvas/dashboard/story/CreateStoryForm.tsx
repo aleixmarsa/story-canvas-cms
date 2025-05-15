@@ -73,18 +73,15 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
           return;
         }
 
-        const newStory: StoryDraftMetadata = result.story;
+        const newStory = result.story;
+        const newStoryWithSections: StoryDraftMetadata = {
+          ...newStory,
+          sections: [],
+        };
+
         mutateStories(
           (prev) =>
-            prev && "success" in prev && prev.stories
-              ? {
-                  success: true,
-                  stories: [...prev.stories, newStory],
-                }
-              : {
-                  success: true,
-                  stories: [newStory],
-                },
+            prev ? [...prev, newStoryWithSections] : [newStoryWithSections],
           { revalidate: false }
         );
         reset();

@@ -73,10 +73,7 @@ describe("GET /api/stories", () => {
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json).toEqual({
-      success: true,
-      stories: mockStoriesArray,
-    });
+    expect(json).toEqual(mockStoriesArray);
   });
 
   it("returns 401 if token is missing", async () => {
@@ -143,6 +140,7 @@ describe("GET /api/stories", () => {
     const res = await GET(req);
     const json = await res.json();
 
-    expect(json.error).toBe("Failed to fetch drafts");
+    expect(res.status).toBe(500);
+    expect(json.message).toBe("Internal server error");
   });
 });
