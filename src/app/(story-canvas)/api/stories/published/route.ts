@@ -27,13 +27,14 @@ const querySchema = z.object({
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-
+  // Parse query parameters
   const parseResult = querySchema.safeParse({
     includeSections: searchParams.get("includeSections") ?? undefined,
     orderBy: searchParams.get("orderBy") ?? undefined,
     order: searchParams.get("order") ?? undefined,
   });
 
+  // Validate query parameters
   if (!parseResult.success) {
     return NextResponse.json(
       {
