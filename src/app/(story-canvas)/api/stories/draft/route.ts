@@ -4,6 +4,99 @@ import { verifyRequestToken } from "@/lib/auth/session";
 import { getCurrentDraftStories } from "@/lib/actions/draft/get-draft-stories";
 import { requireAuth } from "@/lib/auth/withAuth";
 
+/**
+ * @swagger
+ * /api/stories/draft:
+ *   get:
+ *     summary: Get all draft stories
+ *     description: >
+ *       Requires authentication. You can authenticate either via:
+ *         - Bearer token in the `Authorization` header
+ *         - Active session cookie (for CMS dashboard users)
+ *
+ *       Note: Swagger UI sends session cookies automatically if present.
+ *       To simulate an unauthenticated request, use an incognito window or log out first.
+ *     security:
+ *       - bearerAuth: []
+ *     tags:
+ *       - Stories
+ *     parameters:
+ *       - in: query
+ *         name: includeSections
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [true, false]
+ *         description: Whether to include draft and published sections
+ *       - in: query
+ *         name: orderBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, updatedAt]
+ *         description: Field to order by
+ *       - in: query
+ *         name: order
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Sort direction
+ *     responses:
+ *       200:
+ *         description: List of draft stories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 stories:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       publishedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       currentDraftId:
+ *                         type: integer
+ *                         example: 10
+ *                       currentDraft:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           title:
+ *                             type: string
+ *                           slug:
+ *                             type: string
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                           createdBy:
+ *                             type: string
+ *                           description:
+ *                             type: string
+ *       400:
+ *         description: Invalid query parameters
+ *       401:
+ *         description: Unauthorized (missing or invalid credentials)
+ *       500:
+ *         description: Internal server error
+ */
+
 const querySchema = z.object({
   includeSections: z
     .enum(["true", "false"])
@@ -12,22 +105,7 @@ const querySchema = z.object({
   orderBy: z.enum(["createdAt", "updatedAt"]).optional(),
   order: z.enum(["asc", "desc"]).optional(),
 });
-/**
- * GET /api/stories/draft
- *
- * Requires authentication via Bearer token in the Authorization header.
- *
- * Fetches all draft stories metadata.
- *
- * @header Authorization - Bearer JWT token (required)
- * @queryParam orderBy - string (optional) - Field to order by ("createdAt", "updatedAt")
- * @queryParam order - string (optional) - Order direction ("asc" or "desc")
- *
- * @returns The list of draft stories with their metadata.
- * @throws 400 - Invalid query parameters
- * @throws 401 - Unauthorized
- * @throws 500 - Internal server error
- */
+
 export async function GET(request: NextRequest) {
   // Check for authorization header
   const authHeader = request.headers.get("authorization");

@@ -5,6 +5,97 @@ import { z } from "zod";
 import { getDraftSections } from "@/lib/actions/draft/get-draft-sections-by-id";
 import { getDraftStoryByStoryId } from "@/lib/dal/draft";
 
+/**
+ * @swagger
+ * /api/stories/draft/{id}/sections:
+ *   get:
+ *     summary: Get draft sections of a story
+ *     description: >
+ *       Requires authentication. You can authenticate either via:
+ *         - Bearer token in the `Authorization` header
+ *         - Active session cookie (for CMS dashboard users)
+ *
+ *       Note: Swagger UI sends session cookies automatically if present.
+ *       To simulate an unauthenticated request, use an incognito window or log out first.
+ *     security:
+ *       - BearerAuth: []
+ *     tags:
+ *       - Sections
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the story
+ *       - in: query
+ *         name: orderBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, updatedAt, order, type, name]
+ *         description: Field to sort by
+ *       - in: query
+ *         name: order
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Sort direction
+ *     responses:
+ *       200:
+ *         description: List of draft sections
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 sections:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 42
+ *                       publishedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       currentDraftId:
+ *                         type: integer
+ *                       currentDraft:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           name:
+ *                             type: string
+ *                           type:
+ *                             type: string
+ *                           order:
+ *                             type: number
+ *                           content:
+ *                             type: object
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                           slug:
+ *                             type: string
+ *                           createdBy:
+ *                             type: string
+ *       400:
+ *         description: Invalid story ID or query parameters
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Story not found
+ *       500:
+ *         description: Internal server error
+ */
+
 const querySchema = z.object({
   orderBy: z
     .enum(["createdAt", "updatedAt", "order", "type", "name"])
@@ -12,26 +103,6 @@ const querySchema = z.object({
   order: z.enum(["asc", "desc"]).optional(),
 });
 
-/**
- * GET /api/draft/stories/:id/sections
- *
- * Requires authentication via Bearer token in the Authorization header.
- *
- * Returns all the current draft sections of a story.
- * The story is identified by ID because slugs can change between versions.
- *
- * @header Authorization - Bearer JWT token (required)
- * @queryParam orderBy - string (optional) - Field to order by
- * @queryParam order - string (optional) - Order direction (asc/desc)
- *
- * @param request - The request object.
- * @param params - The route parameters including the story ID.
- * @returns A list of draft sections or an error.
- * @throws 400 - Invalid story ID or query
- * @throws 401 - Unauthorized
- * @throws 404 - Story not found
- * @throws 500 - Internal server error
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

@@ -5,31 +5,71 @@ import { z } from "zod";
 import { getSections } from "@/lib/actions/sections/get-sections";
 import { getStory } from "@/lib/dal/stories";
 
+/**
+ * @swagger
+ * /api/stories/{id}/sections:
+ *   get:
+ *     summary: Get all sections for a story
+ *     description: >
+ *       Requires authentication. You can authenticate either via:
+ *         - Bearer token in the `Authorization` header
+ *         - Active session cookie (for CMS dashboard users)
+ *
+ *       Note: Swagger UI sends session cookies automatically if present.
+ *       To simulate an unauthenticated request, use an incognito window or log out first.
+ *     security:
+ *       - BearerAuth: []
+ *     tags:
+ *       - Sections
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the story
+ *       - in: query
+ *         name: orderBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, updatedAt]
+ *         description: Field to order by
+ *       - in: query
+ *         name: order
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Order direction
+ *     responses:
+ *       200:
+ *         description: List of sections
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 example:
+ *                   id: 42
+ *                   currentDraft: { id: 1, name: "Hero Section" }
+ *                   publishedVersion: { id: 2, name: "Hero Section - Published" }
+ *       400:
+ *         description: Invalid story ID or query parameters
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Story not found
+ *       500:
+ *         description: Internal server error
+ */
+
 const querySchema = z.object({
   orderBy: z.enum(["createdAt", "updatedAt"]).optional(),
   order: z.enum(["asc", "desc"]).optional(),
 });
 
-/**
- * GET /api/stories/:id/sections
- *
- * Requires authentication via Bearer token in the Authorization header.
- *
- * Fetches all sections (both current draft and published versions) for a given story ID.
- * Allows optional ordering via `orderBy` and `order` query parameters.
- *
- * @param req - The request object.
- * @param params - The parameters object containing the story ID.x
- *
- * @header Authorization - Bearer JWT token (required)
- * @queryParam orderBy - string (optional) - Field to order by ("createdAt", "updatedAt")
- * @queryParam order - string (optional) - Order direction ("asc" or "desc")
- *
- * @returns A JSON array of sections or an error message.
- * @throws 400 - Invalid story ID or query params
- * @throws 401 - Unauthorized
- * @throws 500 - Internal server error
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

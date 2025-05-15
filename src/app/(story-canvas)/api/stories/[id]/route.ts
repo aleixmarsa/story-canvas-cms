@@ -12,24 +12,53 @@ const querySchema = z.object({
 });
 
 /**
- * GET /api/stories/:id
+ * @swagger
+ * /api/stories/{id}:
+ *   get:
+ *     summary: Get a single story by ID
+ *     description: >
+ *       Requires authentication. You can authenticate either via:
+ *         - Bearer token in the `Authorization` header
+ *         - Active session cookie (for CMS dashboard users)
  *
- * Requires authentication via Bearer token in the Authorization header.
- *
- * Fetches a single story metadata by ID with its current draft, published version, all versions,
- * and optionally its sections (if `?includeSections=true`).
- *
- * @param req - The request object.
- * @param params - The parameters object containing the story ID.
- *
- * @header Authorization - Bearer JWT token (required)
- * @queryParam includeSections - boolean (optional) - Include draft and published sections
- *
- * @returns The story with current draft, published version, versions and optionally sections.
- * @throws 400 - Invalid story ID or query params
- * @throws 401 - Unauthorized
- * @throws 404 - Story not found
- * @throws 500 - Internal server error
+ *       Note: Swagger UI sends session cookies automatically if present.
+ *       To simulate an unauthenticated request, use an incognito window or log out first.
+ *     tags:
+ *       - Stories
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the story
+ *       - in: query
+ *         name: includeSections
+ *         required: false
+ *         schema:
+ *           type: boolean
+ *         description: Whether to include draft and published sections
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Story data successfully retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               example:
+ *                 id: 123
+ *                 currentDraft: { id: 1, title: "My Draft" }
+ *                 publishedVersion: { id: 2, title: "Published Title" }
+ *       400:
+ *         description: Invalid story ID or query parameters
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Story not found
+ *       500:
+ *         description: Internal server error
  */
 export async function GET(
   request: NextRequest,

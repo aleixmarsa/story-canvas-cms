@@ -1,9 +1,71 @@
-// /app/api/auth/token/route.ts
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { compare } from "bcryptjs";
 import { encrypt } from "@/lib/auth/session";
 import { findUserByEmail } from "@/lib/dal/users";
+
+/**
+ * @swagger
+ * /api/auth/token:
+ *   post:
+ *     summary: Get authentication token
+ *     description: >
+ *       Authenticates a user with email and password and returns a signed JWT token.
+ *       This token can be used in the Authorization header to access protected endpoints.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@cms.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: securepassword123
+ *     responses:
+ *       200:
+ *         description: Successful login, returns JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Invalid input data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid input
+ *                 errors:
+ *                   type: object
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ */
 
 const loginSchema = z.object({
   email: z.string().email(),

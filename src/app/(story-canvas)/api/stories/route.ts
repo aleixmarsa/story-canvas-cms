@@ -14,23 +14,68 @@ const querySchema = z.object({
 });
 
 /**
- * GET /api/stories
+ * @swagger
+ * /api/stories:
+ *   get:
+ *     summary: Fetch all stories
+ *     description: >
+ *       Requires authentication. You can authenticate either via:
+ *         - Bearer token in the `Authorization` header
+ *         - Active session cookie (for CMS dashboard users)
  *
- * Requires authentication via Bearer token in the Authorization header.
- *
- * Returns all stories with their current draft and published version metadata.
- * Optionally, includes sections if `?includeSections=true` is set.
- *
- * @header Authorization - Bearer JWT token (required)
- * @queryParam includeSections - boolean (optional) - Include draft and published sections
- * @queryParam orderBy - string (optional) - Order by field ("createdAt" or "updatedAt")
- * @queryParam order - string (optional) - Order direction ("asc" or "desc")
- *
- * @returns List of stories
- * @throws 400 - Invalid query
- * @throws 401 - Unauthorized
- * @throws 500 - Internal server error
+ *       Note: Swagger UI sends session cookies automatically if present.
+ *       To simulate an unauthenticated request, use an incognito window or log out first.
+ *     tags:
+ *       - Stories
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: includeSections
+ *         schema:
+ *           type: boolean
+ *         required: false
+ *         description: Whether to include section metadata
+ *       - in: query
+ *         name: orderBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, updatedAt]
+ *         required: false
+ *         description: Field to order by
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         required: false
+ *         description: Sorting direction
+ *     responses:
+ *       200:
+ *         description: List of stories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   currentDraft:
+ *                     type: object
+ *                     nullable: true
+ *                   publishedVersion:
+ *                     type: object
+ *                     nullable: true
+ *       400:
+ *         description: Invalid query parameters
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
  */
+
 export async function GET(request: NextRequest) {
   // Check for authorization header
   const authHeader = request.headers.get("authorization");

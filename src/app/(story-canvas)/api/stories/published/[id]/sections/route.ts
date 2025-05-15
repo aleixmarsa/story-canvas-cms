@@ -3,6 +3,81 @@ import { getStory } from "@/lib/dal/stories";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+/**
+ * @swagger
+ * /api/stories/published/{id}/sections:
+ *   get:
+ *     summary: Get published sections of a story
+ *     description: >
+ *       Public endpoint that returns all the published sections of a story by ID.
+ *     tags:
+ *       - Sections
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the story
+ *         schema:
+ *           type: integer
+ *           example: 123
+ *       - in: query
+ *         name: orderBy
+ *         required: false
+ *         description: Field to order by
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, updatedAt, order, type, name]
+ *       - in: query
+ *         name: order
+ *         required: false
+ *         description: Order direction
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *     responses:
+ *       200:
+ *         description: List of published sections
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     example: "Intro Section"
+ *                   type:
+ *                     type: string
+ *                     example: "paragraph"
+ *                   order:
+ *                     type: integer
+ *                     example: 1
+ *                   content:
+ *                     type: object
+ *                     example:
+ *                       body: "This is the content of the section"
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2025-05-13T12:00:00Z"
+ *                   slug:
+ *                     type: string
+ *                     example: "intro-section"
+ *                   createdBy:
+ *                     type: string
+ *                     example: "user123"
+ *       400:
+ *         description: Invalid ID or query parameters
+ *       404:
+ *         description: Story not found or not published
+ *       500:
+ *         description: Internal server error
+ */
+
 const querySchema = z.object({
   orderBy: z
     .enum(["createdAt", "updatedAt", "order", "type", "name"])
@@ -10,22 +85,6 @@ const querySchema = z.object({
   order: z.enum(["asc", "desc"]).optional(),
 });
 
-/**
- * GET /api/stories/published/:id/sections
- *
- * Public endpoint that returns all the published sections of a story by ID.
- *
- * @param req - The request object.
- * @param params - The parameters object containing the story ID.
- *
- * @queryParam orderBy - (optional) Field to order by ("createdAt", "updatedAt", "order", "type", "name")
- * @queryParam order - (optional) Order direction ("asc", "desc")
- *
- * @returns Array of published sections or an error response
- * @throws 400 - Invalid ID or query parameters
- * @throws 404 - Story not found or not published
- * @throws 500 - Internal server error
- */
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
