@@ -1,25 +1,49 @@
 import "server-only";
 import prisma from "@/lib/prisma";
 
-export const getPublishedStoryMetadata = async () => {
+type OrderField = "createdAt" | "updatedAt" | "publishedAt";
+type OrderDirection = "asc" | "desc";
+
+export const getPublishedStoryMetadata = async ({
+  includeSections = false,
+  orderBy = "publishedAt",
+  order = "desc",
+}: {
+  includeSections?: boolean;
+  orderBy?: OrderField;
+  order?: OrderDirection;
+}) => {
   return prisma.story.findMany({
     where: {
-      publishedVersion: { status: "published" },
+      publishedVersion: {
+        status: "published",
+      },
     },
     select: {
       id: true,
       publicSlug: true,
       publishedAt: true,
+      createdAt: true,
+      updatedAt: true,
       publishedVersion: {
         select: {
           title: true,
           description: true,
         },
       },
+      sections: includeSections
+        ? {
+            include: {
+              publishedVersion: true,
+            },
+          }
+        : false,
+    },
+    orderBy: {
+      [orderBy]: order,
     },
   });
 };
-
 export const getPublishedSectionsBySlug = async (slug: string) => {
   const story = await prisma.story.findUnique({
     where: { publicSlug: slug },
