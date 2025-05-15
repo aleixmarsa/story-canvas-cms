@@ -17,7 +17,7 @@ const querySchema = z.object({
  * @swagger
  * /api/stories:
  *   get:
- *     summary: Fetch all stories
+ *     summary: Get all stories
  *     description: >
  *       Requires authentication. You can authenticate either via:
  *         - Bearer token in the `Authorization` header
