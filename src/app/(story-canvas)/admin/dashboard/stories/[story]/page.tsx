@@ -104,13 +104,10 @@ const StoryPage = () => {
     // Optimistically remove from UI
     mutateSections(
       (prev: Response | undefined) => {
-        if (!prev || !("success" in prev) || !prev.sections) return prev;
-        return {
-          ...prev,
-          sections: prev.sections.filter(
-            (s) => s.currentDraft.id !== section.currentDraft.id
-          ),
-        };
+        if (!prev) return prev;
+        return prev.filter(
+          (s) => s.currentDraft.id !== section.currentDraft.id
+        );
       },
       { revalidate: false }
     );
@@ -123,17 +120,11 @@ const StoryPage = () => {
           // Optimistically add back on Undo click
           mutateSections(
             (prev): Response => {
-              if (prev && "success" in prev) {
-                return {
-                  success: true,
-                  sections: [...(prev.sections ?? []), section],
-                };
+              if (prev && Array.isArray(prev)) {
+                return [...(prev ?? []), section];
               }
 
-              return {
-                success: true,
-                sections: [section],
-              };
+              return [section];
             },
             { revalidate: false }
           );
@@ -146,17 +137,11 @@ const StoryPage = () => {
           toast.error("Failed to delete section");
           mutateSections(
             (prev): Response => {
-              if (prev && "success" in prev && Array.isArray(prev.sections)) {
-                return {
-                  success: true,
-                  sections: [...prev.sections, section],
-                };
+              if (prev && Array.isArray(prev)) {
+                return [...prev, section];
               }
               // Fallback
-              return {
-                success: true,
-                sections: [section],
-              };
+              return [section];
             },
             { revalidate: false }
           );
@@ -173,6 +158,11 @@ const StoryPage = () => {
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
   const handleSaveDraft = async () => {
+    if (!sections) {
+      toast.error("No sections found");
+      return;
+    }
+
     const updates = sections.map((s) => ({
       versionId: s.currentDraft.id,
       order: s.currentDraft.order,

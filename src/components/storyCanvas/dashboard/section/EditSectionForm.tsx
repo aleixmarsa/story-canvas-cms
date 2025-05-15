@@ -134,21 +134,15 @@ const EditSectionForm = ({
 
       mutateSections(
         (prev): Response => {
-          if (prev && "success" in prev && prev.sections) {
-            return {
-              success: true,
-              sections: prev.sections.map((s) =>
-                s.id === section.id
-                  ? { ...s, currentDraft: updatedSection.currentDraft }
-                  : s
-              ),
-            };
+          if (prev) {
+            return prev.map((s) =>
+              s.id === section.id
+                ? { ...s, currentDraft: updatedSection.currentDraft }
+                : s
+            );
           }
           // Fallback
-          return {
-            success: true,
-            sections: [],
-          };
+          return [];
         },
         { revalidate: false }
       );

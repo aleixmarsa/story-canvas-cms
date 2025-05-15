@@ -2,11 +2,20 @@
 
 import { getDraftSectionsById } from "@/lib/dal/draft";
 
-export const getDraftSections = async (slug: number) => {
-  try {
-    const sections = await getDraftSectionsById(slug);
-    return { success: true, sections };
-  } catch {
-    return { error: "Could not load draft sections" };
-  }
+export const getDraftSections = async ({
+  storyId,
+  orderBy = "order",
+  order = "asc",
+}: {
+  storyId: number;
+  orderBy?: "order" | "name" | "type" | "updatedAt" | "createdAt";
+  order?: "asc" | "desc";
+}) => {
+  const sections = await getDraftSectionsById({
+    storyId,
+    orderBy,
+    order,
+  });
+
+  return sections;
 };

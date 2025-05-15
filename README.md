@@ -23,6 +23,41 @@
 
 ---
 
+## API Documentation
+
+StoryCanvas exposes a headless API.
+
+> Explore the Swagger API documentation:  
+> [`http://localhost:3000/api-doc`](http://localhost:3000/api-doc)
+
+### Available Endpoints
+
+- `POST /api/auth/token`  
+  Get an authentication token (JWT) to access protected routes.
+
+- `GET /api/stories`  
+  Get all stories (requires session or token).
+
+- `GET /api/stories/draft`  
+  Get all draft stories (requires session or token).
+
+- `GET /api/stories/draft`  
+  Get all published stories (public endpoint).
+
+- `GET /api/stories/{id}`  
+  Get a single story by ID (requires session or token).
+
+- `GET /api/stories/{id}/sections`  
+  Get all sections of a story (requires session or token).
+
+- `GET /api/stories/draft/{id}/sections`  
+  Get all draft sections of a story (requires session or token).
+
+- `GET /api/stories/published/{id}/sections`  
+  Get all published sections of a story (public endpoint).
+
+---
+
 ## Getting Started
 
 ### Option A — Docker-based development

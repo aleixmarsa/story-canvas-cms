@@ -8,7 +8,7 @@ const VideoSection = ({ video, title }: VideoSectionProps) => {
   return (
     <div className="py-8 text-center">
       <div className="mb-4">
-        {video ? (
+        {video && videoUrl.length !== 0 ? (
           <video
             className="mx-auto rounded-lg shadow-md"
             controls

@@ -20,7 +20,8 @@ import { Role } from "@prisma/client";
 export const deleteStory = async (storyId: number) => {
   try {
     const session = await verifySession();
-    if (session.role !== Role.ADMIN) return { error: "Unauthorized" };
+    if (!session || session.role !== Role.ADMIN)
+      return { error: "Unauthorized" };
 
     const existingStory = await getStoryWithSectionsAndVersions(storyId);
     if (!existingStory) return { error: "Story not found" };

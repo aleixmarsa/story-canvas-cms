@@ -14,8 +14,16 @@ jest.mock("@/lib/actions/draft/get-draft-sections-by-id", () => ({
   getDraftSections: jest.fn(),
 }));
 
+jest.mock("@/lib/auth/session", () => ({
+  verifyRequestToken: jest.fn().mockResolvedValue({ userId: "1" }),
+}));
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn().mockResolvedValue({ userId: "1" }),
+}));
+
 describe("GET /api/draft/stories/:id/sections", () => {
-  const mockParams = Promise.resolve({ id: 123 });
+  const mockParams = { id: "123" };
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -25,11 +33,11 @@ describe("GET /api/draft/stories/:id/sections", () => {
     (getDraftStoryByStoryId as jest.Mock).mockResolvedValue(null);
 
     const req = new NextRequest("http://localhost");
-    const res = await GET(req, { params: mockParams });
+    const res = await GET(req, { params: Promise.resolve(mockParams) });
     const json = await res.json();
 
     expect(res.status).toBe(404);
-    expect(json.error).toBe("Story Not Found");
+    expect(json.error).toBe("Story not found");
   });
 
   it("returns 200 with sections if story exists", async () => {
@@ -40,14 +48,20 @@ describe("GET /api/draft/stories/:id/sections", () => {
     ];
 
     (getDraftStoryByStoryId as jest.Mock).mockResolvedValue(mockStory);
-    (getDraftSections as jest.Mock).mockResolvedValue(mockSections);
+    (getDraftSections as jest.Mock).mockResolvedValue({
+      success: true,
+      sections: mockSections,
+    });
 
     const req = new NextRequest("http://localhost");
-    const res = await GET(req, { params: mockParams });
+    const res = await GET(req, { params: Promise.resolve(mockParams) });
     const json = await res.json();
 
     expect(res.status).toBe(200);
-    expect(json).toEqual(mockSections);
+    expect(json).toEqual({
+      success: true,
+      sections: mockSections,
+    });
   });
 
   it("returns 500 if there is a server error", async () => {
@@ -56,7 +70,7 @@ describe("GET /api/draft/stories/:id/sections", () => {
     );
 
     const req = new NextRequest("http://localhost");
-    const res = await GET(req, { params: mockParams });
+    const res = await GET(req, { params: Promise.resolve(mockParams) });
     const json = await res.json();
 
     expect(res.status).toBe(500);

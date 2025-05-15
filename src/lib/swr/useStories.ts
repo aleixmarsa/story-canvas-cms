@@ -10,14 +10,14 @@ const fetcher = (url: string): Promise<Response> =>
     return res.json();
   });
 
-export function useStories(): {
+export const useStories = (): {
   stories: StoryDraftMetadata[];
   isLoading: boolean;
   isError: boolean;
   mutate: KeyedMutator<Response>;
-} {
+} => {
   const { data, error, isLoading, mutate } = useSWR<Response>(
-    "/api/draft/stories",
+    "/api/stories/draft",
     fetcher,
     {
       revalidateOnFocus: false,
@@ -26,9 +26,9 @@ export function useStories(): {
   );
 
   return {
-    stories: data && "success" in data && data.stories ? data.stories : [],
+    stories: data ? data : [],
     isLoading,
     isError: !!error,
     mutate,
   };
-}
+};

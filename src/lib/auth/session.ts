@@ -16,7 +16,7 @@ const encodedKey = new TextEncoder().encode(secretKey);
  * @returns A signed JWT session token
  */
 export async function createSession(userId: string, role: Role) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
   const session = await encrypt({ userId, expiresAt, role });
   const cookieStore = await cookies();
 
@@ -92,4 +92,28 @@ export async function decrypt(session: string | undefined = "") {
     console.log("Failed to verify session:", error);
     return null;
   }
+}
+
+/**
+ * Verifies the JWT token from the Authorization header.
+ * @param authHeader - The Authorization header containing the JWT token
+ * @throws Error if the token is missing or malformed
+ * @returns The decrypted session payload if valid
+ */
+export async function verifyRequestToken(authHeader: string | null) {
+  if (!authHeader?.startsWith("Bearer ")) {
+    throw new Error("Missing or malformed Authorization header");
+  }
+  const token = authHeader.split(" ")[1];
+  const payload = await decrypt(token);
+  if (!payload) {
+    throw new Error("Invalid token");
+  }
+
+  const { expiresAt } = payload;
+  if (new Date(expiresAt) < new Date()) {
+    throw new Error("Token expired");
+  }
+
+  return payload;
 }

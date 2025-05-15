@@ -6,17 +6,71 @@ import { StoryFormData } from "../validation/story-schemas";
 import { RenderStoryData } from "@/types/story";
 
 /**
- * Fetches all stories with their current draft and published version.
- *
- * @returns An array of stories including current draft and published versions.
+ * Fetches all stories with their current draft and published version metadata.
+ * Optionally includes their sections.
+ * Optionally orders the response
+ * @returns An array of stories including current draft and published versions metadata.
  */
-export const getAllStories = async () => {
+export const getAllStories = async ({
+  includeSections = false,
+  orderBy = "updatedAt",
+  order = "desc",
+}: {
+  includeSections?: boolean;
+  orderBy?: "createdAt" | "updatedAt";
+  order?: "asc" | "desc";
+}) => {
   return prisma.story.findMany({
     include: {
       currentDraft: true,
       publishedVersion: true,
+      sections: includeSections
+        ? {
+            include: {
+              currentDraft: true,
+              publishedVersion: true,
+            },
+          }
+        : false,
+    },
+
+    orderBy: {
+      [orderBy]: order,
     },
   });
+};
+
+/**
+ * Gets a story by its ID
+ * Optionally includes their sections.
+ * @param storyId - The ID of the story to retrieve.
+ * @returns The story with its sections and versions, or null if not found.
+ */
+export const getStory = async ({
+  storyId,
+  includeSections = false,
+}: {
+  storyId: number;
+  includeSections?: boolean;
+  includeVersions?: boolean;
+}) => {
+  const story = await prisma.story.findUnique({
+    where: { id: storyId },
+    include: {
+      currentDraft: true,
+      publishedVersion: true,
+      sections: includeSections
+        ? {
+            include: {
+              currentDraft: true,
+              publishedVersion: true,
+            },
+          }
+        : false,
+    },
+  });
+
+  return story;
 };
 
 /**
@@ -26,7 +80,7 @@ export const getAllStories = async () => {
  * @returns The story with its sections and versions, or null if not found.
  */
 export const getStoryWithSectionsAndVersions = async (storyId: number) => {
-  return prisma.story.findUnique({
+  const story = await prisma.story.findUnique({
     where: { id: storyId },
     include: {
       versions: true,
@@ -37,6 +91,8 @@ export const getStoryWithSectionsAndVersions = async (storyId: number) => {
       },
     },
   });
+
+  return story;
 };
 
 /**
@@ -161,7 +217,7 @@ export async function getDraftStoryBySlug(
  * @returns An array of objects containing public slugs for stories.
  */
 export const getPublishedSlugs = async () => {
-  return prisma.story.findMany({
+  const publicslugs = await prisma.story.findMany({
     where: {
       publishedVersion: { status: "published" },
     },
@@ -169,4 +225,6 @@ export const getPublishedSlugs = async () => {
       publicSlug: true,
     },
   });
+
+  return publicslugs;
 };

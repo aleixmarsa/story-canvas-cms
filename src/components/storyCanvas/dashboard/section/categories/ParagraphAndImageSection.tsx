@@ -71,7 +71,7 @@ const ParagraphAndImageSection = ({
         } gap-6 items-center`}
       >
         <div className="shrink-0 w-full md:w-1/2" ref={imageRef}>
-          {image ? (
+          {image && imageUrl.length !== 0 ? (
             <img
               src={imageUrl}
               alt={alt || "Image"}

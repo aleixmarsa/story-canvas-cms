@@ -1,11 +1,22 @@
 "use server";
 import { getPublishedStoryMetadata } from "@/lib/dal/published";
 
-export const getPublishedStories = async () => {
-  try {
-    const stories = await getPublishedStoryMetadata();
-    return { success: true, stories };
-  } catch (error) {
-    return { error: `Failed to fetch published stories: ${error}` };
-  }
+type OrderField = "createdAt" | "updatedAt";
+type OrderDirection = "asc" | "desc";
+
+export const getPublishedStories = async ({
+  includeSections = false,
+  orderBy = "createdAt",
+  order = "asc",
+}: {
+  includeSections?: boolean;
+  orderBy?: OrderField;
+  order?: OrderDirection;
+} = {}) => {
+  const stories = await getPublishedStoryMetadata({
+    includeSections,
+    orderBy,
+    order,
+  });
+  return stories;
 };

@@ -149,12 +149,9 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
       },
     }));
     mutateSections((prev) => {
-      if (!prev || !("success" in prev)) return prev;
+      if (!prev) return prev;
 
-      return {
-        success: true,
-        sections: updatedWithOrder,
-      };
+      return updatedWithOrder;
     }, false);
     const previewData: RenderSectionData[] = updatedWithOrder.map((s) => ({
       id: s.currentDraftId || 0,

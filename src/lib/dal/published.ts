@@ -1,25 +1,49 @@
 import "server-only";
 import prisma from "@/lib/prisma";
 
-export const getPublishedStoryMetadata = async () => {
+type OrderField = "createdAt" | "updatedAt" | "publishedAt";
+type OrderDirection = "asc" | "desc";
+
+export const getPublishedStoryMetadata = async ({
+  includeSections = false,
+  orderBy = "publishedAt",
+  order = "desc",
+}: {
+  includeSections?: boolean;
+  orderBy?: OrderField;
+  order?: OrderDirection;
+}) => {
   return prisma.story.findMany({
     where: {
-      publishedVersion: { status: "published" },
+      publishedVersion: {
+        status: "published",
+      },
     },
     select: {
       id: true,
       publicSlug: true,
       publishedAt: true,
+      createdAt: true,
+      updatedAt: true,
       publishedVersion: {
         select: {
           title: true,
           description: true,
         },
       },
+      sections: includeSections
+        ? {
+            include: {
+              publishedVersion: true,
+            },
+          }
+        : false,
+    },
+    orderBy: {
+      [orderBy]: order,
     },
   });
 };
-
 export const getPublishedSectionsBySlug = async (slug: string) => {
   const story = await prisma.story.findUnique({
     where: { publicSlug: slug },
@@ -60,6 +84,45 @@ export const getPublishedStoryByPublicSlug = async (slug: string) => {
       sections: {
         include: {
           publishedVersion: true,
+        },
+      },
+    },
+  });
+};
+
+export const getPublishedSectionsByStoryId = async ({
+  storyId,
+  orderBy = "order",
+  order = "asc",
+}: {
+  storyId: number;
+  orderBy?: "createdAt" | "updatedAt" | "order" | "type" | "name";
+  order?: "asc" | "desc";
+}) => {
+  return prisma.sectionVersion.findMany({
+    where: {
+      status: "published",
+      publishedOf: {
+        storyId,
+      },
+    },
+    orderBy: {
+      [orderBy]: order,
+    },
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      content: true,
+      order: true,
+      slug: true,
+      updatedAt: true,
+      createdBy: true,
+      createdAt: true,
+      publishedOf: {
+        select: {
+          id: true,
+          publishedAt: true,
         },
       },
     },
