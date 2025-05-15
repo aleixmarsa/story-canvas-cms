@@ -38,7 +38,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           // Optimistically add back on Undo click
           mutate(
             (prev): Response => {
-              if (prev) {
+              if (prev && Array.isArray(prev)) {
                 return [...(prev ?? []), story];
               }
 

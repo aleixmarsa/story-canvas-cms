@@ -126,16 +126,10 @@ const CreateSectionForm = ({
       setSelectedType(null);
       mutateSections(
         (prev) =>
-          prev && "success" in prev && prev.sections
-            ? {
-                success: true,
-                sections: [...prev.sections, section],
-              }
-            : {
-                success: true,
-                sections: [section],
-              },
-        { revalidate: false }
+          prev && Array.isArray(prev) ? [...prev, section] : [section],
+        {
+          revalidate: false,
+        }
       );
       toast.success("Section created successfully");
       router.push(`${ROUTES.stories}/${story.currentDraft?.slug}`);

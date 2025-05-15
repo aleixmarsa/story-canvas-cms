@@ -11,15 +11,11 @@ export const getDraftSections = async ({
   orderBy?: "order" | "name" | "type" | "updatedAt" | "createdAt";
   order?: "asc" | "desc";
 }) => {
-  try {
-    const sections = await getDraftSectionsById({
-      storyId,
-      orderBy,
-      order,
-    });
+  const sections = await getDraftSectionsById({
+    storyId,
+    orderBy,
+    order,
+  });
 
-    return { success: true, sections };
-  } catch {
-    return { error: "Could not load draft sections" };
-  }
+  return sections;
 };

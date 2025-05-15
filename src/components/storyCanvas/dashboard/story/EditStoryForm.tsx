@@ -82,7 +82,7 @@ const EditStoryForm = forwardRef<HTMLFormElement, EditStoryFormProps>(
 
         mutateStories(
           (prev): Response => {
-            if (prev) {
+            if (prev && Array.isArray(prev)) {
               return prev.map((s) =>
                 s.id === story.id ? { ...s, currentDraft: result.version } : s
               );
