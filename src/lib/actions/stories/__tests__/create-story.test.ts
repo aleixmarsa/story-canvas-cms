@@ -32,6 +32,8 @@ describe("createStory", () => {
   });
 
   it("returns error on invalid input", async () => {
+    mockVerifySession.mockResolvedValue({ id: "admin", role: Role.ADMIN });
+
     const formData = createFormData({
       title: "",
       slug: "",
