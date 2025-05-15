@@ -2,7 +2,7 @@
 
 import { getPublishedSectionsBySlug } from "@/lib/dal/published";
 
-export const fetchPublishedSections = async (slug: string) => {
+export const fetchPublishedSectionsBySlug = async (slug: string) => {
   try {
     const sections = await getPublishedSectionsBySlug(slug);
     return { success: true, sections };

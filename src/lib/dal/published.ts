@@ -89,3 +89,42 @@ export const getPublishedStoryByPublicSlug = async (slug: string) => {
     },
   });
 };
+
+export const getPublishedSectionsByStoryId = async ({
+  storyId,
+  orderBy = "order",
+  order = "asc",
+}: {
+  storyId: number;
+  orderBy?: "createdAt" | "updatedAt" | "order" | "type" | "name";
+  order?: "asc" | "desc";
+}) => {
+  return prisma.sectionVersion.findMany({
+    where: {
+      status: "published",
+      publishedOf: {
+        storyId,
+      },
+    },
+    orderBy: {
+      [orderBy]: order,
+    },
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      content: true,
+      order: true,
+      slug: true,
+      updatedAt: true,
+      createdBy: true,
+      createdAt: true,
+      publishedOf: {
+        select: {
+          id: true,
+          publishedAt: true,
+        },
+      },
+    },
+  });
+};
