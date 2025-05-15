@@ -4,11 +4,16 @@
 import { GET } from "../route";
 import prisma from "@/lib/prisma";
 import { verifyRequestToken } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/withAuth";
 import { createRequest } from "node-mocks-http";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 jest.mock("@/lib/auth/session", () => ({
   verifyRequestToken: jest.fn(),
+}));
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn(),
 }));
 
 jest.mock("@/lib/prisma", () => ({
@@ -39,6 +44,7 @@ function createMockNextRequest({
 describe("GET /api/stories", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (requireAuth as jest.Mock).mockResolvedValue({ userId: "fallback" });
   });
 
   it("returns 200 and stories when request is valid", async () => {
@@ -70,6 +76,9 @@ describe("GET /api/stories", () => {
     (verifyRequestToken as jest.Mock).mockImplementation(() => {
       throw new Error("Missing token");
     });
+    (requireAuth as jest.Mock).mockResolvedValue(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
     const req = new NextRequest("http://localhost/api/stories");
 
     const res = await GET(req);

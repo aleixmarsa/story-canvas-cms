@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { getAllStoriesMetadata } from "@/lib/actions/stories/get-all-stories";
 import { verifyRequestToken } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/withAuth";
 
 const querySchema = z.object({
   includeSections: z
@@ -33,9 +34,15 @@ const querySchema = z.object({
 export async function GET(request: NextRequest) {
   // Check for authorization header
   const authHeader = request.headers.get("authorization");
+
   try {
-    const user = await verifyRequestToken(authHeader ?? "");
-    if (!user) throw new Error("Invalid token");
+    if (authHeader) {
+      const user = await verifyRequestToken(authHeader ?? "");
+      if (!user) throw new Error("Invalid token");
+    } else {
+      const user = await requireAuth();
+      if (user instanceof NextResponse) throw new Error("Unauthorized");
+    }
   } catch {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }

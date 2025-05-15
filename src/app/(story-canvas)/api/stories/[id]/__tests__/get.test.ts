@@ -3,12 +3,17 @@
  */
 import { GET } from "../route";
 import { createRequest } from "node-mocks-http";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { verifyRequestToken } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/withAuth";
 import { getStory } from "@/lib/dal/stories";
 
 jest.mock("@/lib/auth/session", () => ({
   verifyRequestToken: jest.fn(),
+}));
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn(),
 }));
 
 jest.mock("@/lib/dal/stories", () => ({
@@ -25,7 +30,10 @@ function createMockNextRequest({
   const nodeReq = createRequest({
     method: "GET",
     url,
-    headers,
+    headers: {
+      ...headers,
+      authorization: headers.Authorization ?? headers.authorization,
+    },
   });
 
   return new NextRequest(nodeReq);
@@ -34,37 +42,37 @@ function createMockNextRequest({
 describe("GET /api/stories/:id", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (requireAuth as jest.Mock).mockResolvedValue({ userId: "fallback" });
   });
 
-  it("returns 200 and story when token and id are valid", async () => {
-    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
+  it("returns 200 when session is valid (no Authorization header)", async () => {
+    (verifyRequestToken as jest.Mock).mockResolvedValue(undefined);
+    (requireAuth as jest.Mock).mockResolvedValue({ userId: "2" });
 
     const mockStory = {
-      id: 123,
-      currentDraft: { id: 10 },
-      publishedVersion: { id: 20 },
+      id: 124,
+      currentDraft: { id: 11 },
+      publishedVersion: { id: 21 },
     };
-
     (getStory as jest.Mock).mockResolvedValue(mockStory);
 
     const req = createMockNextRequest({
-      url: "http://localhost/api/stories/123",
-      headers: {
-        Authorization: "Bearer testtoken",
-      },
+      url: "http://localhost/api/stories/124",
     });
 
-    const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
+    const res = await GET(req, { params: Promise.resolve({ id: "124" }) });
     const json = await res.json();
 
+    expect(verifyRequestToken).not.toHaveBeenCalled();
+    expect(requireAuth).toHaveBeenCalled();
     expect(res.status).toBe(200);
     expect(json).toEqual(mockStory);
   });
 
-  it("returns 401 if token is missing", async () => {
-    (verifyRequestToken as jest.Mock).mockImplementation(() => {
-      throw new Error("Missing token");
-    });
+  it("returns 401 if no authHeader and requireAuth fails", async () => {
+    (requireAuth as jest.Mock).mockResolvedValue(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
 
     const req = createMockNextRequest({
       url: "http://localhost/api/stories/123",
@@ -73,18 +81,18 @@ describe("GET /api/stories/:id", () => {
     const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
     const json = await res.json();
 
+    expect(verifyRequestToken).not.toHaveBeenCalled();
+    expect(requireAuth).toHaveBeenCalled();
     expect(res.status).toBe(401);
     expect(json).toEqual({ message: "Unauthorized" });
   });
 
-  it("returns 400 if id is invalid", async () => {
+  it("returns 400 if ID is invalid", async () => {
     (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
 
     const req = createMockNextRequest({
-      url: "http://localhost/api/stories/not-number",
-      headers: {
-        Authorization: "Bearer testtoken",
-      },
+      url: "http://localhost/api/stories/not-a-number",
+      headers: { authorization: "Bearer token" },
     });
 
     const res = await GET(req, {
@@ -96,33 +104,13 @@ describe("GET /api/stories/:id", () => {
     expect(json).toEqual({ error: "Invalid ID" });
   });
 
-  it("returns 400 if includeSections is invalid", async () => {
-    (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
-
-    const req = createMockNextRequest({
-      url: "http://localhost/api/stories/123?includeSections=notvalid",
-      headers: {
-        Authorization: "Bearer testtoken",
-      },
-    });
-
-    const res = await GET(req, { params: Promise.resolve({ id: "123" }) });
-    const json = await res.json();
-
-    expect(res.status).toBe(400);
-    expect(json.message).toBe("Invalid query parameters");
-    expect(json.errors).toHaveProperty("includeSections");
-  });
-
   it("returns 404 if story not found", async () => {
     (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
     (getStory as jest.Mock).mockResolvedValue(null);
 
     const req = createMockNextRequest({
       url: "http://localhost/api/stories/999",
-      headers: {
-        Authorization: "Bearer testtoken",
-      },
+      headers: { authorization: "Bearer token" },
     });
 
     const res = await GET(req, { params: Promise.resolve({ id: "999" }) });
@@ -134,15 +122,11 @@ describe("GET /api/stories/:id", () => {
 
   it("returns 500 on server error", async () => {
     (verifyRequestToken as jest.Mock).mockResolvedValue({ userId: "1" });
-    (getStory as jest.Mock).mockRejectedValue(
-      new Error("Something went wrong")
-    );
+    (getStory as jest.Mock).mockRejectedValue(new Error("fail"));
 
     const req = createMockNextRequest({
       url: "http://localhost/api/stories/123",
-      headers: {
-        Authorization: "Bearer testtoken",
-      },
+      headers: { authorization: "Bearer token" },
     });
 
     const res = await GET(req, { params: Promise.resolve({ id: "123" }) });

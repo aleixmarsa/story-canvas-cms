@@ -5,6 +5,8 @@ import { GET } from "../route";
 import { createRequest } from "node-mocks-http";
 import { NextRequest } from "next/server";
 import { verifyRequestToken } from "@/lib/auth/session";
+import { NextResponse } from "next/server";
+import { requireAuth } from "@/lib/auth/withAuth";
 import { getSectionsByStoryId } from "@/lib/dal/sections";
 import { getStory } from "@/lib/dal/stories";
 
@@ -14,6 +16,10 @@ jest.mock("@/lib/auth/session", () => ({
 
 jest.mock("@/lib/dal/sections", () => ({
   getSectionsByStoryId: jest.fn(),
+}));
+
+jest.mock("@/lib/auth/withAuth", () => ({
+  requireAuth: jest.fn(),
 }));
 
 jest.mock("@/lib/dal/stories", () => ({
@@ -39,6 +45,7 @@ function createMockNextRequest({
 describe("GET /api/stories/:id/sections", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (requireAuth as jest.Mock).mockResolvedValue({ userId: "fallback" });
   });
 
   it("returns 200 and sections when request is valid", async () => {
@@ -65,7 +72,9 @@ describe("GET /api/stories/:id/sections", () => {
     (verifyRequestToken as jest.Mock).mockImplementation(() => {
       throw new Error("Missing token");
     });
-
+    (requireAuth as jest.Mock).mockResolvedValue(
+      NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    );
     const req = createMockNextRequest({
       url: "http://localhost/api/stories/1/sections",
     });

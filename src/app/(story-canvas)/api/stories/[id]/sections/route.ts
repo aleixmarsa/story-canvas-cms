@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyRequestToken } from "@/lib/auth/session";
+import { requireAuth } from "@/lib/auth/withAuth";
 import { z } from "zod";
 import { getSections } from "@/lib/actions/sections/get-sections";
 import { getStory } from "@/lib/dal/stories";
@@ -30,14 +31,20 @@ const querySchema = z.object({
  * @throws 500 - Internal server error
  */
 export async function GET(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   // Check for authorization header
-  const authHeader = req.headers.get("authorization");
+  const authHeader = request.headers.get("authorization");
+
   try {
-    const user = await verifyRequestToken(authHeader ?? "");
-    if (!user) throw new Error("Invalid token");
+    if (authHeader) {
+      const user = await verifyRequestToken(authHeader ?? "");
+      if (!user) throw new Error("Invalid token");
+    } else {
+      const user = await requireAuth();
+      if (user instanceof NextResponse) throw new Error("Unauthorized");
+    }
   } catch {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
@@ -52,7 +59,7 @@ export async function GET(
 
   // Validate query parameters
 
-  const searchParams = req.nextUrl.searchParams;
+  const searchParams = request.nextUrl.searchParams;
   const parseResult = querySchema.safeParse({
     orderBy: searchParams.get("orderBy") ?? undefined,
     order: searchParams.get("order") ?? undefined,
