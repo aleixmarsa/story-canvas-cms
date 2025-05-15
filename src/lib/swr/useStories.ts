@@ -17,7 +17,7 @@ export function useStories(): {
   mutate: KeyedMutator<Response>;
 } {
   const { data, error, isLoading, mutate } = useSWR<Response>(
-    "/api/draft/stories",
+    "/api/stories/draft",
     fetcher,
     {
       revalidateOnFocus: false,

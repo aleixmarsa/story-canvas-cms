@@ -12,7 +12,7 @@ export function useSections(storyId?: number) {
   const shouldFetch = typeof storyId === "number";
 
   const { data, error, isLoading, mutate } = useSWR<Response>(
-    shouldFetch ? `/api/draft/stories/${storyId}/sections` : null,
+    shouldFetch ? `/api/stories/draft/${storyId}/sections` : null,
     fetcher,
     {
       revalidateOnFocus: false,
