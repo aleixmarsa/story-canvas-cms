@@ -10,12 +10,12 @@ const fetcher = (url: string): Promise<Response> =>
     return res.json();
   });
 
-export function useStories(): {
+export const useStories = (): {
   stories: StoryDraftMetadata[];
   isLoading: boolean;
   isError: boolean;
   mutate: KeyedMutator<Response>;
-} {
+} => {
   const { data, error, isLoading, mutate } = useSWR<Response>(
     "/api/stories/draft",
     fetcher,
@@ -31,4 +31,4 @@ export function useStories(): {
     isError: !!error,
     mutate,
   };
-}
+};

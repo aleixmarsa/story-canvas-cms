@@ -81,7 +81,9 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
 
         mutateStories(
           (prev) =>
-            prev ? [...prev, newStoryWithSections] : [newStoryWithSections],
+            prev && Array.isArray(prev)
+              ? [...prev, newStoryWithSections]
+              : [newStoryWithSections],
           { revalidate: false }
         );
         reset();
