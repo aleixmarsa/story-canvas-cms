@@ -32,7 +32,7 @@ StoryCanvas exposes a headless API.
 
 ### Available Endpoints
 
-- `GET /api/auth/token`  
+- `POST /api/auth/token`  
   Get an authentication token (JWT) to access protected routes.
 
 - `GET /api/stories`  
