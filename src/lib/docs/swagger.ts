@@ -8,7 +8,7 @@ export const getApiDocs = async () => {
     definition: {
       openapi: "3.0.0",
       info: {
-        title: "Story Canvas API",
+        title: "StoryCanvas API",
         version: "1.0",
       },
       components: {
