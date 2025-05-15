@@ -105,5 +105,15 @@ export async function verifyRequestToken(authHeader: string | null) {
     throw new Error("Missing or malformed Authorization header");
   }
   const token = authHeader.split(" ")[1];
-  return decrypt(token);
+  const payload = await decrypt(token);
+  if (!payload) {
+    throw new Error("Invalid token");
+  }
+
+  const { expiresAt } = payload;
+  if (new Date(expiresAt) < new Date()) {
+    throw new Error("Token expired");
+  }
+
+  return payload;
 }
