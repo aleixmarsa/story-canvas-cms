@@ -68,9 +68,9 @@ git clone https://github.com/aleixmarsa/story-canvas-cms
 cd story-canvas
 ```
 
-#### 2. Configure .env.docker
+#### 2. Configure .env.docker (Optional)
 Add your Cloudinary variables to the `.env.docker` file (copy from `.env.example`) for the full experience.  
-If no Cloudinary variables are provided, image inputs in the section forms will fall back to simple URL inputs.
+> If no Cloudinary variables are provided, image inputs in the section forms will fall back to simple URL inputs.
 ```env
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=...
 NEXT_PUBLIC_CLOUDINARY_API_KEY=...
@@ -101,7 +101,7 @@ cd story-canvas
 
 #### 2. Set up environment variables
 Create a .env file by copying the example:
-If no Cloudinary variables are provided, image inputs in the section forms will fall back to simple URL inputs.
+> If no Cloudinary variables are provided, image inputs in the section forms will fall back to simple URL inputs.
 ```env
 DATABASE_URL=...
 
