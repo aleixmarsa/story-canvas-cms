@@ -48,6 +48,16 @@ services:
       - .env.docker
     networks:
       - story-canvas-network
+  docusaurus:
+    build:
+      context: ./docs
+      target: dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./docs:/opt/docusaurus
+    networks:
+      - story-canvas-network
 volumes:
   postgres_data:
 networks:
