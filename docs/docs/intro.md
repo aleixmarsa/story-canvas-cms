@@ -1,52 +1,72 @@
-# Benvingut a StoryCanvas
+---
+sidebar_position: 1
+title: Introduction
+---
 
-**StoryCanvas** és un CMS capçalera (headless CMS) pensat per crear històries digitals riques i interactives. Està optimitzat per periodisme visual, storytelling corporatiu i projectes educatius, amb suport per seccions modulars, animacions i gràfiques.
+# Welcome to StoryCanvas
+
+**StoryCanvas** is a modular, animation-ready and developer-friendly headless CMS designed for building structured, rich digital stories.
+
+It empowers editors, designers, and developers to create immersive stories using flexible section types, custom layouts, scroll-triggered animations, and media integration — all while keeping full control over versioning, publishing workflows, and API delivery.
 
 ---
 
-## ✨ Característiques principals
+## Key Features
 
-- ✅ Editor de seccions modular
-- ✍️ Contingut amb estats de *draft* i *publicat*
-- 📊 Suport per gràfiques i imatges
-- 🎞️ Animacions amb GSAP
-- 🔐 Autenticació per rols
-- ⚙️ API REST pública per accedir al contingut publicat
-
----
-
-## 🚀 Com començar
-
-1. **Accedeix al dashboard:**  
-   Entra a `/admin/dashboard` amb les teves credencials.
-
-2. **Crea una nova història:**  
-   A la sidebar, prem `Nova història` i omple els camps bàsics.
-
-3. **Afegeix seccions:**  
-   Un cop creada, pots afegir seccions visuals: text, imatges, gràfiques, vídeos, etc.
-
-4. **Previsualitza en temps real:**  
-   Fes clic a "Preview" per veure com es veurà la història abans de publicar-la.
-
-5. **Publica la història:**  
-   Quan estigui llesta, publica-la perquè sigui visible a la part pública.
+- **Modular section system** – mix and match blocks like text, images, videos, charts, or custom visuals.
+- **Animation support** – bring your content to life using scroll-based triggers using [GSAP](https://gsap.com/).
+- **Content versioning** – keep draft and published versions separate with one-click publishing.
+- **Headless API** – access published content through a clean RESTful API.
+- **Cloudinary media integration** – upload, preview, and reuse images and videos easily. 
+- **Live preview system** – preview stories as you build them.
 
 ---
 
-## 📚 Exemples de dades
+## Getting Started
 
-```json
-{
-  "title": "L'escalfament global des de 1980",
-  "sections": [
-    {
-      "type": "chart",
-      "data": [
-        { "year": 1980, "temperature": 24.1 },
-        { "year": 1990, "temperature": 25.0 },
-        { "year": 2000, "temperature": 26.3 }
-      ]
-    }
-  ]
-}
+To start using StoryCanvas:
+
+1. **Access the dashboard**  
+   Visit `/admin/dashboard` and log in with your credentials.
+
+2. **Navigate to the stories section**
+   From the sidebar, click on `Stories`, or use the shortcut card on the dashboard homepage.
+   This will take you to `/admin/dashboard/stories`.
+3. **Create a new story**  
+   Click `New Story`, fill in the title and metadata.
+
+4. **Add sections**  
+   Choose from section types like text, image, chart, video, or custom layouts.
+
+5. **Preview in real time**  
+   Click the `Preview` button to open a live rendering of your story.
+
+6. **Publish**  
+   When ready, publish the story — published content becomes available via the API.
+
+## Explore the Docs
+
+Whether you're an editor, administrator, or developer, here are some good places to start:
+
+- **Developers**
+  - [Installation Guide](./installation)
+  - [API Reference](./api-reference)
+
+- **Editors**
+  - [Editing Stories](./edit-story)
+  - [Adding Sections](./create-section)
+  - [Editing Sections](./edit-section)
+  - [Deleting Sections](./delete-section)
+  - [Live Preview](./preview)
+  - [Publishing Stories & Sections](./publish)
+
+- **Administrators**
+  - [Creating Stories](./create-story)
+  - [Editing Stories](./edit-story)
+  - [Deleting Stories](./delete-story)
+  - [Adding Sections](./create-section)
+  - [Editing Sections](./edite-section)
+  - [Deleting Sections](./delete-section)
+  - [User Management](./users)
+  - [Live Preview](./preview)
+  - [Publishing Stories & Sections](./publish)
