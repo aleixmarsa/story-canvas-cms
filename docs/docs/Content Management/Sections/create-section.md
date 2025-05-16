@@ -78,7 +78,7 @@ Configure optional animations:
 
 ## Live Preview
 
-While creating, the section is rendered in real time using the [Live Preview](./preview) 
+While creating, the section is rendered in real time using the [Live Preview](../preview) 
 - Live preview panel can be shown/hided using the show/hide button at the top right.
 - Changes are reflected instantly as you fill in the form.
 - This allows testing of layout, animation, and style without publishing.
