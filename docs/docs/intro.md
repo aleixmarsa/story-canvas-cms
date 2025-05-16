@@ -43,30 +43,3 @@ To start using StoryCanvas:
 
 6. **Publish**  
    When ready, publish the story — published content becomes available via the API.
-
-## Explore the Docs
-
-Whether you're an editor, administrator, or developer, here are some good places to start:
-
-- **Developers**
-  - [Installation Guide](./installation)
-  - [API Reference](./api-reference)
-
-- **Editors**
-  - [Editing Stories](./edit-story)
-  - [Adding Sections](./create-section)
-  - [Editing Sections](./edit-section)
-  - [Deleting Sections](./delete-section)
-  - [Live Preview](./preview)
-  - [Publishing Stories & Sections](./publish)
-
-- **Administrators**
-  - [Creating Stories](./create-story)
-  - [Editing Stories](./edit-story)
-  - [Deleting Stories](./delete-story)
-  - [Adding Sections](./create-section)
-  - [Editing Sections](./edite-section)
-  - [Deleting Sections](./delete-section)
-  - [User Management](./users)
-  - [Live Preview](./preview)
-  - [Publishing Stories & Sections](./publish)
