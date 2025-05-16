@@ -8,6 +8,7 @@ import { CurrentUser } from "@/types/auth";
 import { useDashboardStore } from "@/stores/dashboard-store";
 import { toast } from "sonner";
 import { ROUTES } from "@/lib/constants/story-canvas";
+import { Role } from "@prisma/client";
 
 const UsersTableWrapper = ({
   users,
@@ -22,6 +23,8 @@ const UsersTableWrapper = ({
     deleteUser: deleteUserFromStore,
     addUser,
   } = useDashboardStore();
+
+  const isAdmin = currentUser.role === Role.ADMIN;
 
   useEffect(() => {
     setUsers(users);
@@ -57,12 +60,19 @@ const UsersTableWrapper = ({
 
   return (
     <div className="px-4 md:px-6">
-      <DataTable
-        columns={columns(currentUser, handleDelete)}
-        data={zustandUsers}
-        addHref={ROUTES.newUser}
-        addButtonLabel="New User"
-      />
+      {isAdmin ? (
+        <DataTable
+          columns={columns(currentUser, handleDelete)}
+          data={zustandUsers}
+          addHref={ROUTES.newUser}
+          addButtonLabel="New User"
+        />
+      ) : (
+        <DataTable
+          columns={columns(currentUser, handleDelete)}
+          data={zustandUsers}
+        />
+      )}
     </div>
   );
 };
