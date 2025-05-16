@@ -28,7 +28,7 @@
 StoryCanvas exposes a headless API.
 
 > Explore the Swagger API documentation:  
-> [`http://localhost:3000/api-doc`](http://localhost:3000/api-doc)
+> [`http://localhost:3000/api-docs`](http://localhost:3000/api-docs)
 
 ### Available Endpoints
 
