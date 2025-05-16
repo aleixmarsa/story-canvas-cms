@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollText, User2 } from "lucide-react";
+import { ScrollText, User2, BookOpen, FileCode } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { NavUser } from "@/components/storyCanvas/dashboard/NavUser";
@@ -23,7 +23,7 @@ import { CurrentUser } from "@/types/auth";
 import { logout } from "@/lib/actions/auth/login";
 import { LogOut } from "lucide-react";
 import { useStories } from "@/lib/swr/useStories";
-
+import { Separator } from "@/components/ui/separator";
 export function DashboardSidebar({
   user,
   ...props
@@ -101,6 +101,29 @@ export function DashboardSidebar({
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <Separator className="my-2" />
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip={"Swagger"}>
+                <Link href={ROUTES.swagger} className="font-medium">
+                  <FileCode className="h-4 w-4" />
+                  Swagger
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            {process.env.NEXT_PUBLIC_DOCS_URL && (
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={"Documentation"}>
+                  <a
+                    href={process.env.NEXT_PUBLIC_DOCS_URL}
+                    target="_blank"
+                    className="font-medium"
+                  >
+                    <BookOpen className="h-4 w-4" />
+                    Documentation
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
