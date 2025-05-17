@@ -54,9 +54,6 @@ const CreateStoryForm = forwardRef<HTMLFormElement, CreateStoryFormProps>(
         formData.append("slug", data.slug);
         formData.append("createdBy", data.createdBy);
         formData.append("description", data.description || "");
-        formData.append("theme", data.theme || "");
-        formData.append("components", JSON.stringify(data.components || []));
-        formData.append("content", JSON.stringify(data.content || []));
 
         const result = await createStory(formData);
 

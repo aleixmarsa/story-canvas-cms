@@ -26,6 +26,9 @@ export const getAllStories = async ({
       publishedVersion: true,
       sections: includeSections
         ? {
+            where: {
+              deletedAt: null,
+            },
             include: {
               currentDraft: true,
               publishedVersion: true,
@@ -36,6 +39,9 @@ export const getAllStories = async ({
 
     orderBy: {
       [orderBy]: order,
+    },
+    where: {
+      deletedAt: null,
     },
   });
 };
@@ -55,12 +61,15 @@ export const getStory = async ({
   includeVersions?: boolean;
 }) => {
   const story = await prisma.story.findUnique({
-    where: { id: storyId },
+    where: { id: storyId, deletedAt: null },
     include: {
       currentDraft: true,
       publishedVersion: true,
       sections: includeSections
         ? {
+            where: {
+              deletedAt: null,
+            },
             include: {
               currentDraft: true,
               publishedVersion: true,
@@ -81,7 +90,7 @@ export const getStory = async ({
  */
 export const getStoryWithSectionsAndVersions = async (storyId: number) => {
   const story = await prisma.story.findUnique({
-    where: { id: storyId },
+    where: { id: storyId, deletedAt: null },
     include: {
       versions: true,
       sections: {
@@ -96,13 +105,13 @@ export const getStoryWithSectionsAndVersions = async (storyId: number) => {
 };
 
 /**
- * Deletes a story and all its related sections and versions.
+ * Hard deletes a story and all its related sections and versions.
  *
  * @param storyId - The ID of the story to delete.
  * @returns A transaction that removes all linked data (section versions, sections, story versions, story).
  * @throws Prisma.PrismaClientKnownRequestError if any deletion fails.
  */
-export const deleteStoryAndRelated = async (storyId: number) => {
+export const hardDeleteStoryAndRelated = async (storyId: number) => {
   return prisma.$transaction([
     prisma.sectionVersion.deleteMany({
       where: {
@@ -117,6 +126,37 @@ export const deleteStoryAndRelated = async (storyId: number) => {
     }),
     prisma.story.delete({
       where: { id: storyId },
+    }),
+  ]);
+};
+
+/**
+ * Soft deletes a story and all its related sections.
+ *
+ * @param storyId - The ID of the story to soft delete.
+ * @returns A transaction that sets `deletedAt` on story and sections.
+ * @throws Prisma.PrismaClientKnownRequestError if the transaction fails.
+ */
+export const softDeleteStoryAndRelated = async (storyId: number) => {
+  const now = new Date();
+
+  return prisma.$transaction([
+    prisma.section.updateMany({
+      where: {
+        storyId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: now,
+      },
+    }),
+    prisma.story.update({
+      where: {
+        id: storyId,
+      },
+      data: {
+        deletedAt: now,
+      },
     }),
   ]);
 };
@@ -140,6 +180,7 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
       where: {
         slug: data.slug,
         storyId: { not: story.id },
+        story: { deletedAt: null },
       },
     });
 
@@ -183,10 +224,14 @@ export async function getDraftStoryBySlug(
       currentDraft: {
         slug,
       },
+      deletedAt: null,
     },
     include: {
       currentDraft: true,
       sections: {
+        where: {
+          deletedAt: null,
+        },
         include: {
           currentDraft: true,
         },
@@ -219,6 +264,7 @@ export const getPublishedSlugs = async () => {
   const publicslugs = await prisma.story.findMany({
     where: {
       publishedVersion: { status: "published" },
+      deletedAt: null,
     },
     select: {
       publicSlug: true,

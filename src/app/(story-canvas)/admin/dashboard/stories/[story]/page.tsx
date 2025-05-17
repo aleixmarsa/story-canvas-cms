@@ -7,7 +7,7 @@ import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
-import { deleteSection } from "@/lib/actions/sections/delete-section";
+import { softDeleteSection } from "@/lib/actions/sections/delete-section";
 import { publishStoryAndSections } from "@/lib/actions/stories/publish-story-and-sections";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { Loader2 } from "lucide-react";
@@ -132,7 +132,7 @@ const StoryPage = () => {
       },
       onAutoClose: async () => {
         // Remove drom DB
-        const res = await deleteSection(section.id);
+        const res = await softDeleteSection(section.id);
         if (!res.success) {
           toast.error("Failed to delete section");
           mutateSections(

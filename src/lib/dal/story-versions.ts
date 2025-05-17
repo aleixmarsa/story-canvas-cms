@@ -25,6 +25,9 @@ export const checkSlugConflictAcrossStories = async (
       storyId: {
         not: currentStoryId,
       },
+      story: {
+        deletedAt: null, // Checks only against non-deleted stories
+      },
     },
   });
 

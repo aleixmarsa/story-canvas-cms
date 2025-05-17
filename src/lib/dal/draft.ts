@@ -32,6 +32,9 @@ export const getAllStoriesWithCurrentDraftMetadata = async ({
       },
       sections: includeSections
         ? {
+            where: {
+              deletedAt: null,
+            },
             include: {
               currentDraft: true,
               publishedVersion: true,
@@ -44,6 +47,7 @@ export const getAllStoriesWithCurrentDraftMetadata = async ({
     },
     where: {
       currentDraftId: { not: null },
+      deletedAt: null,
     },
   });
 
@@ -66,7 +70,8 @@ export const getDraftSectionsById = async ({
   const sections = await prisma.section.findMany({
     where: {
       storyId,
-      currentDraftId: { not: null }, // Ens assegurem que en tinguin
+      currentDraftId: { not: null },
+      deletedAt: null,
     },
     include: {
       currentDraft: true,
@@ -107,7 +112,7 @@ export type SectionDraftMetadata = Awaited<
  */
 export const getDraftStoryByStoryId = async (id: number) => {
   return prisma.story.findUnique({
-    where: { id: id },
+    where: { id: id, deletedAt: null },
     include: {
       currentDraft: true,
       sections: {

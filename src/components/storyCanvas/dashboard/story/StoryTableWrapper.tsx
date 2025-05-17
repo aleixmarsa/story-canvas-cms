@@ -5,13 +5,14 @@ import DataTable from "../DataTable/DataTable";
 import { CurrentUser } from "@/types/auth";
 import { toast } from "sonner";
 import { StoryDraftMetadata } from "@/lib/dal/draft";
-import { deleteStory } from "@/lib/actions/stories/delete-story";
+import { softDeleteStory } from "@/lib/actions/stories/delete-story";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { Role } from "@prisma/client";
 import { useStories, Response } from "@/lib/swr/useStories";
 import { createTemplateStory } from "@/lib/actions/stories/create-template-story";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
   const { stories, mutate, isLoading, isError } = useStories();
@@ -50,7 +51,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
       },
       onAutoClose: async () => {
         // Remove from DB
-        const res = await deleteStory(story.id);
+        const res = await softDeleteStory(story.id);
         if (!res.success) {
           toast.error("Failed to delete story");
           // Add back in case of error
@@ -96,24 +97,23 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           data={stories}
           getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
           addHref={ROUTES.newStory}
-          addButtonLabel="New Story"
+          addButtonLabel="New Empty Story"
           dataIsLoading={isLoading}
           dataFetchingError={isError}
           customHeaderMessage={
-            isCreatingTemplate ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <span className="text-sm text-muted-foreground">
-                You can{" "}
-                <button
-                  onClick={handleCreateTemplate}
-                  className="text-sm text-primary underline"
-                >
-                  generate story template
-                </button>{" "}
-                automatically.
-              </span>
-            )
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-[36px]"
+              onClick={handleCreateTemplate}
+            >
+              {isCreatingTemplate ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4 mr-1" />
+              )}
+              Generate Story Template
+            </Button>
           }
         />
       ) : (

@@ -256,8 +256,9 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
             className="max-w-sm"
           />
         )}
-        {customHeaderMessage}
+
         <div className="flex items-center gap-2 ml-auto">
+          {customHeaderMessage}
           {(addHref || onAddClick) &&
             addButtonLabel &&
             (addHref ? (

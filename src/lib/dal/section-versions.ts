@@ -26,7 +26,7 @@ export const updateSectionVersionById = async (
   data: UpdateSectionVersion
 ) => {
   return prisma.sectionVersion.update({
-    where: { id: versionId },
+    where: { id: versionId, section: { deletedAt: null } },
     data,
   });
 };

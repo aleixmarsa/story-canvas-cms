@@ -13,7 +13,7 @@ export const updateSectionVersionOrders = async (
     await Promise.all(
       updates.map(({ versionId, order }) =>
         prisma.sectionVersion.update({
-          where: { id: versionId },
+          where: { id: versionId, section: { deletedAt: null } },
           data: { order },
         })
       )
