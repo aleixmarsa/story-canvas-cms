@@ -6,10 +6,7 @@ describe("videoSectionSchema", () => {
     name: "Video Section",
     createdBy: "Author",
     title: "Presentation Video",
-    video: {
-      url: "https://example.com/video.mp4",
-      publicId: "videos/intro",
-    },
+    url: "https://example.com/video.mp4",
   };
 
   it("passes with valid input", () => {
@@ -35,29 +32,14 @@ describe("videoSectionSchema", () => {
     );
   });
 
-  it("fails if video.url is invalid", () => {
+  it("fails if video url is invalid", () => {
     const result = videoSectionSchema.safeParse({
       ...baseValid,
-      video: {
-        ...baseValid.video,
-        url: "not-a-url",
-      },
+      video: "invalid-url",
     });
     expect(result.success).toBe(false);
-    expect(result.error?.format().video?.url?._errors).toContain(
-      "Invalid image URL"
-    );
-  });
-
-  it("fails if video.publicId is missing", () => {
-    const { publicId, ...rest } = baseValid.video;
-    const result = videoSectionSchema.safeParse({
-      ...baseValid,
-      video: rest,
-    });
-    expect(result.success).toBe(false);
-    expect(result.error?.format().video?.publicId?._errors).toContain(
-      "Required"
+    expect(result.error?.format().video?._errors).toContain(
+      "Invalid video URL"
     );
   });
 
