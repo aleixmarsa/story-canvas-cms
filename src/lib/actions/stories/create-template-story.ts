@@ -30,7 +30,7 @@ export const createTemplateStory = async (formData: FormData) => {
       type: "TITLE",
       createdBy: createdBy,
       content: {
-        text: '<h1><span style="color: rgb(255, 255, 255);">Welcome to</span><span style="color: rgb(255, 255, 102);"> your new story</span></h1>',
+        text: '<h1><span style="color: rgb(255, 255, 255);">Welcome to</span><span style="color: rgb(242, 208, 87);"> your new story</span></h1>',
         textPadding: { top: 0, left: 0, right: 0, bottom: 0 },
         scrollTrigger: { end: "none", start: "none" },
         sectionLayout: {
@@ -184,14 +184,59 @@ export const createTemplateStory = async (formData: FormData) => {
           animationType: "slide-left",
         },
         sectionPadding: {
+          top: 24,
+          left: 0,
+          right: 0,
+          bottom: 24,
+        },
+        sectionBackground: {
+          size: "cover",
+          color: "#FFFFFF",
+          position: "center",
+        },
+      },
+    },
+    {
+      storyId: story.id,
+      name: "Call to Action",
+      type: "CALL_TO_ACTION",
+      createdBy: createdBy,
+      content: {
+        url: "https://www.uoc.edu",
+        label: "Visit Website",
+        button: {
+          labelSize: 16,
+          labelColor: "#000000",
+          buttonColor: "#f2d057",
+          buttonBorderRadius: 5,
+        },
+        newTab: true,
+        buttonPadding: {
+          top: 8,
+          left: 24,
+          right: 24,
+          bottom: 8,
+        },
+        sectionLayout: {
+          height: "auto",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        sectionMargin: {
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
         },
+        sectionPadding: {
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 24,
+        },
         sectionBackground: {
           size: "cover",
-          color: "#FFFFFF",
+          color: "#ffffff",
           position: "center",
         },
       },
@@ -218,7 +263,7 @@ export const createTemplateStory = async (formData: FormData) => {
         sectionLayout: {
           height: "auto",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
         },
         sectionMargin: {
           top: 0,
@@ -245,9 +290,7 @@ export const createTemplateStory = async (formData: FormData) => {
           animationType: "fade",
         },
         sectionBackground: {
-          size: "cover",
-          color: "#ffffff",
-          position: "center",
+          color: "#f7f7f7",
         },
       },
     },
