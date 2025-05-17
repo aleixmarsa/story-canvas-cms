@@ -46,3 +46,19 @@ export const normalizeLinks = (html: string): string => {
     return match.replace(href, normalized);
   });
 };
+
+export const isYouTubeUrl = (url: string) =>
+  /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(url);
+
+export const isVimeoUrl = (url: string) =>
+  /^(https?:\/\/)?(www\.)?vimeo\.com\//.test(url);
+
+export const getYouTubeEmbedUrl = (url: string) => {
+  const videoId = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/)?.[1];
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+};
+
+export const getVimeoEmbedUrl = (url: string) => {
+  const videoId = url.match(/vimeo\.com\/(\d+)/)?.[1];
+  return videoId ? `https://player.vimeo.com/video/${videoId}` : null;
+};
