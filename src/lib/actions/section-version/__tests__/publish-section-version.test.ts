@@ -62,6 +62,7 @@ describe("publishSection", () => {
       storyId: 1,
       currentDraftId: 10,
       publishedVersionId: 9,
+      deletedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       publishedAt: new Date(),
