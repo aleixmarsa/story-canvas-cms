@@ -25,8 +25,14 @@ const Home = () => {
             stories and customizable sections.
           </p>
           <p>
-            Get started by creating your first user and begin crafting your
-            stories!
+            Get started by{" "}
+            <a
+              href={ROUTES.createInitalUser}
+              className="underline cursor-pointer"
+            >
+              creating your first user
+            </a>{" "}
+            and begin crafting your stories!
           </p>
           <Button asChild size="lg" className="w-full sm:w-auto">
             <a href={ROUTES.login}>Go to dashboard</a>
