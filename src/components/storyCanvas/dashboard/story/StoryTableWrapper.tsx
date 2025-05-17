@@ -11,7 +11,7 @@ import { Role } from "@prisma/client";
 import { useStories, Response } from "@/lib/swr/useStories";
 import { createTemplateStory } from "@/lib/actions/stories/create-template-story";
 import { useState } from "react";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, WandSparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
@@ -97,7 +97,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
           data={stories}
           getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
           addHref={ROUTES.newStory}
-          addButtonLabel="New Empty Story"
+          addButtonLabel="New Story"
           dataIsLoading={isLoading}
           dataFetchingError={isError}
           customHeaderMessage={
@@ -110,9 +110,11 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
               {isCreatingTemplate ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                <Plus className="w-4 h-4 mr-1" />
+                <WandSparkles className="w-4 h-4 mr-1" />
               )}
-              Generate Story Template
+              <span>
+                <span className="hidden md:inline">From </span>Template
+              </span>
             </Button>
           }
         />

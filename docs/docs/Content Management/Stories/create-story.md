@@ -26,10 +26,10 @@ At the top, you'll find two buttons:
 - **`New Story`**:  
   Opens a blank form to manually define the story metadata (title, slug, etc.)
 
-- **`Generate Story Template`**:  
-  Automatically creates a new story with predefined structure and several ready-to-edit sections (e.g., intro, chart, media).  
+- **`From Template`**:  
+  Automatically creates a new story with predefined structure and several ready-to-edit sections (e.g., title, chart, image).  
   Ideal for quickly starting with a layout example.
-
+  
 ---
 
 ### 3. Fill in story details
@@ -44,7 +44,7 @@ Complete the form fields:
 
 ### 4. Create the story
 
-Click the `Save draft` button.  
+Click the `Save Draft` button.  
 You’ll be redirected to the story page, where you can begin adding sections.
 
 ---

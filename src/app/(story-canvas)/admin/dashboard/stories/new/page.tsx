@@ -19,6 +19,7 @@ const NewStoryPage = () => {
           { label: "Stories", href: ROUTES.stories },
         ]}
         onSaveDraft={() => formRef.current?.requestSubmit()}
+        customSaveLabel="Create Story"
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
       />

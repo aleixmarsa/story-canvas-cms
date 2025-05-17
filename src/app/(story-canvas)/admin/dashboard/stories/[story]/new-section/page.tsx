@@ -45,6 +45,7 @@ const NewSectionPage = () => {
           },
         ]}
         onSaveDraft={handleSaveDraft}
+        customSaveLabel="Create Section"
         saveDisabled={!formIsDirty}
         isSaving={formIsSubmitting}
         onTogglePreview={handleTogglePreview}

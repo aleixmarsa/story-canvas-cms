@@ -119,7 +119,7 @@ const DashboardHeader = ({
                   <span>{customSaveLabel}</span>
                 ) : (
                   <span>
-                    Save<span className="hidden md:inline"> draft</span>
+                    Save<span className="hidden md:inline"> Draft</span>
                   </span>
                 )}
               </Button>

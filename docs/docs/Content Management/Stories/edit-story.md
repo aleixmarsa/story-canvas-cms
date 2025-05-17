@@ -41,7 +41,7 @@ You can update:
 - **Slug**
 - **Created by**
 
-Save changes by clicking  `Save draft` button in the header.
+Save changes by clicking  `Save Draft` button in the header.
 Or publish them by clicking `Publish Story Metadata`
 
 ---
