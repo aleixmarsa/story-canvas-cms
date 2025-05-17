@@ -144,11 +144,7 @@ export const createTemplateStory = async (formData: FormData) => {
         alt: "Flooded houses",
         body: "<p>This is also a <strong>paragraph</strong> block, but enriched with an image. Combining text with visuals helps emphasize key ideas, illustrate concepts or add emotional impact. Use this format when you want to reinforce your message or break up long passages of text with visual storytelling.</p>",
         image: TEMPLATE_IMAGE,
-        layout: "left",
         caption: "<p>Flooded houses in Barcelona</p>",
-        imageSize: {
-          height: 0,
-        },
         scrollTrigger: {
           start: "bottom bottom",
           end: "50% 50%",
@@ -165,11 +161,21 @@ export const createTemplateStory = async (formData: FormData) => {
           right: 0,
           bottom: 0,
         },
+        contentLayout: {
+          direction: "row",
+          order: "text",
+          justifyContent: "justify-between",
+          alignItems: "items-center",
+        },
+        imageSize: {
+          width: 350,
+          height: 300,
+        },
         textAnimation: {
           delay: 0.2,
           easing: "none",
           duration: 0.7,
-          animationType: "fade",
+          animationType: "slide-right",
         },
         imageAnimation: {
           delay: 0,
@@ -186,6 +192,61 @@ export const createTemplateStory = async (formData: FormData) => {
         sectionBackground: {
           size: "cover",
           color: "#FFFFFF",
+          position: "center",
+        },
+      },
+    },
+    {
+      storyId: story.id,
+      name: "Video",
+      type: "VIDEO",
+      createdBy: createdBy,
+      content: {
+        title: "<h3>Watch and experience</h3>",
+        video: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+        videoSize: {
+          width: 200,
+          height: 400,
+        },
+        description:
+          "<p><strong>Videos</strong> add depth to your story by bringing motion and sound into the narrative. Whether it's an interview, a documentary clip, or a cinematic moment, video allows your audience to connect emotionally and contextually in ways that text and images alone cannot.</p>",
+        scrollTrigger: {
+          end: "50% 50%",
+          scrub: "true",
+          start: "50% bottom",
+        },
+        sectionLayout: {
+          height: "auto",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        sectionMargin: {
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        },
+        textAnimation: {
+          delay: 0,
+          easing: "none",
+          duration: 0.7,
+          animationType: "slide-right",
+        },
+        sectionPadding: {
+          top: 40,
+          left: 0,
+          right: 0,
+          bottom: 40,
+        },
+        videoAnimation: {
+          delay: 0,
+          easing: "none",
+          duration: 0.7,
+          animationType: "fade",
+        },
+        sectionBackground: {
+          size: "cover",
+          color: "#ffffff",
           position: "center",
         },
       },
