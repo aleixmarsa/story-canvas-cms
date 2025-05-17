@@ -6,6 +6,7 @@ import { imageSectionSchemaWithUI } from "./ui/sections/image-section-ui";
 import { videoSectionSchemaWithUI } from "./ui/sections/video-section-ui";
 import { paragraphAndImageSectionSchemaWithUI } from "./ui/sections/paragraph-and-image-section-ui";
 import { chartSectionSchemaWithUI } from "./ui/sections/chart-section-schema-ui";
+import { callToActionSectionSchemaWithUI } from "./ui/sections/call-to-action-ui";
 
 //Schemas
 import { TitleSectionSchema } from "./validation/sections/title-section-schema";
@@ -14,6 +15,7 @@ import { ImageSectionSchema } from "./validation/sections/image-section-schema";
 import { VideoSectionSchema } from "./validation/sections/video-section-schema";
 import { ParagraphAndImageSectionSchema } from "./validation/sections/paragraph-and-image-section-schema";
 import { ChartSectionSchema } from "./validation/sections/chart-section-schema";
+import { CallToActionSectionSchema } from "./validation/sections/call-to-action-schema";
 
 //Props
 import { TitleSectionProps } from "./validation/sections/title-section-schema";
@@ -22,6 +24,7 @@ import { ImageSectionProps } from "./validation/sections/image-section-schema";
 import { VideoSectionProps } from "./validation/sections/video-section-schema";
 import { ParagraphAndImageSectionProps } from "./validation/sections/paragraph-and-image-section-schema";
 import { ChartSectionProps } from "./validation/sections/chart-section-schema";
+import { CallToActionSectionProps } from "./validation/sections/call-to-action-schema";
 
 export type SectionSchemas =
   | TitleSectionSchema
@@ -29,7 +32,8 @@ export type SectionSchemas =
   | ImageSectionSchema
   | VideoSectionSchema
   | ParagraphAndImageSectionSchema
-  | ChartSectionSchema;
+  | ChartSectionSchema
+  | CallToActionSectionSchema;
 
 export type SectionSchemasWithUI =
   | typeof titleSectionSchemaWithUI
@@ -37,7 +41,8 @@ export type SectionSchemasWithUI =
   | typeof imageSectionSchemaWithUI
   | typeof videoSectionSchemaWithUI
   | typeof paragraphAndImageSectionSchemaWithUI
-  | typeof chartSectionSchemaWithUI;
+  | typeof chartSectionSchemaWithUI
+  | typeof callToActionSectionSchemaWithUI;
 
 export const sectionCategoriesSchemasWithUI: Record<
   string,
@@ -49,6 +54,7 @@ export const sectionCategoriesSchemasWithUI: Record<
   VIDEO: videoSectionSchemaWithUI,
   PARAGRAPH_AND_IMAGE: paragraphAndImageSectionSchemaWithUI,
   CHART: chartSectionSchemaWithUI,
+  CALL_TO_ACTION: callToActionSectionSchemaWithUI,
 };
 export const SectionCategoryEnum = z.enum(
   Object.keys(sectionCategoriesSchemasWithUI) as [
@@ -69,4 +75,5 @@ export type SectionContentByCategory = {
   VIDEO: VideoSectionProps;
   PARAGRAPH_AND_IMAGE: ParagraphAndImageSectionProps;
   CHART: ChartSectionProps;
+  CALL_TO_ACTION: CallToActionSectionProps;
 };
