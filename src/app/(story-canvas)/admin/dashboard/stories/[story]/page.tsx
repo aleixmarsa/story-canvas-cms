@@ -27,6 +27,7 @@ import {
 const StoryPage = () => {
   const { story: storySlug } = useParams();
   const [isPublishing, setIsPublishing] = useState(false);
+  const [formIsSubmitting, setFormIsSubmitting] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const { stories, isLoading: storiesLoading } = useStories();
   const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
@@ -158,6 +159,7 @@ const StoryPage = () => {
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
   const handleSaveDraft = async () => {
+    setFormIsSubmitting(true);
     if (!sections) {
       toast.error("No sections found");
       return;
@@ -175,6 +177,7 @@ const StoryPage = () => {
     } else {
       toast.success("Order saved successfully");
     }
+    setFormIsSubmitting(false);
   };
 
   const handlePublishSection = async (currentDraftId: number | undefined) => {
@@ -217,6 +220,7 @@ const StoryPage = () => {
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
         isPublishing={isPublishing}
+        isSaving={formIsSubmitting}
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
         onSaveDraft={handleSaveDraft}
