@@ -46,26 +46,6 @@ describe("paragraphAndimageSectionSchema", () => {
     );
   });
 
-  it("fails if layout is missing", () => {
-    const { layout, ...rest } = baseValid;
-    const result = paragraphAndimageSectionSchema.safeParse(rest);
-    expect(result.success).toBe(false);
-    expect(result.error?.format().layout?._errors).toContain(
-      "You need to select a layout."
-    );
-  });
-
-  it("fails if layout is invalid", () => {
-    const result = paragraphAndimageSectionSchema.safeParse({
-      ...baseValid,
-      layout: "center", // not in enum
-    });
-    expect(result.success).toBe(false);
-    expect(result.error?.format().layout?._errors?.[0]).toMatch(
-      /You need to select a layout/
-    );
-  });
-
   it("fails if image.url is invalid", () => {
     const result = paragraphAndimageSectionSchema.safeParse({
       ...baseValid,

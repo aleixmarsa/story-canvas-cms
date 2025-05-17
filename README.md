@@ -6,7 +6,7 @@
 
 ## Live Demo
 
-> Coming soon — deployed on Vercel or self-hostable via Docker.
+[StoryCanvas deployed in Vercel](https://story-canvas-cms.vercel.app/)
 
 ---
 
@@ -20,6 +20,12 @@
 - **Media**: Cloudinary integration for image/video uploads
 - **Testing**: Jest (unit), Playwright (E2E)
 - **Infrastructure**: Docker + Docker Compose
+
+---
+
+## Architecture
+
+![Architecture](./public/architecture.png)
 
 ---
 

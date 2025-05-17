@@ -60,7 +60,7 @@ const LivePreviewPanel = ({ slug, draftSection }: LivePreviewPanelProps) => {
   const zoomScale = zoom / 100;
 
   return (
-    <div className="flex flex-col border rounded-md ">
+    <div className="flex flex-col border rounded-md max-h-full mb-8 md:max-h-[85vh]">
       <div className="flex items-center justify-between py-2 px-4 border-b bg-muted/40">
         <div className="flex items-center gap-2.5">
           <Select

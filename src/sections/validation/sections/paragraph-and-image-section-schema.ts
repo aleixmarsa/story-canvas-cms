@@ -12,11 +12,27 @@ export const paragraphAndimageSectionSchema = baseFields.extend({
   image: mediaFieldSchema,
   alt: z.string().optional(),
   caption: z.string().optional(),
-  layout: z.enum(["left", "right"], {
-    errorMap: () => ({ message: "You need to select a layout." }),
-  }),
+
   // STYLE
   ...stylesFieldsSchema,
+  contentLayout: z
+    .object({
+      direction: z.enum(["row", "column"]).optional(),
+      order: z.enum(["image", "text"]).optional(),
+      justifyContent: z
+        .enum([
+          "justify-start",
+          "justify-center",
+          "justify-end",
+          "justify-between",
+          "justify-around",
+        ])
+        .optional(),
+      alignItems: z
+        .enum(["items-start", "items-center", "items-end"])
+        .optional(),
+    })
+    .optional(),
   imageSize: z
     .object({
       width: numberOrUndefined.optional(),

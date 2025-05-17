@@ -7,6 +7,7 @@ import { ParagraphAndImageSectionProps } from "@/sections/validation/sections/pa
 import RichTextContent from "./fields/RichTextContent";
 import { useGSAP } from "@gsap/react";
 import { applyAnimation } from "@/lib/animations/apply-animation";
+import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,13 +16,14 @@ const ParagraphAndImageSection = ({
   image,
   alt,
   caption,
-  layout,
+  contentLayout,
   imageSize,
   textAnimation,
   imageAnimation,
   scrollTrigger,
 }: ParagraphAndImageSectionProps) => {
-  const isLeft = layout === "left";
+  const isRow = contentLayout?.direction === "row";
+  const imageFirst = contentLayout?.order === "image";
 
   const textRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -64,13 +66,21 @@ const ParagraphAndImageSection = ({
   const imageUrl = typeof image === "string" ? image : image.url;
 
   return (
-    <div className="py-8">
+    <div>
       <div
-        className={`flex flex-col md:flex-row md:justify-between ${
-          isLeft ? "md:flex-row-reverse" : ""
-        } gap-6 items-center`}
+        className={cn(
+          "flex gap-4 flex-col",
+          isRow ? "md:flex-row" : "",
+          imageFirst && isRow && "flex-col-reverse md:flex-row-reverse",
+          imageFirst && !isRow && "flex-col-reverse",
+          contentLayout?.justifyContent,
+          contentLayout?.alignItems
+        )}
       >
-        <div className="shrink-0 w-full md:w-1/2" ref={imageRef}>
+        <div ref={textRef} className="max-w-1/2">
+          <RichTextContent html={body} />
+        </div>
+        <div className="shrink-0 w-fit" ref={imageRef}>
           {image && imageUrl.length !== 0 ? (
             <img
               src={imageUrl}
@@ -83,9 +93,6 @@ const ParagraphAndImageSection = ({
             <></>
           )}
           {caption && <RichTextContent html={caption} />}
-        </div>
-        <div ref={textRef}>
-          <RichTextContent html={body} />
         </div>
       </div>
     </div>

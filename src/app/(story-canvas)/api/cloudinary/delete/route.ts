@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/withAuth";
 import { deleteCloudinaryMedia } from "@/lib/actions/cloudinary/delete-media";
+import { TEMPLATE_IMAGE } from "@/lib/constants/template";
 
 /**
  * POST /api/cloudinary/delete
@@ -18,6 +19,14 @@ export async function POST(req: Request) {
 
   if (!publicId) {
     return NextResponse.json({ error: "Missing publicId" }, { status: 400 });
+  }
+
+  // Prevent deletion of the default template image
+  if (publicId === TEMPLATE_IMAGE) {
+    return NextResponse.json(
+      { error: "Cannot delete the default template image" },
+      { status: 400 }
+    );
   }
 
   try {
