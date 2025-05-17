@@ -33,6 +33,7 @@ model Story {
   lastEditedBy String?
 
   // Timestamps
+  deletedAt DateTime?
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -55,11 +56,6 @@ model StoryVersion {
   slug        String
   createdBy   String
   description String?
-
-  // Visual configuration and layout content
-  theme      Json?
-  components Json?
-  content    Json?
 
   // Version metadata
   status    StoryStatus
@@ -88,6 +84,7 @@ model Section {
   lastEditedBy String?
 
   // Timestamps
+  deletedAt DateTime?
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

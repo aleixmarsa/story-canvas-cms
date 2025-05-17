@@ -7,7 +7,7 @@ import DataTable from "@/components/storyCanvas/dashboard/DataTable/DataTable";
 import { columns } from "@/components/storyCanvas/dashboard/DataTable/SectionDataTableColumns";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
-import { deleteSection } from "@/lib/actions/sections/delete-section";
+import { softDeleteSection } from "@/lib/actions/sections/delete-section";
 import { publishStoryAndSections } from "@/lib/actions/stories/publish-story-and-sections";
 import LivePreviewPanel from "@/components/storyCanvas/dashboard/preview/LivePreviewPanel";
 import { Loader2 } from "lucide-react";
@@ -27,6 +27,7 @@ import {
 const StoryPage = () => {
   const { story: storySlug } = useParams();
   const [isPublishing, setIsPublishing] = useState(false);
+  const [formIsSubmitting, setFormIsSubmitting] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
   const { stories, isLoading: storiesLoading } = useStories();
   const selectedStory = stories.find((s) => s.currentDraft?.slug === storySlug);
@@ -132,7 +133,7 @@ const StoryPage = () => {
       },
       onAutoClose: async () => {
         // Remove drom DB
-        const res = await deleteSection(section.id);
+        const res = await softDeleteSection(section.id);
         if (!res.success) {
           toast.error("Failed to delete section");
           mutateSections(
@@ -158,6 +159,7 @@ const StoryPage = () => {
   const handleTogglePreview = () => setPreviewVisible((prev) => !prev);
 
   const handleSaveDraft = async () => {
+    setFormIsSubmitting(true);
     if (!sections) {
       toast.error("No sections found");
       return;
@@ -175,6 +177,7 @@ const StoryPage = () => {
     } else {
       toast.success("Order saved successfully");
     }
+    setFormIsSubmitting(false);
   };
 
   const handlePublishSection = async (currentDraftId: number | undefined) => {
@@ -217,6 +220,7 @@ const StoryPage = () => {
         onPublish={handlePublishStory}
         publishButtonLabel="Publish Story"
         isPublishing={isPublishing}
+        isSaving={formIsSubmitting}
         onTogglePreview={handleTogglePreview}
         previewVisible={previewVisible}
         onSaveDraft={handleSaveDraft}

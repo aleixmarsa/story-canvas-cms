@@ -87,6 +87,8 @@ docker-compose up --build
 
 - Prisma Studio: http://localhost:5555
 
+- App documentation: http://localhost:3001
+
 > ⚠️ **Note:**  
 > The Docker option may take longer to start initially because it runs `next build` and `next start`.  
 > This ensures the app runs much faster once it's up, compared to `next dev`, which compiles pages on demand.
@@ -122,6 +124,12 @@ NEXT_PUBLIC_CLOUDINARY_FOLDER=...
 pnpm install
 pnpm dev
 ```
+- App: http://localhost:3000
+
+- Prisma Studio: http://localhost:5555
+
+- App documentation: http://localhost:3001
+  
 ## Testing
 
 ### Unit tests

@@ -38,9 +38,6 @@ describe("createStory", () => {
       title: "",
       slug: "",
       description: "",
-      theme: "",
-      components: "",
-      content: "",
       createdBy: "",
     });
 
@@ -57,9 +54,6 @@ describe("createStory", () => {
       title: "My Story",
       slug: "my-story",
       description: "Test",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
       createdBy: "admin",
     });
 
@@ -77,9 +71,6 @@ describe("createStory", () => {
       title: "My Story",
       slug: "my-story",
       description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
       createdBy: "admin",
     });
 
@@ -101,9 +92,6 @@ describe("createStory", () => {
         title: "My Story",
         slug: "my-story",
         createdBy: "admin",
-        content: {},
-        components: [],
-        theme: {},
         status: "draft",
       },
     };
@@ -114,9 +102,6 @@ describe("createStory", () => {
       title: "My Story",
       slug: "my-story",
       description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
       createdBy: "admin",
     });
 
@@ -135,9 +120,6 @@ describe("createStory", () => {
       title: "My Story",
       slug: "my-story",
       description: "A test story",
-      theme: "{}",
-      components: "[]",
-      content: "{}",
       createdBy: "admin",
     });
 

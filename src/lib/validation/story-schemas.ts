@@ -20,9 +20,6 @@ const baseStorySchema = z.object({
 // Extended schema for editable metadata
 export const storySchema = baseStorySchema.extend({
   description: z.string().optional(),
-  theme: z.any().optional(),
-  components: z.any().optional(),
-  content: z.any().optional(),
   storyId: z.number().optional(),
 });
 

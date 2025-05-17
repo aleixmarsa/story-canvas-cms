@@ -18,6 +18,7 @@ export const getPublishedStoryMetadata = async ({
       publishedVersion: {
         status: "published",
       },
+      deletedAt: null,
     },
     select: {
       id: true,
@@ -33,6 +34,9 @@ export const getPublishedStoryMetadata = async ({
       },
       sections: includeSections
         ? {
+            where: {
+              deletedAt: null,
+            },
             include: {
               publishedVersion: true,
             },
@@ -46,9 +50,12 @@ export const getPublishedStoryMetadata = async ({
 };
 export const getPublishedSectionsBySlug = async (slug: string) => {
   const story = await prisma.story.findUnique({
-    where: { publicSlug: slug },
+    where: { publicSlug: slug, deletedAt: null },
     include: {
       sections: {
+        where: {
+          deletedAt: null,
+        },
         include: {
           publishedVersion: true,
         },
@@ -78,7 +85,7 @@ export const getPublishedSectionsBySlug = async (slug: string) => {
  */
 export const getPublishedStoryByPublicSlug = async (slug: string) => {
   return prisma.story.findUnique({
-    where: { publicSlug: slug },
+    where: { publicSlug: slug, deletedAt: null },
     include: {
       publishedVersion: true,
       sections: {
@@ -104,6 +111,9 @@ export const getPublishedSectionsByStoryId = async ({
       status: "published",
       publishedOf: {
         storyId,
+      },
+      section: {
+        deletedAt: null,
       },
     },
     orderBy: {

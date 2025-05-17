@@ -13,7 +13,7 @@ import type { SectionFormData } from "../validation/section-version";
  */
 export const getSectionWithVersions = async (sectionId: number) => {
   return prisma.section.findUnique({
-    where: { id: sectionId },
+    where: { id: sectionId, deletedAt: null },
     include: {
       currentDraft: true,
       publishedVersion: true,
@@ -22,12 +22,12 @@ export const getSectionWithVersions = async (sectionId: number) => {
 };
 
 /**
- * Deletes a section and all its related versions.
+ * Hard deletes a section and all its related versions.
  *
  * @param sectionId - The ID of the section to delete.
  * @returns A promise that resolves when the deletion is complete.
  */
-export const deleteSectionWithVersions = async (sectionId: number) => {
+export const hardDeleteSectionWithVersions = async (sectionId: number) => {
   return prisma.$transaction([
     prisma.sectionVersion.deleteMany({
       where: { sectionId },
@@ -36,6 +36,23 @@ export const deleteSectionWithVersions = async (sectionId: number) => {
       where: { id: sectionId },
     }),
   ]);
+};
+
+/**
+ * Soft deletes a section and all its related versions.
+ *
+ * @param sectionId - The ID of the section to delete.
+ * @returns A promise that resolves when the deletion is complete.
+ */
+export const softDeleteSectionWithVersions = async (sectionId: number) => {
+  const now = new Date();
+
+  return prisma.section.update({
+    where: { id: sectionId },
+    data: {
+      deletedAt: now,
+    },
+  });
 };
 
 /**
@@ -124,6 +141,7 @@ export const checkSectionSlugConflict = async (
       section: {
         storyId,
         id: { not: excludeSectionId },
+        deletedAt: null,
       },
     },
   });
@@ -150,7 +168,7 @@ export const getSectionsByStoryId = async ({
   order?: "asc" | "desc";
 }) => {
   const sections = await prisma.section.findMany({
-    where: { storyId },
+    where: { storyId, deletedAt: null },
     include: {
       currentDraft: true,
       publishedVersion: true,

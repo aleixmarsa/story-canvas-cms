@@ -7,9 +7,6 @@ describe("storySchema", () => {
       slug: "a-great-story",
       createdBy: "user123",
       description: "Optional description",
-      theme: {},
-      components: [],
-      content: { sections: [] },
       storyId: 42,
     });
     expect(result.success).toBe(true);

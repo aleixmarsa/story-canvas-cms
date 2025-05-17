@@ -19,9 +19,6 @@ export async function createTemplateStory(formData: FormData) {
     title: `Template Story ${uid.slice(0, 4)}`,
     slug: `template-${uid}`,
     description: "Generated template with sample sections.",
-    theme: "default",
-    content: {},
-    components: [],
     createdBy: createdBy,
   });
 

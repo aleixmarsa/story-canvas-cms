@@ -27,16 +27,7 @@ export const updateStoryVersion = async (versionId: number, data: unknown) => {
     };
   }
 
-  const {
-    title,
-    slug,
-    description,
-    theme,
-    components,
-    content,
-    createdBy,
-    storyId,
-  } = parsed.data;
+  const { title, slug, description, createdBy, storyId } = parsed.data;
 
   try {
     await checkSlugConflictAcrossStories(slug, storyId);
@@ -45,9 +36,6 @@ export const updateStoryVersion = async (versionId: number, data: unknown) => {
       title,
       slug,
       description,
-      theme,
-      components,
-      content,
       createdBy,
     });
 

@@ -63,7 +63,24 @@ const RowActionsMenu = <T,>({
             </Link>
           </DropdownMenuItem>
         )}
-
+        {onPublish && (
+          <DropdownMenuItem asChild>
+            <Button
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPublish();
+              }}
+              className="px-2 w-full justify-start"
+              data-testid="action-delete-button"
+            >
+              <span className="flex items-center justify-start gap-2">
+                <Rocket className="h-4 w-4" color="black" />
+                Publish
+              </span>
+            </Button>
+          </DropdownMenuItem>
+        )}
         {renderDeleteButton
           ? renderDeleteButton(item)
           : onDelete && (
@@ -84,24 +101,6 @@ const RowActionsMenu = <T,>({
                 </Button>
               </DropdownMenuItem>
             )}
-        {onPublish && (
-          <DropdownMenuItem asChild>
-            <Button
-              variant="ghost"
-              onClick={(e) => {
-                e.stopPropagation();
-                onPublish();
-              }}
-              className="px-2 w-full justify-start"
-              data-testid="action-delete-button"
-            >
-              <span className="flex items-center justify-start gap-2">
-                <Rocket className="h-4 w-4" color="black" />
-                Publish
-              </span>
-            </Button>
-          </DropdownMenuItem>
-        )}
 
         {additionalItems}
       </DropdownMenuContent>

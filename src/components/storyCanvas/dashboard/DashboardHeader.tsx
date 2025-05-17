@@ -19,6 +19,7 @@ type DashboardHeaderProps = {
   title: string;
   breadcrumbs: Breadcrumb[];
   onSaveDraft?: () => void;
+  customSaveLabel?: string;
   onPublish?: () => void;
   saveDisabled?: boolean;
   isSaving?: boolean;
@@ -32,6 +33,7 @@ const DashboardHeader = ({
   title,
   breadcrumbs,
   onSaveDraft,
+  customSaveLabel,
   onPublish,
   saveDisabled,
   isSaving,
@@ -113,9 +115,13 @@ const DashboardHeader = ({
                 ) : (
                   <Save className="w-4 h-4 mr-1" />
                 )}
-                <span>
-                  Save<span className="hidden md:inline"> draft</span>
-                </span>
+                {customSaveLabel ? (
+                  <span>{customSaveLabel}</span>
+                ) : (
+                  <span>
+                    Save<span className="hidden md:inline"> Draft</span>
+                  </span>
+                )}
               </Button>
             )}
             {onPublish && (

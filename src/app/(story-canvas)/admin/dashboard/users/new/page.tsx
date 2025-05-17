@@ -19,6 +19,7 @@ const CreateUserPage = () => {
           { label: "Users", href: ROUTES.users },
         ]}
         onSaveDraft={() => formRef.current?.requestSubmit()}
+        customSaveLabel="Create User"
         saveDisabled={!isDirty}
         isSaving={isSubmitting}
       />

@@ -22,7 +22,7 @@ export type StoryDraft = StoryVersion & {
  */
 export type RenderStoryData = Pick<
   StoryVersion,
-  "title" | "description" | "theme" | "slug"
+  "title" | "description" | "slug"
 > & {
   sections: RenderSectionData[];
 };

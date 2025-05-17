@@ -25,6 +25,9 @@ export const checkSlugConflictAcrossStories = async (
       storyId: {
         not: currentStoryId,
       },
+      story: {
+        deletedAt: null, // Checks only against non-deleted stories
+      },
     },
   });
 
@@ -84,9 +87,6 @@ export const publishStoryVersion = async (versionId: number) => {
         title: original.title,
         slug: original.slug,
         description: original.description ?? undefined,
-        theme: original.theme ?? undefined,
-        components: original.components ?? undefined,
-        content: original.content ?? undefined,
         status: StoryStatus.draft,
         createdBy: original.createdBy ?? undefined,
         comment: `Auto-generated draft after publishing version ${original.id}`,
