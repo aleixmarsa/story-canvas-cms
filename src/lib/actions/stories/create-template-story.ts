@@ -6,8 +6,9 @@ import { createStoryWithDraft } from "@/lib/dal/stories";
 import { createSectionWithDraftVersion } from "@/lib/dal/sections";
 import { Role } from "@prisma/client";
 import { SectionFormData } from "@/lib/validation/section-version";
+import { TEMPLATE_IMAGE } from "@/lib/constants/template";
 
-export async function createTemplateStory(formData: FormData) {
+export const createTemplateStory = async (formData: FormData) => {
   const session = await verifySession();
   if (!session || session.role !== Role.ADMIN) {
     throw new Error("Unauthorized");
@@ -142,10 +143,7 @@ export async function createTemplateStory(formData: FormData) {
       content: {
         alt: "Flooded houses",
         body: "<p>This is also a <strong>paragraph</strong> block, but enriched with an image. Combining text with visuals helps emphasize key ideas, illustrate concepts or add emotional impact. Use this format when you want to reinforce your message or break up long passages of text with visual storytelling.</p>",
-        image: {
-          url: "https://res.cloudinary.com/da3mg3zw1/image/upload/v1746976770/xynthia_floods_gxln70.webp",
-          publicId: "story-canvas/xynthia_floods_gxln70",
-        },
+        image: TEMPLATE_IMAGE,
         layout: "left",
         caption: "<p>Flooded houses in Barcelona</p>",
         imageSize: {
@@ -251,4 +249,4 @@ export async function createTemplateStory(formData: FormData) {
       createdBy: createdBy,
     });
   }
-}
+};
