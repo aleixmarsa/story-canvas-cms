@@ -55,12 +55,12 @@ const VideoSection = ({
   );
 
   return (
-    <div>
+    <div className="w-full">
       <div ref={textRef}>
         <RichTextContent html={title} className="pb-4" />
         {description && <RichTextContent html={description} className="pb-6" />}
       </div>
-      <div ref={videoRef}>
+      <div ref={videoRef} className="m-auto">
         <Video video={video} videoSize={videoSize} />
       </div>
     </div>

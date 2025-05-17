@@ -66,7 +66,7 @@ const ParagraphAndImageSection = ({
   const imageUrl = typeof image === "string" ? image : image.url;
 
   return (
-    <div className="py-8">
+    <div>
       <div
         className={cn(
           "flex gap-4 flex-col",
