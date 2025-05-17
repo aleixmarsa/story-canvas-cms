@@ -199,7 +199,6 @@ export async function getDraftStoryBySlug(
   return {
     title: story.currentDraft.title,
     description: story.currentDraft.description,
-    theme: story.currentDraft.theme,
     slug: story.currentDraft.slug,
     sections: story.sections.map((section) => ({
       id: section.currentDraft?.id ?? 0,

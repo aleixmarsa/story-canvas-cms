@@ -33,8 +33,6 @@ async function main() {
       description: "Story for list test",
       status: "draft",
       storyId: listStory.id,
-      theme: {},
-      content: {},
     },
   });
   await prisma.story.update({
@@ -52,8 +50,6 @@ async function main() {
       description: "Editor Story for list test",
       status: "draft",
       storyId: editorListStory.id,
-      theme: {},
-      content: {},
     },
   });
   await prisma.story.update({
@@ -71,8 +67,6 @@ async function main() {
       description: "Story for editing test",
       status: "draft",
       storyId: editableStory.id,
-      theme: {},
-      content: {},
     },
   });
   await prisma.story.update({
@@ -90,8 +84,6 @@ async function main() {
       description: "Editor Story for editing test",
       status: "draft",
       storyId: editorEditableStory.id,
-      theme: {},
-      content: {},
     },
   });
   await prisma.story.update({
@@ -109,8 +101,6 @@ async function main() {
       description: "Story for deletion test",
       status: "draft",
       storyId: deletableStory.id,
-      theme: {},
-      content: {},
     },
   });
   await prisma.story.update({

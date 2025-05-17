@@ -32,9 +32,6 @@ describe("updateStoryVersion", () => {
     title: "Test Story",
     slug: "test-story",
     description: "Some description",
-    theme: {},
-    components: [],
-    content: [],
     createdBy: "admin",
     storyId: 1,
   };

@@ -28,9 +28,6 @@ export const createStory = async (formData: FormData) => {
     title: formData.get("title"),
     slug: formData.get("slug"),
     description: formData.get("description"),
-    theme: formData.get("theme"),
-    components: formData.get("components"),
-    content: formData.get("content"),
     createdBy: formData.get("createdBy"),
   };
 
