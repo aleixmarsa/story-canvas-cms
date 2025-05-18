@@ -18,7 +18,7 @@ type RowActionsMenuProps<T> = {
   additionalItems?: React.ReactNode;
   item: T;
   onPublish?: () => void;
-  onPublishLabel?: string;
+  onPublishLabel?: React.ReactNode;
 };
 
 const RowActionsMenu = <T,>({

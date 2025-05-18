@@ -93,7 +93,12 @@ export const columns = (
           item={story}
           editHref={`${ROUTES.stories}/${story.currentDraft?.slug}/edit`}
           onPublish={() => handlePublish(story.currentDraft?.id)}
-          onPublishLabel="Publish Metadata"
+          onPublishLabel={
+            <div className="flex flex-col items-start">
+              <span>Publish</span>
+              <span>Metadata</span>
+            </div>
+          }
           renderDeleteButton={(story) => {
             if (currentUser.role !== Role.ADMIN) return null;
             return (
