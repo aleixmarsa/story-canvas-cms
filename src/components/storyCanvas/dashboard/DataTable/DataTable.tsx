@@ -19,7 +19,6 @@ import SortableRowWrapper from "./SortableRowWrapper";
 import {
   ColumnDef,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
@@ -120,7 +119,6 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
