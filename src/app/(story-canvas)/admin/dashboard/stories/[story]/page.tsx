@@ -149,8 +149,6 @@ const StoryPage = () => {
         } else {
           // Send message to the preview iframe to remove section
           sendPreviewDeleteSection(section.currentDraft.id);
-          // Ensure backend is in sync
-          mutateSections();
         }
       },
     });

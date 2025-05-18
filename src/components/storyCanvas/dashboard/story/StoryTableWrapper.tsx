@@ -65,9 +65,6 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
             },
             { revalidate: false }
           );
-        } else {
-          // Ensure backend is in sync
-          mutate();
         }
       },
     });
