@@ -26,6 +26,7 @@ export const paragraphAndimageSectionSchema = baseFields.extend({
           "justify-end",
           "justify-between",
           "justify-around",
+          "justify-evenly",
         ])
         .optional(),
       alignItems: z
