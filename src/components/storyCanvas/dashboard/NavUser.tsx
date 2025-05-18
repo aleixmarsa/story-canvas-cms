@@ -58,8 +58,13 @@ export function NavUser({ user }: { user: CurrentUser }) {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">AM</AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate text-xs">{user.email}</span>
+                <div className="flex flex-col gap-1">
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate text-xs">{user.role}</span>
+                  </div>
                 </div>
               </div>
             </DropdownMenuLabel>
