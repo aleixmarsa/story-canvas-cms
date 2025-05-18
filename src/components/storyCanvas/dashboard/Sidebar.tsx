@@ -104,7 +104,11 @@ export function DashboardSidebar({
             <Separator className="my-2" />
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={"Swagger"}>
-                <Link href={ROUTES.swagger} className="font-medium">
+                <Link
+                  href={ROUTES.swagger}
+                  className="font-medium"
+                  target="_blank"
+                >
                   <FileCode className="h-4 w-4" />
                   Swagger
                 </Link>

@@ -23,6 +23,7 @@ import { createUser } from "@/lib/actions/users/create-user";
 import { Role } from "@prisma/client";
 import { toast } from "sonner";
 import PasswordInfoTooltip from "./PasswordInfoTooltip";
+import { PasswordInput } from "../../PaswordInput";
 
 type UserFormProps = {
   setDirty?: (dirty: boolean) => void;
@@ -123,7 +124,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
             </Label>
             <PasswordInfoTooltip />
           </div>
-          <Input id="password" type="password" {...register("password")} />
+          <PasswordInput id="password" {...register("password")} />
           {errors.password && (
             <FormErrorMessage error={errors.password.message} />
           )}
@@ -133,11 +134,12 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           <Label htmlFor="confirmPassword" required>
             Confirm password
           </Label>
-          <Input
+
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             {...register("confirmPassword")}
           />
+
           {errors.confirmPassword && (
             <FormErrorMessage error={errors.confirmPassword.message} />
           )}
