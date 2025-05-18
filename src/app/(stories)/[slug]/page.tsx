@@ -1,4 +1,4 @@
-import { getPublishedSlugs } from "@/lib/dal/stories";
+export const dynamic = "force-dynamic";
 import {
   getPublishedSectionsBySlug,
   getPublishedStoryByPublicSlug,
@@ -7,11 +7,6 @@ import { notFound } from "next/navigation";
 import StoryRenderer from "@/components/storyCanvas/renderer/StoryRenderer";
 
 type Params = Promise<{ slug: string }>;
-
-export async function generateStaticParams() {
-  const slugs = await getPublishedSlugs();
-  return slugs.map(({ publicSlug }) => ({ slug: publicSlug }));
-}
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug } = await params;
