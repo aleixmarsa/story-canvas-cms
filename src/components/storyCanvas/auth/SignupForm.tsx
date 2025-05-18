@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants/story-canvas";
 import { toast } from "sonner";
 import PasswordInfoTooltip from "../dashboard/user/PasswordInfoTooltip";
+import { PasswordInput } from "../PaswordInput";
 
 const SignupForm = () => {
   const {
@@ -96,9 +97,8 @@ const SignupForm = () => {
                 </Label>
                 <PasswordInfoTooltip />
               </div>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 {...register("password")}
                 data-testid="signup-form-password-input"
               />
@@ -114,12 +114,13 @@ const SignupForm = () => {
               <Label htmlFor="confirmPassword" required>
                 Confirm password
               </Label>
-              <Input
+
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 {...register("confirmPassword")}
                 data-testid="signup-form-confirm-password-input"
               />
+
               {errors.confirmPassword && (
                 <FormErrorMessage
                   error={errors.confirmPassword.message}

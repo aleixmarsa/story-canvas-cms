@@ -18,6 +18,7 @@ import FormErrorMessage from "../FormErrorMessage";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { PasswordInput } from "../PaswordInput";
 
 export function LoginForm() {
   const {
@@ -31,6 +32,7 @@ export function LoginForm() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const onSubmit = async (data: LoginInput) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
     setSuccessMessage(null);
 
     const formData = new FormData();
@@ -91,9 +93,8 @@ export function LoginForm() {
                     Forgot your password?
                   </a> */}
               </div>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 {...register("password")}
                 data-testid="login-form-password-input"
               />
