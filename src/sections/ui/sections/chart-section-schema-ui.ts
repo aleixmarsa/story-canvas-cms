@@ -28,12 +28,14 @@ export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =
             { value: "line", label: "Line" },
             { value: "bar", label: "Bar" },
           ],
+          default: "line",
         },
         xKey: {
           label: "X Axis Key",
           type: "text",
           required: true,
           placeholder: "Enter the key for the X-axis, e.g year",
+          tip: "The key for the X-axis in your data. For example, 'year'.",
         },
         yKeys: {
           label: "Y Axis Keys",
@@ -41,6 +43,7 @@ export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =
           required: true,
           placeholder:
             "Enter comma-separated keys for Y axis, e.g. meanTemperature,meanPrecipitation ",
+          tip: "The keys for the Y-axis in your data. For example, 'meanTemperature,meanPrecipitation'.",
         },
         data: {
           label: "Chart Data",
@@ -48,6 +51,7 @@ export const chartSectionSchemaWithUI: SchemaWithUI<typeof chartSectionSchema> =
           required: true,
           placeholder:
             'Paste your JSON data, e.g. [{"year": 2020, "meanTemperature": 24, "meanPrecipitation": }, ...]',
+          tip: 'The data for the chart in JSON format. For example, [{"year": 2020, "meanTemperature": 24, "meanPrecipitation": 100}, ...]',
         },
       },
       style: {

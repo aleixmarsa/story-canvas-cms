@@ -68,6 +68,7 @@ export const paragraphAndImageSectionSchemaWithUI: SchemaWithUI<
               { value: "justify-end", label: "End" },
               { value: "justify-between", label: "Space Between" },
               { value: "justify-around", label: "Space Around" },
+              { value: "justify-evenly", label: "Space Evenly" },
             ],
             default: "justify-between",
             tip: "Aligns content horizontally within the section.",

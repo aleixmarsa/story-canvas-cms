@@ -55,9 +55,6 @@ const Video = ({ video, videoSize }: VideoProps) => {
       width="600"
       height="400"
       preload="metadata"
-      onError={(e) => {
-        console.error("Video loading error:", e);
-      }}
       style={{
         width: videoSize?.width || "auto",
         height: videoSize?.height || "auto",

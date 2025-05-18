@@ -87,6 +87,7 @@ export const createSectionWithDraftVersion = async (data: SectionFormData) => {
           id: {
             not: section.id,
           },
+          deletedAt: null,
         },
       },
     });
