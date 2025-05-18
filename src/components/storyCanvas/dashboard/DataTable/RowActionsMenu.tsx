@@ -18,6 +18,7 @@ type RowActionsMenuProps<T> = {
   additionalItems?: React.ReactNode;
   item: T;
   onPublish?: () => void;
+  onPublishLabel?: string;
 };
 
 const RowActionsMenu = <T,>({
@@ -27,6 +28,7 @@ const RowActionsMenu = <T,>({
   additionalItems,
   item,
   onPublish,
+  onPublishLabel = "Publish",
 }: RowActionsMenuProps<T>) => {
   return (
     <DropdownMenu>
@@ -76,7 +78,7 @@ const RowActionsMenu = <T,>({
             >
               <span className="flex items-center justify-start gap-2">
                 <Rocket className="h-4 w-4" color="black" />
-                Publish
+                {onPublishLabel}
               </span>
             </Button>
           </DropdownMenuItem>

@@ -13,6 +13,7 @@ import { createTemplateStory } from "@/lib/actions/stories/create-template-story
 import { useState } from "react";
 import { Loader2, WandSparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { publishStoryVersion } from "@/lib/actions/story-versions/publish-story-version";
 
 const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
   const { stories, mutate, isLoading, isError } = useStories();
@@ -86,11 +87,44 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
     }
   };
 
+  const handlePublishStoryMetadata = async (
+    currentDraftId: number | undefined
+  ) => {
+    if (!currentDraftId) {
+      toast.error("No current draft ID found for this story");
+      return;
+    }
+    try {
+      const result = await publishStoryVersion(currentDraftId);
+      if ("error" in result) {
+        toast.error(result.error);
+        return;
+      }
+
+      // Update the SWR list
+      mutate();
+
+      toast.success("Story metadata published successfully", {
+        description: `Your story is now live!`,
+      });
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while publishing"
+      );
+    }
+  };
+
   return (
     <div className="px-4 md:px-6">
       {isAdmin ? (
         <DataTable
-          columns={columns(currentUser, handleDelete)}
+          columns={columns(
+            currentUser,
+            handleDelete,
+            handlePublishStoryMetadata
+          )}
           data={stories}
           getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
           addHref={ROUTES.newStory}
@@ -117,7 +151,11 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
         />
       ) : (
         <DataTable
-          columns={columns(currentUser, handleDelete)}
+          columns={columns(
+            currentUser,
+            handleDelete,
+            handlePublishStoryMetadata
+          )}
           data={stories}
           getRowLink={(row) => `${ROUTES.stories}/${row.currentDraft?.slug}`}
           filterConfig={{
