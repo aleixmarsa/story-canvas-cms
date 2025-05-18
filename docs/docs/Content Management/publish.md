@@ -20,9 +20,15 @@ Story metadata includes:
 
 ### How to publish it:
 
-1. Go to the story editor (click on the *three-dot menu (···)** on the section row and select **`Edit`** in `/admin/dashboard/stories`)
-2. Make your changes
-3. Click the **`Publish Metadata`** button in the top-right corner of the page
+Stories can be published in two different ways:
+
+- Option A
+  - Go to the the story list in `/admin/dasboard/stories`, click on the **three-dot menu (···)** and select **`Publish Metadata`**
+
+- Option B
+  -  Go to the the story list in `/admin/dasboard/stories`, click on the **three-dot menu (···)** and select **`Edit`** in `/admin/dashboard/stories`)
+  - Make your changes
+  - Click the **`Publish Metadata`** button in the top-right corner of the page
 
 > This publishes only the metadata — not the sections. he story URL will be accessible publicly, but it will appear **empty** on the front end until at least one section is published.
 

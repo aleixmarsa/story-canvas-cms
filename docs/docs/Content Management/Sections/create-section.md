@@ -5,7 +5,7 @@ title: Creating Sections
 
 # Creating a Section
 
-Each story in StoryCanvas is composed of multiple **sections**, which can represent content blocks such as text, images, charts, or videos. Sections are fully modular and configurable.
+Each story in StoryCanvas is composed of multiple sections, which can represent content blocks such as text, images, charts, or videos. Sections are fully modular and configurable.
 **Editors** and **administrators** are allowed to create sections.  
 
 ---
@@ -46,7 +46,7 @@ Available types may include:
 
 The form is divided into **three tabs**:
 
-### 🟦 1. Content
+### 1. Content
 
 - **Name**: Internal name for organizing the section.
 - **Created By**: Automatically filled with the current user.

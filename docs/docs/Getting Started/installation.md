@@ -85,7 +85,12 @@ pnpm dev
 
 - Prisma Studio: http://localhost:5555
 
+```bash
+cd docs
+pnpm start
+``` 
 - App documentation: http://localhost:3001
+  
 
 ## Testing
 

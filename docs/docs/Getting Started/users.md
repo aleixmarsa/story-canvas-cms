@@ -36,7 +36,7 @@ All users can see:
 
 ---
 
-## ➕ Creating a New User
+## Creating a New User
 
 Only **administrators** can create users.
 
