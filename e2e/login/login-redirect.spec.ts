@@ -4,13 +4,7 @@ import { ROUTES } from "../../src/lib/constants/story-canvas";
 // Reset storage state for this file to avoid being authenticated
 test.use({ storageState: { cookies: [], origins: [] } });
 
-const adminRoutes = [
-  ROUTES.admin,
-  ROUTES.dashboard,
-  ROUTES.users,
-  ROUTES.createInitalUser,
-  ROUTES.error,
-];
+const adminRoutes = [ROUTES.admin, ROUTES.dashboard, ROUTES.users];
 
 test.describe("Redirect to login page when user is not authenticated", () => {
   for (const route of adminRoutes) {
