@@ -17,6 +17,7 @@ import { login } from "@/lib/actions/auth/login";
 import FormErrorMessage from "../FormErrorMessage";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export function LoginForm() {
   const {
@@ -113,6 +114,16 @@ export function LoginForm() {
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Login"}
             </Button>
           </form>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Haven&apos;t created the initial admin user yet?{" "}
+            <Link
+              href="/admin/create-initial-user"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              Create it now
+            </Link>
+            .
+          </p>
         </CardContent>
       </Card>
     </div>
