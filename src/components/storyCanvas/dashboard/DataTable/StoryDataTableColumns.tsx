@@ -13,7 +13,8 @@ import StatusBadge from "./StatusBadge";
 
 export const columns = (
   currentUser: CurrentUser,
-  handleDelete: (story: StoryDraftMetadata) => Promise<void>
+  handleDelete: (story: StoryDraftMetadata) => Promise<void>,
+  handlePublish: (currentDraftId: number | undefined) => Promise<void>
 ): ColumnDef<StoryDraftMetadata>[] => [
   {
     id: "title",
@@ -91,6 +92,13 @@ export const columns = (
         <RowActionsMenu
           item={story}
           editHref={`${ROUTES.stories}/${story.currentDraft?.slug}/edit`}
+          onPublish={() => handlePublish(story.currentDraft?.id)}
+          onPublishLabel={
+            <div className="flex flex-col items-start">
+              <span>Publish</span>
+              <span>Metadata</span>
+            </div>
+          }
           renderDeleteButton={(story) => {
             if (currentUser.role !== Role.ADMIN) return null;
             return (
