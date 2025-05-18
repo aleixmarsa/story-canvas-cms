@@ -46,7 +46,7 @@ const EditStoryPage = () => {
       // Update the SWR list
       mutateStories();
 
-      toast.success("Story published successfully", {
+      toast.success("Story metadata published successfully", {
         description: `Your story is now live!`,
       });
     } catch (err) {

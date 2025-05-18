@@ -87,8 +87,8 @@ const StoryPage = () => {
       // Update the SWR list
       mutateSections();
 
-      toast.success("Story published successfully", {
-        description: `Your story is now live!`,
+      toast.success("Story and sections published successfully", {
+        description: `Your story and it's content is now live!`,
       });
     } catch (err) {
       toast.error(
