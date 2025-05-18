@@ -7,6 +7,7 @@
 ## Live Demo
 
 [StoryCanvas deployed in Vercel](https://story-canvas-cms.vercel.app/)
+[StoryCanvas Documentation deployed in Vercel](https://story-canvas-cms-docs.vercel.app/)
 
 ---
 
