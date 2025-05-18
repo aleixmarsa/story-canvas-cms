@@ -8,7 +8,7 @@ export const ROUTES = {
   createInitalUser: "/admin/create-initial-user",
   login: "/admin/login",
   error: "/admin/error",
-  swagger: "/api-docs",
+  swagger: "/docs/api-docs",
 };
 
 export const LIVE_PREVIEW_MESSAGES = {

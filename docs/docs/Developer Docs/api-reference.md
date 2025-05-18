@@ -8,7 +8,7 @@ title: API Reference
 StoryCanvas exposes a RESTful API that allows developers to access and integrate content programmatically. Authentication is required for most routes unless otherwise specified.
 
 > Explore the Swagger API documentation:  
-> [`http://localhost:3000/api-docs`](http://localhost:3000/api-docs)
+> [`http://localhost:3000/docs/api-docs`](http://localhost:3000/docs/api-docs)
 
 ---
 
