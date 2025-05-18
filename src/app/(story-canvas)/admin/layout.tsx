@@ -18,7 +18,11 @@ export default async function AdminLayout({
   const isInitialUserPage = pathname === ROUTES.createInitalUser;
   const isLoginPage = pathname === ROUTES.login;
   const isErrorPage = pathname === ROUTES.error;
+  const isAdminPage = pathname === ROUTES.admin;
 
+  if (isAdminPage) {
+    redirect(ROUTES.login);
+  }
   // Check if the database connection is successful
   const isDbUp = await checkDbConnection();
   if (!isDbUp && !isErrorPage) {
