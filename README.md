@@ -14,55 +14,70 @@
 
 - **Framework**: [Next.js (App Router)](https://nextjs.org)
 - **ORM**: [Prisma](https://www.prisma.io/)
-- **Database**: PostgreSQL (via Docker or external)
-- **State/Data**: SWR, Server Actions, Zod validation
+- **Database**: [PostgreSQL](https://www.postgresql.org/) (via [Docker](https://www.docker.com/) or external)
+- **State/Data**: [SWR](https://swr.vercel.app/), [Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), [Zod](https://zod.dev/) validation
 - **Animations**: [GSAP](https://gsap.com)
-- **Media**: Cloudinary integration for image/video uploads
-- **Testing**: Jest (unit), Playwright (E2E)
-- **Infrastructure**: Docker + Docker Compose
+- **Media**: [Cloudinary](https://cloudinary.com/) integration for image/video uploads
+- **Testing**: [Jest](https://jestjs.io/) (unit), [Playwright](https://playwright.dev/) (E2E)
+- **Infrastructure**: [Docker](https://www.docker.com/) + [Docker Compose](https://docs.docker.com/compose/)
 
 ---
 
-## Architecture
+  ## Architecture
 
-![Architecture](./public/architecture.png)
+  ![Architecture](./public/architecture.png)
 
----
+StoryCanvas is built on Next.js with a clear separation between the headless API and the admin dashboard:
 
-## API Documentation
+- **API Routes** (/api/**) are used for the headless CMS interface, making data accessible to external clients. These endpoints are documented with Swagger and some of them require a session or token for authentication.
 
-StoryCanvas exposes a headless API.
+- **Server Actions** are used internally within the admin dashboard to mutate data securely. Although are technically public HTTP endpoints, they are not directly accessible without a valid invocation context (e.g., form submission from the dashboard), thanks built-in protections:
 
-> Explore the Swagger API documentation:  
-> [`http://localhost:3000/api-docs`](http://localhost:3000/api-docs)
+  - Encrypted, non-deterministic action IDs
 
-### Available Endpoints
+  - Same origin enforcement via the Origin and Host headers
 
-- `POST /api/auth/token`  
-  Get an authentication token (JWT) to access protected routes.
+  - POST only method to mitigate CSRF risks
 
-- `GET /api/stories`  
-  Get all stories (requires session or token).
+This ensures that internal operations (e.g., creating, updating or deleting content) are only triggered by authenticated users within the dashboard UI.
 
-- `GET /api/stories/draft`  
-  Get all draft stories (requires session or token).
+See [Server Actions adn Mutations - Security](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#security) documentation for more info
+  ---
 
-- `GET /api/stories/draft`  
-  Get all published stories (public endpoint).
+  ## API Documentation
 
-- `GET /api/stories/{id}`  
-  Get a single story by ID (requires session or token).
+  StoryCanvas exposes a headless API.
 
-- `GET /api/stories/{id}/sections`  
-  Get all sections of a story (requires session or token).
+  > Explore the Swagger API documentation:  
+  > [`http://localhost:3000/docs/api-docs`](http://localhost:3000/docs/api-docs)
 
-- `GET /api/stories/draft/{id}/sections`  
-  Get all draft sections of a story (requires session or token).
+  ### Available Endpoints
 
-- `GET /api/stories/published/{id}/sections`  
-  Get all published sections of a story (public endpoint).
+  - `POST /api/auth/token`  
+    Get an authentication token (JWT) to access protected routes.
 
----
+  - `GET /api/stories`  
+    Get all stories (requires session or token).
+
+  - `GET /api/stories/draft`  
+    Get all draft stories (requires session or token).
+
+  - `GET /api/stories/draft`  
+    Get all published stories (public endpoint).
+
+  - `GET /api/stories/{id}`  
+    Get a single story by ID (requires session or token).
+
+  - `GET /api/stories/{id}/sections`  
+    Get all sections of a story (requires session or token).
+
+  - `GET /api/stories/draft/{id}/sections`  
+    Get all draft sections of a story (requires session or token).
+
+  - `GET /api/stories/published/{id}/sections`  
+    Get all published sections of a story (public endpoint).
+
+  ---
 
 ## Getting Started
 
@@ -134,6 +149,10 @@ pnpm dev
 
 - Prisma Studio: http://localhost:5555
 
+```bash
+cd docs
+pnpm start
+``` 
 - App documentation: http://localhost:3001
   
 ## Testing
