@@ -102,7 +102,7 @@ CLOUDINARY_API_SECRET=...
 
 #### 3. Start the project with Docker
 ```bash
-docker-compose up --build
+docker-compose up
 ```
 - App: http://localhost:3000
 
