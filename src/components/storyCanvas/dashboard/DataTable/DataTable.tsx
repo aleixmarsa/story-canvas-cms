@@ -46,7 +46,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import DataTablePagination from "./DataTablePagination";
 import { useSections } from "@/lib/swr/useSections";
 import { useState } from "react";
 import { RenderSectionData } from "@/types/section";
@@ -329,7 +328,6 @@ const DataTable = <TData, TValue>(props: DataTableProps<TData, TValue>) => {
           tableContent
         )}
       </div>
-      <DataTablePagination table={table} />
     </div>
   );
 };
