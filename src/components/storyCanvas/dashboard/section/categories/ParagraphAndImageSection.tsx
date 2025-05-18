@@ -22,8 +22,9 @@ const ParagraphAndImageSection = ({
   imageAnimation,
   scrollTrigger,
 }: ParagraphAndImageSectionProps) => {
-  const isRow = contentLayout?.direction === "row";
-  const imageFirst = contentLayout?.order === "image";
+  const isRow = !contentLayout || contentLayout.direction === "row";
+
+  const imageFirst = !contentLayout || contentLayout.order === "image";
 
   const textRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -66,34 +67,32 @@ const ParagraphAndImageSection = ({
   const imageUrl = typeof image === "string" ? image : image.url;
 
   return (
-    <div>
-      <div
-        className={cn(
-          "flex gap-4 flex-col",
-          isRow ? "md:flex-row" : "",
-          imageFirst && isRow && "flex-col-reverse md:flex-row-reverse",
-          imageFirst && !isRow && "flex-col-reverse",
-          contentLayout?.justifyContent,
-          contentLayout?.alignItems
+    <div
+      className={cn(
+        "flex gap-4 flex-col w-full",
+        isRow ? "md:flex-row" : "",
+        imageFirst && isRow && "flex-col-reverse md:flex-row-reverse",
+        imageFirst && !isRow && "flex-col-reverse",
+        contentLayout?.justifyContent || "justify-between",
+        contentLayout?.alignItems || "items-center"
+      )}
+    >
+      <div ref={textRef} className="max-w-1/2">
+        <RichTextContent html={body} />
+      </div>
+      <div className="shrink-0 w-fit" ref={imageRef}>
+        {image && imageUrl.length !== 0 ? (
+          <img
+            src={imageUrl}
+            alt={alt || "Image"}
+            className="mx-auto rounded-lg shadow-md"
+            width={imageSize?.width || "auto"}
+            height={imageSize?.height || "auto"}
+          />
+        ) : (
+          <></>
         )}
-      >
-        <div ref={textRef} className="max-w-1/2">
-          <RichTextContent html={body} />
-        </div>
-        <div className="shrink-0 w-fit" ref={imageRef}>
-          {image && imageUrl.length !== 0 ? (
-            <img
-              src={imageUrl}
-              alt={alt || "Image"}
-              className="mx-auto rounded-lg shadow-md"
-              width={imageSize?.width || "auto"}
-              height={imageSize?.height || "auto"}
-            />
-          ) : (
-            <></>
-          )}
-          {caption && <RichTextContent html={caption} />}
-        </div>
+        {caption && <RichTextContent html={caption} />}
       </div>
     </div>
   );
