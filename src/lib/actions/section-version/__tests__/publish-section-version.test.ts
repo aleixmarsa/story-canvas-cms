@@ -96,6 +96,7 @@ describe("publishSection", () => {
         order: 1,
         comment: null,
       },
+      creatorId: "admin",
     };
 
     mockPublishSectionVersion.mockResolvedValue(fakeSection);
