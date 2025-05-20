@@ -64,7 +64,13 @@ export const softDeleteSectionWithVersions = async (sectionId: number) => {
  * @throws ConflictError - If the slug already exists in another section of the same story.
  * @throws Error - If the transaction fails.
  */
-export const createSectionWithDraftVersion = async (data: SectionFormData) => {
+
+type CreateSectionWithDraftVersion = SectionFormData & {
+  creatorId: string;
+};
+export const createSectionWithDraftVersion = async (
+  data: CreateSectionWithDraftVersion
+) => {
   const slug = slugify(data.name);
 
   return prisma.$transaction(async (tx) => {
@@ -76,6 +82,7 @@ export const createSectionWithDraftVersion = async (data: SectionFormData) => {
         storyId: data.storyId,
         lastEditedBy: data.createdBy,
         lockedBy: data.createdBy,
+        creatorId: data.creatorId,
       },
     });
 
@@ -109,7 +116,7 @@ export const createSectionWithDraftVersion = async (data: SectionFormData) => {
       },
     });
 
-    return tx.section.update({
+    const updatedSection = tx.section.update({
       where: { id: section.id },
       data: {
         currentDraftId: draftVersion.id,
@@ -119,6 +126,7 @@ export const createSectionWithDraftVersion = async (data: SectionFormData) => {
         publishedVersion: true,
       },
     });
+    return updatedSection;
   });
 };
 

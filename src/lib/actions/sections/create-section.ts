@@ -31,8 +31,13 @@ export const createSection = async (formData: FormData) => {
     };
   }
 
+  const parsedData = {
+    ...parsed.data,
+    creatorId: session.id,
+  };
+
   try {
-    const section = await createSectionWithDraftVersion(parsed.data);
+    const section = await createSectionWithDraftVersion(parsedData);
     return {
       success: true,
       section,

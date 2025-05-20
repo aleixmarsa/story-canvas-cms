@@ -21,6 +21,7 @@ export const createTemplateStory = async (formData: FormData) => {
     slug: `template-${uid}`,
     description: "Generated template with sample sections.",
     createdBy: createdBy,
+    creatorId: session.id,
   });
 
   const sectionTemplates: SectionFormData[] = [
@@ -351,6 +352,7 @@ export const createTemplateStory = async (formData: FormData) => {
       type: template.type,
       content: template.content,
       createdBy: createdBy,
+      creatorId: session.id,
     });
   }
 };
