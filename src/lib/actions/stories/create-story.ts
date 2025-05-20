@@ -39,9 +39,13 @@ export const createStory = async (formData: FormData) => {
     };
   }
 
+  const parsedData = {
+    ...parsed.data,
+    creatorId: session.id,
+  };
   try {
     const story = await createStoryWithDraft({
-      ...parsed.data,
+      ...parsedData,
     });
 
     return {

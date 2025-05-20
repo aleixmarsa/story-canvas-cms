@@ -33,7 +33,7 @@ model Story {
   lastEditedBy String?
 
   // Timestamps
-  deletedAt DateTime?
+  deletedAt   DateTime?
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -41,6 +41,10 @@ model Story {
   // Relations
   versions StoryVersion[]
   sections Section[]
+
+  // Relation with User
+  creatorId String?
+  creator   User?   @relation(fields: [creatorId], references: [id])
 
   // Draft and published version relations
   currentDraft     StoryVersion? @relation("CurrentDraft", fields: [currentDraftId], references: [id])
@@ -84,10 +88,14 @@ model Section {
   lastEditedBy String?
 
   // Timestamps
-  deletedAt DateTime?
+  deletedAt   DateTime?
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  // Relation with User
+  creatorId String?
+  creator   User?   @relation(fields: [creatorId], references: [id])
 
   // Relations
   versions         SectionVersion[]
@@ -131,4 +139,8 @@ model User {
   role      Role     @default(ADMIN)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations with stories and sections
+  createdStories  Story[]
+  createdSections Section[]
 }

@@ -76,6 +76,7 @@ const StoryTableWrapper = ({ currentUser }: { currentUser: CurrentUser }) => {
     try {
       const formData = new FormData();
       formData.set("createdBy", currentUser.email);
+      formData.set("creatorId", currentUser.id);
       await createTemplateStory(formData);
       mutate();
       toast.success("Template story created");

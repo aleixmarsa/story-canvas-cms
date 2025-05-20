@@ -168,7 +168,14 @@ export const softDeleteStoryAndRelated = async (storyId: number) => {
  * @returns The created Story including its current draft and published version (null).
  * @throws ConflictError if the slug is already used by another story version.
  */
-export const createStoryWithDraft = async (data: StoryFormData) => {
+
+type CreateStoryWithDraftResponse = StoryFormData & {
+  creatorId: string;
+};
+
+export const createStoryWithDraft = async (
+  data: CreateStoryWithDraftResponse
+) => {
   return await prisma.$transaction(async (tx) => {
     const story = await tx.story.create({
       data: {
@@ -176,9 +183,11 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
       },
     });
 
+    const { creatorId, ...cleanData } = data;
+
     const conflicting = await tx.storyVersion.findFirst({
       where: {
-        slug: data.slug,
+        slug: cleanData.slug,
         storyId: { not: story.id },
         story: { deletedAt: null },
       },
@@ -190,7 +199,7 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
 
     const draftVersion = await tx.storyVersion.create({
       data: {
-        ...data,
+        ...cleanData,
         storyId: story.id,
         status: StoryStatus.draft,
       },
@@ -200,12 +209,14 @@ export const createStoryWithDraft = async (data: StoryFormData) => {
       where: { id: story.id },
       data: {
         currentDraftId: draftVersion.id,
+        creatorId: creatorId,
       },
       include: {
         currentDraft: true,
         publishedVersion: true,
       },
     });
+
     return updatedStory;
   });
 };

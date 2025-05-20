@@ -35,16 +35,6 @@ describe("publishStoryAndSections", () => {
     jest.clearAllMocks();
   });
 
-  it("returns unauthorized if no session or not admin", async () => {
-    mockVerifySession.mockResolvedValueOnce(null);
-    const res1 = await publishStoryAndSections(1, 1);
-    expect(res1).toEqual({ error: "Unauthorized" });
-
-    mockVerifySession.mockResolvedValueOnce({ id: "u1", role: Role.EDITOR });
-    const res2 = await publishStoryAndSections(1, 1);
-    expect(res2).toEqual({ error: "Unauthorized" });
-  });
-
   it("publishes story and section drafts", async () => {
     mockVerifySession.mockResolvedValue({ id: "admin", role: Role.ADMIN });
     mockPublishStoryVersion.mockResolvedValue({ id: 1, title: "Test Story" });

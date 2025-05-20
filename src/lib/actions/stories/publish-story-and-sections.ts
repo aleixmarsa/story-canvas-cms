@@ -1,7 +1,6 @@
 "use server";
 
 import { verifySession } from "@/lib/dal/auth";
-import { Role } from "@prisma/client";
 import { publishStoryVersion } from "@/lib/dal/story-versions";
 import { publishSectionVersion } from "@/lib/dal/section-versions";
 import { getSectionsByStoryId } from "@/lib/dal/sections";
@@ -18,7 +17,7 @@ export const publishStoryAndSections = async (
   storyId: number
 ) => {
   const session = await verifySession();
-  if (!session || session.role !== Role.ADMIN) return { error: "Unauthorized" };
+  if (!session) return { error: "Unauthorized" };
 
   try {
     // Publish the story version
