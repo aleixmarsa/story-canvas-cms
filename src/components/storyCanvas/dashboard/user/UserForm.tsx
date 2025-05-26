@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Controller } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import FormErrorMessage from "../../FormErrorMessage";
@@ -37,6 +38,7 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
     const {
       register,
       handleSubmit,
+      control,
       formState: { errors, isSubmitting, isDirty },
       setError,
       reset,
@@ -97,23 +99,28 @@ export const UserForm = forwardRef<HTMLFormElement, UserFormProps>(
           <Input id="email" {...register("email")} />
           {errors.email && <FormErrorMessage error={errors.email.message} />}
         </div>
-
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="role" required>
             Role
           </Label>
-          <Select {...register("role")}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Role" />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.values(Role).map((role) => (
-                <SelectItem key={role} value={role}>
-                  {role}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Controller
+            name="role"
+            control={control}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.values(Role).map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           {errors.role && <FormErrorMessage error={errors.role.message} />}
         </div>
 
