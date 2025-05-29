@@ -4,11 +4,13 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
-  # Triggers the workflow on push or pull request events to the main branch
+  # Triggers the workflow on pull request events to the main branch
   push:
-    branches: [main]
+    branches-ignore:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
