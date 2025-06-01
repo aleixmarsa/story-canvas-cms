@@ -30,7 +30,7 @@
 
 StoryCanvas is built on Next.js with a clear separation between the headless API and the admin dashboard:
 
-- **API Routes** (/api/**) are used for the headless CMS interface, making data accessible to external clients. These endpoints are documented with Swagger and some of them require a session or token for authentication.
+- **Route Handlers** (/api/**) are used for the headless CMS interface, making data accessible to external clients. These endpoints are documented with Swagger and some of them require a session or token for authentication.
 
 - **Server Actions** are used internally within the admin dashboard to mutate data securely. Although are technically public HTTP endpoints, they are not directly accessible without a valid invocation context (e.g., form submission from the dashboard), thanks built-in protections:
 
